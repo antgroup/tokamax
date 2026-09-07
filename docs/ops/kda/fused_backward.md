@@ -51,10 +51,9 @@ BF16/FP32, fixed/packed inputs, initial/final states, and gate-parameter
 gradients. The rematerialized-state test checks that it still selects the
 staged backward. Gate gradients are also compared with XLA autodiff.
 
-Packed gradient comparisons follow the existing test suite's valid-token
-and occupied-state domain. The forward PR documents the staged backward's
-CPU interpretation limitation for padding and empty-state gradients;
-this PR does not silently reinterpret matching non-finite values as success.
+The separate [packed backward correctness fix](packed_gradients.md) extends
+comparisons to all tokens and state slots and adds raw-gate regressions
+against XLA autodiff, without accepting non-finite values.
 
 ```bash
 python -m pytest tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_bwd_fused_test.py -v

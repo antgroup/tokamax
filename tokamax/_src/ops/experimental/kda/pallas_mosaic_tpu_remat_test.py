@@ -27,7 +27,7 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
-@pytest.mark.parametrize("packed", [False])
+@pytest.mark.parametrize("packed", [False, True])
 def test_rematerialized_backward(dtype, packed):
   args, kwargs = forward_tests._inputs(dtype, packed)
   results = []

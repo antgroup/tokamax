@@ -2160,6 +2160,25 @@ def chunk_kda_bwd_custom(
     forward_aqk=Aqk if fuse_local_backward else None,
   )
 
+  # Invalid aligned tokens do not participate in the recurrence. Mask before
+  # gate-parameter reductions: padding scratch can be unwritten, and the raw
+  # gate sentinel (-inf) would otherwise produce 0 * -inf in the derivative.
+  if segment_ids is not None:
+    valid = segment_ids[None, :, :] != 0
+    dq = jnp.where(valid[..., None], dq, 0)
+    dk = jnp.where(valid[..., None], dk, 0)
+    dv = jnp.where(valid[..., None], dv, 0)
+    dg = jnp.where(valid[..., None], dg, 0)
+    db = jnp.where(valid, db, 0)
+    if g_org is not None:
+      g_org = jnp.where(valid[..., None], g_org, 0)
+
+  # An empty sequence's final state is its initial state. No chunk writes its
+  # dh0 slot, so explicitly propagate the final-state cotangent (or zero).
+  if dh0 is not None and cu_seqlens is not None:
+    empty = (jnp.diff(cu_seqlens, axis=-1) == 0)[..., None, None, None]
+    dh0 = jnp.where(empty, 0 if dht_m4 is None else dht_m4, dh0)
+
   dA, dbias = None, None
   if use_gate_in_kernel:
     assert g_org is not None and a_log is not None
