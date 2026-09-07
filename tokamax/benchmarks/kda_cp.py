@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-"""Device-time comparison of staged and fused CP saved-state backward.
+"""Device-time comparison of staged and fused CP saved-state and rematerialized backward.
 
 Run on at least two TPU devices: python -m tokamax.benchmarks.kda_cp
 """
@@ -32,8 +32,10 @@ from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu as mosaic
 
 class KdaCpBenchmark(parameterized.TestCase):
 
-  @parameterized.product(cp_size=(2, 4), fused=(False, True))
-  def test_forward_and_vjp(self, cp_size, fused):
+  @parameterized.product(
+      cp_size=(2, 4), fused=(False, True), remat=(False, True)
+  )
+  def test_forward_and_vjp(self, cp_size, fused, remat):
     if jax.default_backend() != "tpu" or jax.device_count() < cp_size:
       self.skipTest("Requires sufficient TPU devices")
     mesh = jax.sharding.Mesh(np.array(jax.devices()[:cp_size]), ("context",))
@@ -41,7 +43,11 @@ class KdaCpBenchmark(parameterized.TestCase):
     spec = jax.sharding.PartitionSpec(None, None, "context", None)
     beta_spec = jax.sharding.PartitionSpec(None, None, "context")
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_cp_backward=fused)
+        config=mosaic.Config(
+            fuse_cp_backward=fused,
+            rematerialize_for_backward=remat,
+            fuse_rematerialization=fused and remat,
+        )
     )
 
     def local(q, k, v, g, beta):
@@ -73,10 +79,11 @@ class KdaCpBenchmark(parameterized.TestCase):
     with jaxtyping.disable_jaxtyping(), jax.set_mesh(mesh):
       result = tokamax.benchmark(fn, args)
     logging.info(
-        "device_kind=%s cp_size=%s fuse_cp_backward=%s median_time_ms=%s",
+        "device_kind=%s cp_size=%s fuse_cp_backward=%s remat=%s median_time_ms=%s",
         jax.devices()[0].device_kind,
         cp_size,
         fused,
+        remat,
         result.median_evaluation_time_ms,
     )
 
