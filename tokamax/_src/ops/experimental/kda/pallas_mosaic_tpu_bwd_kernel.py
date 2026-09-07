@@ -1264,7 +1264,8 @@ def _saved_state_backward_kernel(
   boundaries. dh_ref persists across the reverse-ordered chunk grid.
   """
   if rematerialized_v_new_ref is not None:
-    # Preserve FP32 v_new from the running state, not the rounded h snapshot.
+    # Preserve supplied v_new: FP32 running-state values during rematerialization
+    # or the pre-collective saved-path values during CP backward.
     # Only WY weights and gated Q/K are needed in this reverse pass.
     q = q_ref[:, 0, 0]
     k = k_ref[:, 0, 0]
@@ -1699,13 +1700,14 @@ def _chunk_kda_bwd_dAv_kernel(
     b_do_blk = bdo[:, :, vs:ve]  # [MB, BT, BV]
 
     # dA += do @ v^T — contract BV (dim 2), batch MB (dim 0)
-    b_dA += jax.lax.dot_general(
-      b_do_blk,
-      b_v_blk,
-      (((2,), (2,)), ((0,), (0,))),
-      precision=precision,
-      preferred_element_type=jnp.float32,
-    )
+    if dA_ref is not None:
+      b_dA += jax.lax.dot_general(
+        b_do_blk,
+        b_v_blk,
+        (((2,), (2,)), ((0,), (0,))),
+        precision=precision,
+        preferred_element_type=jnp.float32,
+      )
 
     # dv = A^T @ do — contract BT_row (dim 1), batch MB (dim 0)
     b_dv_blk = jax.lax.dot_general(
@@ -1722,7 +1724,8 @@ def _chunk_kda_bwd_dAv_kernel(
   # Apply causal mask and scale
   b_dA = jnp.where(m_causal[None, :, :], b_dA * scale, 0.0)
 
-  dA_ref[:] = b_dA
+  if dA_ref is not None:
+    dA_ref[:] = b_dA
   dv_ref[:] = b_dv.astype(do_ref.dtype)
 
 
@@ -1733,6 +1736,7 @@ def _chunk_kda_bwd_dAv_kernel(
     "scale",
     "block_V",
     "mini_batch",
+    "store_dAqk",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1746,14 +1750,16 @@ def chunk_kda_bwd_dAv_kernel(
   chunk_size: int = 64,
   block_V: int | None = None,
   mini_batch: int | None = None,
+  store_dAqk: bool = True,
 ) -> tuple[
-    Float[Array, "H B T BT"],
+    Float[Array, "H B T BT"] | None,
     Float[Array, "H B T V"],
 ]:
   """Computes attention and value gradients with a tiled Pallas kernel.
 
   `block_V` controls value-dimension tiling; `mini_batch` controls the
-  flattened chunks processed by each program.
+  flattened chunks processed by each program. With `store_dAqk=False`,
+  only value gradients are computed; the first returned value is None.
   """
   H, B, T, K = q.shape
   V = v.shape[-1]
@@ -1796,12 +1802,12 @@ def chunk_kda_bwd_dAv_kernel(
   ]
 
   out_specs = [
-    _spec3(BT, BT),  # dA
+    _spec3(BT, BT) if store_dAqk else None,  # dA
     _spec3(BT, V),   # dv
   ]
 
   out_shape = [
-    jax.ShapeDtypeStruct((total, BT, BT), jnp.float32),
+    jax.ShapeDtypeStruct((total, BT, BT), jnp.float32) if store_dAqk else None,
     jax.ShapeDtypeStruct((total, BT, V), do.dtype),
   ]
 
@@ -1838,7 +1844,7 @@ def chunk_kda_bwd_dAv_kernel(
   def _ir(x, d):
     return x.reshape(H, B, T, d)
 
-  return _ir(dA_r, BT), _ir(dv_r, V)
+  return _ir(dA_r, BT) if dA_r is not None else None, _ir(dv_r, V)
 
 
 # =====================================================================
@@ -1860,6 +1866,7 @@ def chunk_kda_bwd_dAv_kernel(
     "fuse_backward",
     "fuse_rematerialization",
     "packed_gradients",
+    "fuse_cp_backward",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1881,6 +1888,7 @@ def chunk_kda_bwd_custom(
     fuse_backward: bool = True,
     fuse_rematerialization: bool = False,
     packed_gradients: bool = False,
+    fuse_cp_backward: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
@@ -2015,6 +2023,16 @@ def chunk_kda_bwd_custom(
   # ============= assert input shapes and static properties =============
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
+  # CP still needs w/qg/kg and dv before its state-gradient collective.
+  # Only the saved-state reverse pass after that barrier uses this option.
+  fuse_cp_local = (
+      fuse_cp_backward
+      and fuse_backward
+      and disable_recompute
+      and _cp_active
+      and K % 128 == 0
+      and V % 128 == 0
+  )
   fuse_remat = (
       fuse_rematerialization
       and fuse_backward
@@ -2130,6 +2148,7 @@ def chunk_kda_bwd_custom(
       A=Aqk,
       scale=scale,
       chunk_size=chunk_size,
+      store_dAqk=not fuse_cp_local,
     )
 
   if _cp_active:
@@ -2212,6 +2231,7 @@ def chunk_kda_bwd_custom(
   if dht is not None and dht.ndim == 4 and segment_ids is None:
     dht = dht[:, None, :, :, :]
   dht_m4 = dht
+  fuse_reverse = fuse_local_backward or fuse_cp_local
   dq, dk, dv, db, dg, dh0 = _fused_dhu_wy_intra_cumsum_pallas_jit(
     q=q,
     k=k,
@@ -2234,8 +2254,8 @@ def chunk_kda_bwd_custom(
     use_exp2=True,
     return_dh0=initial_state is not None,
     max_num_segments=max_num_segments,
-    fuse_recompute=fuse_local_backward,
-    forward_aqk=Aqk if fuse_local_backward else None,
+    fuse_recompute=fuse_reverse,
+    forward_aqk=Aqk if fuse_reverse else None,
     packed_inputs=packed_inputs if fuse_local_backward else None,
     original_cu_seqlens=original_cu_seqlens,
     aligned_cu_seqlens=aligned_cu,
