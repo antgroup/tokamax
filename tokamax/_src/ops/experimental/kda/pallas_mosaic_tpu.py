@@ -62,6 +62,8 @@ class Config:
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
   `packed_backward=True` reads original packed Q/K/V/beta in the non-CP
   fused reverse pass; aligned gradient outputs and residuals are retained.
+  `packed_gradients=True` compacts feature gradients after gate and
+  normalization backward; beta retains its existing gather.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
   CP retains its existing backward path.
@@ -75,6 +77,7 @@ class Config:
   packed_forward: bool = False
   packed_output: bool = False
   packed_backward: bool = False
+  packed_gradients: bool = False
   fuse_backward: bool = True
   # Opt-in until TPU compilation and device-time validation completes.
   fuse_rematerialization: bool = False
@@ -574,6 +577,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         fuse_backward=config.fuse_backward,
         fuse_rematerialization=config.fuse_rematerialization,
         packed_inputs=packed_inputs,
+        packed_gradients=config.packed_gradients,
     )
 
     grads = {

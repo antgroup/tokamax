@@ -39,6 +39,7 @@ from tokamax._src.ops.experimental.kda.cp_utils import (
     _merge_dht,
     all_gather_into_tensor,
 )
+from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_output import compact_output
 from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_types import KdaResiduals
 from tokamax._src.ops.experimental.kda.utils import (
     _align_seqs,
@@ -1858,6 +1859,7 @@ def chunk_kda_bwd_dAv_kernel(
     "has_initial_state",
     "fuse_backward",
     "fuse_rematerialization",
+    "packed_gradients",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1878,6 +1880,7 @@ def chunk_kda_bwd_custom(
     ],
     fuse_backward: bool = True,
     fuse_rematerialization: bool = False,
+    packed_gradients: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
@@ -2281,10 +2284,21 @@ def chunk_kda_bwd_custom(
     dk = l2norm_bwd(k, rstd_k, dk)
 
   if cu_seqlens is not None:
-    dq = _unalign_output(dq, cu_seqlens, aligned_cu, T_orig)
-    dk = _unalign_output(dk, cu_seqlens, aligned_cu, T_orig)
-    dv = _unalign_output(dv, cu_seqlens, aligned_cu, T_orig)
-    dg = _unalign_output(dg, cu_seqlens, aligned_cu, T_orig)
+    if packed_gradients and not _cp_active:
+      # Gate reductions and normalization are complete. Casting commutes with
+      # token selection and reduces the compactor's input/output traffic.
+      dq = compact_output(dq.astype(q.dtype), cu_seqlens, aligned_cu, T_orig)
+      dk = compact_output(dk.astype(k.dtype), cu_seqlens, aligned_cu, T_orig)
+      dv = compact_output(dv.astype(v.dtype), cu_seqlens, aligned_cu, T_orig)
+      dg = compact_output(
+          dg.astype(g_dtype_marker.dtype), cu_seqlens, aligned_cu, T_orig
+      )
+    else:
+      dq = _unalign_output(dq, cu_seqlens, aligned_cu, T_orig)
+      dk = _unalign_output(dk, cu_seqlens, aligned_cu, T_orig)
+      dv = _unalign_output(dv, cu_seqlens, aligned_cu, T_orig)
+      dg = _unalign_output(dg, cu_seqlens, aligned_cu, T_orig)
+    # Scalar beta uses the existing gather, matching the source migration.
     db = _unalign_output(db, cu_seqlens, aligned_cu, T_orig)
 
   if dh0 is not None and dh0.ndim == 4 and has_initial_state:
