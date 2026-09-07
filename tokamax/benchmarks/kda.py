@@ -72,6 +72,7 @@ class KdaBenchmark(parameterized.TestCase):
           "mosaic_fwd_fused",
           "mosaic_packed_inputs",
           "mosaic_packed_outputs",
+          "mosaic_fused",
       ),
       benchmark_mode=("forward", "forward_and_vjp"),
       args_spec_name=tuple(EXAMPLES.keys()),
@@ -100,6 +101,12 @@ class KdaBenchmark(parameterized.TestCase):
               packed_forward=implementation
               in ("mosaic_packed_inputs", "mosaic_packed_outputs"),
               packed_output=implementation == "mosaic_packed_outputs",
+              fuse_backward=implementation
+              in (
+                  "mosaic_fused",
+                  "mosaic_packed_inputs",
+                  "mosaic_packed_outputs",
+              ),
           )
       )
     fn, args = tokamax.standardize_function(

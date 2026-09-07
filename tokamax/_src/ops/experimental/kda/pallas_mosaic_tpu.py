@@ -60,6 +60,8 @@ class Config:
   retaining aligned outputs and backward residuals. It requires fused forward.
   `packed_output=True` uses Pallas output compaction when its full head-group
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
+  `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
+  state rematerialization and CP retain their existing backward paths.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
@@ -69,6 +71,7 @@ class Config:
   # Opt-in until TPU lowering, allocation and device-time validation completes.
   packed_forward: bool = False
   packed_output: bool = False
+  fuse_backward: bool = True
 
 
 def _resolve_safe_gate(
@@ -193,7 +196,7 @@ class PallasMosaicTpuKimiDeltaAttention(
 
   def __post_init__(self):
     if self.vjp is None:
-      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp())
+      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp(config=self.config))
 
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
@@ -546,6 +549,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         initial_state is not None,
         residuals,
         dout,
+        fuse_backward=config.fuse_backward,
     )
 
     grads = {
