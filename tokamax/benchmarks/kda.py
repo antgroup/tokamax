@@ -26,8 +26,8 @@ import tokamax
 from tokamax._src import numerics
 from tokamax._src.ops.experimental.kda import api as kda_api
 from tokamax._src.ops.experimental.kda import arg_specs as kda_specs
+from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu
 from tokamax.benchmarks import common
-
 
 _TENSORBOARD_OUTPUT_ENV_VAR = flags.DEFINE_string(
     "tensorboard_output_env_var",
@@ -40,11 +40,13 @@ _SKIP_IMPLEMENTATIONS = flags.DEFINE_list(
     "A comma-separated list of implementations to skip.",
 )
 
-EXAMPLES = immutabledict.immutabledict({
-    spec.name: spec.args
-    for spec in kda_specs.ARG_SPECS
-    if "primary" in spec.tags
-})
+EXAMPLES = immutabledict.immutabledict(
+    {
+        spec.name: spec.args
+        for spec in kda_specs.ARG_SPECS
+        if "primary" in spec.tags
+    }
+)
 
 
 def _make_example(args_spec_name: str, implementation: str):
@@ -64,7 +66,7 @@ class KdaBenchmark(parameterized.TestCase):
   """Performance benchmarks for the XLA and Mosaic KDA implementations."""
 
   @parameterized.product(
-      implementation=("xla", "mosaic"),
+      implementation=("xla", "mosaic_staged", "mosaic_fused"),
       benchmark_mode=("forward", "forward_and_vjp"),
       args_spec_name=tuple(EXAMPLES.keys()),
   )
@@ -77,12 +79,22 @@ class KdaBenchmark(parameterized.TestCase):
           f"Skipping implementation '{implementation}' as per"
           " --skip_implementations flag."
       )
-    if jax.default_backend() != "tpu" and implementation == "mosaic":
+    if jax.default_backend() != "tpu" and implementation != "xla":
       self.skipTest("Mosaic TPU implementation is only supported on TPU.")
 
-    example = _make_example(args_spec_name, implementation)
+    example = _make_example(
+        args_spec_name, "xla" if implementation == "xla" else "mosaic"
+    )
+    attention = kda_api.kimi_delta_attention
+    if implementation != "xla":
+      example.pop("implementation")
+      attention = pallas_mosaic_tpu.PallasMosaicTpuKimiDeltaAttention(
+          config=pallas_mosaic_tpu.Config(
+              fuse_forward=implementation == "mosaic_fused",
+          )
+      )
     fn, args = tokamax.standardize_function(
-        kda_api.kimi_delta_attention,
+        attention,
         kwargs=example,
         mode=benchmark_mode,
     )
@@ -97,9 +109,7 @@ class KdaBenchmark(parameterized.TestCase):
     common.write_tensorboard_logs(
         tensorboard_output=_TENSORBOARD_OUTPUT_ENV_VAR.value,
         value=result.evaluation_times_ms,
-        metric_tag=(
-            f"kda/{args_spec_name}/{implementation}/{benchmark_mode}"
-        ),
+        metric_tag=(f"kda/{args_spec_name}/{implementation}/{benchmark_mode}"),
     )
 
 

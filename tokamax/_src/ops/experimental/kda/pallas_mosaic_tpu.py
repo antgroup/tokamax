@@ -54,11 +54,14 @@ class Config:
   `safe_gate=None` selects the exponent-stabilization strategy from the gate
   activation mode. `rematerialize_for_backward=True` omits chunk hidden states
   from forward residuals and manually rebuilds them in the custom backward.
+  `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
+  128-aligned K/V. Other shapes and CP retain the staged implementation.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
   safe_gate: bool | None = None
   rematerialize_for_backward: bool = False
+  fuse_forward: bool = True
 
 
 def _resolve_safe_gate(
@@ -425,6 +428,7 @@ class PallasMosaicTpuKimiDeltaAttention(
         safe_gate=safe_gate,
         lower_bound=lower_bound,
         disable_recompute=save_intermediates_for_backward,
+        fuse_forward=config.fuse_forward,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
         return_residuals=return_residuals,
