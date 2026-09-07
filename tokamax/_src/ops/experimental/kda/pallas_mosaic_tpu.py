@@ -56,6 +56,8 @@ class Config:
   from forward residuals and manually rebuilds them in the custom backward.
   `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
   128-aligned K/V. Other shapes and CP retain the staged implementation.
+  `packed_forward=True` reads non-CP packed input windows directly while
+  retaining aligned outputs and backward residuals. It requires fused forward.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
   CP retains its existing backward path.
@@ -65,6 +67,8 @@ class Config:
   safe_gate: bool | None = None
   rematerialize_for_backward: bool = False
   fuse_forward: bool = True
+  # Opt-in until TPU lowering, allocation and device-time validation completes.
+  packed_forward: bool = False
   fuse_backward: bool = True
   # Opt-in until TPU compilation and device-time validation completes.
   fuse_rematerialization: bool = False
@@ -418,6 +422,22 @@ class PallasMosaicTpuKimiDeltaAttention(
         max_num_segments=max_num_segments,
     )
 
+    packed_inputs = None
+    if (
+        config.packed_forward
+        and config.fuse_forward
+        and prepared.cu_seqlens is not None
+        and not (
+            prepared.context_parallel_metadata is not None
+            and prepared.context_parallel_metadata.is_cp_enabled
+        )
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+    ):
+      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
+      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      packed_inputs = (packed_q, packed_k, value, gate, beta)
+
     output, residuals = chunk_kda_fwd_custom(
         prepared.q,
         prepared.k,
@@ -435,6 +455,7 @@ class PallasMosaicTpuKimiDeltaAttention(
         lower_bound=lower_bound,
         disable_recompute=save_intermediates_for_backward,
         fuse_forward=config.fuse_forward,
+        packed_inputs=packed_inputs,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
         return_residuals=return_residuals,

@@ -35,6 +35,7 @@ def test_rematerialized_backward(dtype, packed):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
             rematerialize_for_backward=True,
+            packed_forward=packed,
             fuse_rematerialization=fused,
         )
     )

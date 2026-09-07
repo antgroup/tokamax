@@ -71,6 +71,7 @@ class KdaBenchmark(parameterized.TestCase):
           "mosaic_staged",
           "mosaic_fwd_fused",
           "mosaic_fused",
+          "mosaic_packed_inputs",
           "mosaic_remat",
           "mosaic_remat_fused",
       ),
@@ -101,9 +102,11 @@ class KdaBenchmark(parameterized.TestCase):
               fuse_backward=implementation
               in (
                   "mosaic_fused",
+                  "mosaic_packed_inputs",
                   "mosaic_remat",
                   "mosaic_remat_fused",
               ),
+              packed_forward=implementation == "mosaic_packed_inputs",
               rematerialize_for_backward=implementation.startswith(
                   "mosaic_remat"
               ),
