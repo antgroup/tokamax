@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""CP saved-state local fusion across real shard_map collectives."""
+"""CP saved-state and rematerialized local fusion across real shard_map collectives."""
 
 import jax
 import jax.numpy as jnp
@@ -30,7 +30,8 @@ interpret_on_cpu = f.interpret_on_cpu
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("split", [False, True])
-def test_cp_saved_state_fusion(dtype, split):
+@pytest.mark.parametrize("state_policy", ["saved", "remat", "remat_staged"])
+def test_cp_local_fusion(dtype, split, state_policy, monkeypatch):
   if jax.device_count() < 2:
     pytest.skip(
         "Requires two devices; CPU interpret uses XLA host device count=2"
@@ -48,10 +49,27 @@ def test_cp_saved_state_fusion(dtype, split):
       if split
       else jnp.ones((2, 256), jnp.int32)
   )
+  # Record traced dispatch to ensure equality is not just staged-vs-staged.
+  dispatch = []
+  original_reverse = kernels._fused_dhu_wy_intra_cumsum_pallas_jit
+
+  def record_reverse(*args, **kwargs):
+    dispatch.append((kwargs["fuse_recompute"], kwargs["v_new"].dtype))
+    return original_reverse(*args, **kwargs)
+
+  monkeypatch.setattr(
+      kernels, "_fused_dhu_wy_intra_cumsum_pallas_jit", record_reverse
+  )
+  # The outer jit's cache otherwise hides dispatch across parameter cases.
+  kernels.chunk_kda_bwd_custom.clear_cache()
   results = []
   for fused in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_cp_backward=fused)
+        config=mosaic.Config(
+            fuse_cp_backward=fused,
+            rematerialize_for_backward=state_policy != "saved",
+            fuse_rematerialization=state_policy == "remat",
+        )
     )
 
     def local(q, k, v, g, beta, segments):
@@ -84,6 +102,12 @@ def test_cp_saved_state_fusion(dtype, split):
           )
       )(q, k, v, g, beta, segments)
     results.append(grads)
+  assert [enabled for enabled, _ in dispatch] == [
+      False,
+      state_policy != "remat_staged",
+  ]
+  if state_policy != "saved":
+    assert all(dtype == jnp.float32 for _, dtype in dispatch)
   f._assert_close(
       results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
   )

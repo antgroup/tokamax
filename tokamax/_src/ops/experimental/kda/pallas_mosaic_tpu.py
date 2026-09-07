@@ -67,7 +67,8 @@ class Config:
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
   `fuse_cp_backward=True` fuses the saved-state local reverse pass after
-  CP communication. CP rematerialization retains its existing path.
+  CP communication. With `fuse_rematerialization=True`, this also applies
+  to CP rematerialization, preserving its staged state reconstruction.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
