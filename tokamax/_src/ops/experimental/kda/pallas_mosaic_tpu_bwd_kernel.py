@@ -2024,11 +2024,11 @@ def chunk_kda_bwd_custom(
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
   # CP still needs w/qg/kg and dv before its state-gradient collective.
-  # Only the saved-state reverse pass after that barrier uses this option.
+  # Rematerialization retains CP state reconstruction before that barrier.
   fuse_cp_local = (
       fuse_cp_backward
       and fuse_backward
-      and disable_recompute
+      and (disable_recompute or fuse_rematerialization)
       and _cp_active
       and K % 128 == 0
       and V % 128 == 0
