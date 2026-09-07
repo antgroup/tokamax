@@ -21,10 +21,10 @@ precision and value-axis reduction order are retained. Gate activation,
 gate-parameter gradients, Q/K normalization backward, and output unalignment
 stay outside this fusion boundary.
 
-CP, non-aligned K/V and state-rematerialization configurations keep their
-existing staged implementations. In particular, this PR does not claim to
-fuse the forward recurrence needed to rebuild missing chunk states. All
-previously supported modes remain callable.
+CP and non-aligned K/V keep their existing implementations. The separate
+[state-rematerialization increment](rematerialized_backward.md) adds opt-in
+fusion for missing chunk states; its default remains the original staged
+path. All previously supported modes remain callable.
 
 ## State and memory
 

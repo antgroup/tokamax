@@ -548,6 +548,163 @@ def _recompute_w_u_fwd(q, k, v, beta, A, gk, chunk_size):
   )
 
 
+def _rematerialize_states_kernel(
+    segments_ref,
+    q_ref,
+    k_ref,
+    v_ref,
+    beta_ref,
+    a_ref,
+    g_ref,
+    initial_ref,
+    h_ref,
+    v_new_ref,
+    state_ref,
+    *,
+    chunk_size,
+    chunks,
+):
+  """Rebuild chunk states with WY intermediates local to each program."""
+  batch, chunk = pl.program_id(1), pl.program_id(2)
+  _, _, valid, first, _ = _chunk_segment_metadata(
+      segments_ref, batch, chunk, chunks
+  )
+
+  @pl.when(first | ~valid)
+  def initialize():
+    state_ref[...] = jnp.zeros_like(state_ref[...])
+    if initial_ref is not None:
+      state_ref[...] = jnp.where(
+          valid, initial_ref[:, 0, 0].astype(jnp.float32), 0
+      )
+
+  state = state_ref[...]
+  h_ref[:, 0, 0] = state.astype(h_ref.dtype)
+  w, u, _, kg = _recompute_w_u_fwd(
+      q_ref[...],
+      k_ref[...],
+      v_ref[...],
+      beta_ref[..., 0],
+      a_ref[...],
+      g_ref[...],
+      chunk_size,
+  )
+  w, u, kg = w[:, 0], u[:, 0], kg[:, 0]
+  v_new = u.astype(jnp.float32) - jnp.matmul(
+      w.astype(jnp.float32),
+      state,
+      precision=jax.lax.Precision.HIGHEST,
+      preferred_element_type=jnp.float32,
+  )
+  v_new_ref[:, 0] = jnp.where(valid, v_new, 0)
+  gate_last = g_ref[:, 0, -1].astype(jnp.float32)
+  state = state * exp2(gate_last)[:, :, None] + jnp.matmul(
+      kg.astype(jnp.float32).transpose(0, 2, 1),
+      v_new,
+      precision=jax.lax.Precision.HIGHEST,
+      preferred_element_type=jnp.float32,
+  )
+  state_ref[...] = jnp.where(valid, state, 0)
+
+
+@partial(jax.jit, static_argnames=["chunk_size"])
+def _rematerialize_states_pallas(
+    q,
+    k,
+    v,
+    beta,
+    a,
+    g,
+    initial_state,
+    segment_ids,
+    *,
+    chunk_size=64,
+):
+  """Return the existing low-memory path's h and FP32 v_new layouts."""
+  heads, batch, tokens, key_dim = q.shape
+  value_dim = v.shape[-1]
+  chunks = tokens // chunk_size
+  if (
+      chunk_size != 64
+      or tokens % chunk_size
+      or key_dim % 128
+      or value_dim % 128
+  ):
+    raise ValueError(
+        "Fused rematerialization requires BT=64 and 128-aligned K/V."
+    )
+  if segment_ids is None:
+    segment_ids = jnp.ones((batch, tokens), jnp.int32)
+    if initial_state is not None and initial_state.ndim == 4:
+      initial_state = initial_state[:, None]
+  segments = segment_ids.reshape(batch, chunks, chunk_size)[:, :, 0]
+  per_head = 4 * (
+      3 * key_dim * value_dim
+      + 12 * chunk_size * (key_dim + value_dim)
+      + 4 * chunk_size**2
+  )
+  mini_batch = estimate_mini_batch(per_head, heads, max_mb=16)
+
+  def token_spec(width):
+    return pl.BlockSpec(
+        (mini_batch, 1, chunk_size, width), lambda h, b, c, _: (h, b, c, 0)
+    )
+
+  def state_index(h, b, c, segments):
+    _, seq, _, _, _ = _chunk_segment_metadata(segments, b, c, chunks)
+    return h, b, seq, 0, 0
+
+  initial_spec = pl.BlockSpec(
+      (mini_batch, 1, 1, key_dim, value_dim), state_index
+  )
+  state_spec = pl.BlockSpec(
+      (mini_batch, 1, 1, key_dim, value_dim), lambda h, b, c, _: (h, b, c, 0, 0)
+  )
+  return pl.pallas_call(
+      partial(
+          _rematerialize_states_kernel, chunk_size=chunk_size, chunks=chunks
+      ),
+      out_shape=(
+          jax.ShapeDtypeStruct(
+              (heads, batch, chunks, key_dim, value_dim), k.dtype
+          ),
+          jax.ShapeDtypeStruct(v.shape, jnp.float32),
+      ),
+      grid_spec=pltpu.PrefetchScalarGridSpec(
+          num_scalar_prefetch=1,
+          grid=(heads // mini_batch, batch, chunks),
+          in_specs=[
+              token_spec(key_dim),
+              token_spec(key_dim),
+              token_spec(value_dim),
+              token_spec(1),
+              token_spec(chunk_size),
+              token_spec(key_dim),
+              initial_spec if initial_state is not None else None,
+          ],
+          out_specs=(state_spec, token_spec(value_dim)),
+          scratch_shapes=[
+              pltpu.VMEM((mini_batch, key_dim, value_dim), jnp.float32)
+          ],
+      ),
+      compiler_params=pltpu.CompilerParams(
+          dimension_semantics=("parallel", "parallel", "arbitrary")
+      ),
+      interpret=get_interpret(),
+  )(
+      segments,
+      q,
+      k,
+      v,
+      beta[..., None],
+      a,
+      g,
+      initial_state.transpose(2, 0, 1, 3, 4)
+      if initial_state is not None
+      else None,
+  )
+
+
 def compute_dhu_recurrence(
     bkg, dh, bdv0, dh_tmp, g_exp_last, bqg, bw, bdo, scale, precision
 ):
@@ -1077,6 +1234,7 @@ def _saved_state_backward_kernel(
     h_ref,
     do_ref,
     dht_ref,
+    rematerialized_v_new_ref,
     dq_ref,
     dk_ref,
     dv_ref,
@@ -1104,23 +1262,45 @@ def _saved_state_backward_kernel(
   and dv0, so fusion does not change the rounding at their former HBM
   boundaries. dh_ref persists across the reverse-ordered chunk grid.
   """
-  _fused_recompute_w_u_vnew_from_h_kernel(
-      k_ref.at[:, 0, 0],
-      v_ref.at[:, 0, 0],
-      beta_ref.at[:, 0, 0, :, 0],
-      akk_ref.at[:, 0, 0],
-      q_ref.at[:, 0, 0],
-      g_ref.at[:, 0, 0],
-      h_ref.at[:, 0, 0],
-      w_ref.at[:, 0, 0],
-      qg_ref.at[:, 0, 0],
-      kg_ref.at[:, 0, 0],
-      v_new_ref.at[:, 0, 0],
-      BT=BT,
-      K=K,
-      V=V,
-      MB=MB,
-  )
+  if rematerialized_v_new_ref is not None:
+    # Preserve FP32 v_new from the running state, not the rounded h snapshot.
+    # Only WY weights and gated Q/K are needed in this reverse pass.
+    q = q_ref[:, 0, 0]
+    k = k_ref[:, 0, 0]
+    beta = beta_ref[:, 0, 0]
+    g = g_ref[:, 0, 0]
+    gate_exp = jnp.exp2(g)
+    precision = (
+        None if q_ref.dtype == jnp.bfloat16 else jax.lax.Precision.HIGHEST
+    )
+    w = jnp.matmul(
+        akk_ref[:, 0, 0].astype(jnp.float32),
+        (k * beta * gate_exp).astype(jnp.float32),
+        precision=precision,
+        preferred_element_type=jnp.float32,
+    )
+    w_ref[:, 0, 0] = w.astype(w_ref.dtype)
+    qg_ref[:, 0, 0] = (q * gate_exp).astype(qg_ref.dtype)
+    kg_ref[:, 0, 0] = (k * jnp.exp2(g[:, -1:] - g)).astype(kg_ref.dtype)
+    v_new_ref[...] = rematerialized_v_new_ref[...]
+  else:
+    _fused_recompute_w_u_vnew_from_h_kernel(
+        k_ref.at[:, 0, 0],
+        v_ref.at[:, 0, 0],
+        beta_ref.at[:, 0, 0, :, 0],
+        akk_ref.at[:, 0, 0],
+        q_ref.at[:, 0, 0],
+        g_ref.at[:, 0, 0],
+        h_ref.at[:, 0, 0],
+        w_ref.at[:, 0, 0],
+        qg_ref.at[:, 0, 0],
+        kg_ref.at[:, 0, 0],
+        v_new_ref.at[:, 0, 0],
+        BT=BT,
+        K=K,
+        V=V,
+        MB=MB,
+    )
   _chunk_kda_bwd_dAv_kernel(
       v_new_ref.at[:, 0, 0],
       aqk_ref.at[:, 0, 0],
@@ -1219,7 +1399,9 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
   `segment_ids` applies per-batch varlen boundaries, and `return_dh0`
   controls whether the initial-state gradient is materialized. With
   `fuse_recompute`, w/qg/kg/v_new/dAqk/dv0 are produced in VMEM from h
-  and forward_aqk rather than read from HBM. Output shapes are unchanged.
+  and forward_aqk rather than read from HBM. An optional v_new preserves
+  FP32 value corrections from fused state rematerialization. Output shapes
+  are unchanged.
   """
   H, B, T, K = q.shape
   V = v.shape[-1]
@@ -1332,15 +1514,40 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
                    A_r, h_r, do_r, dv0_r, dAqk_r, dht_arr]
   scratch_shapes = [dh_tmp]
   if fuse_recompute:
-    kernel = partial(_saved_state_backward_kernel, BT=BT, K=K, V=V,
-                     NT=NT, scale=scale, MB=MB)
-    in_specs = [qk_spec, qk_spec, v_spec, qk_spec, b_spec, A_spec,
-                A_spec, h_spec, v_spec, state_spec]
-    kernel_inputs = [q_r, k_r, v_r, g_r, beta_r, A_r,
-                     forward_aqk.reshape(H, B, NT, BT, BT), h_r, do_r, dht_arr]
+    kernel = partial(
+        _saved_state_backward_kernel, BT=BT, K=K, V=V, NT=NT, scale=scale, MB=MB
+    )
+    in_specs = [
+        qk_spec,
+        qk_spec,
+        v_spec,
+        qk_spec,
+        b_spec,
+        A_spec,
+        A_spec,
+        h_spec,
+        v_spec,
+        state_spec,
+        v_spec if vn_r is not None else None,
+    ]
+    kernel_inputs = [
+        q_r,
+        k_r,
+        v_r,
+        g_r,
+        beta_r,
+        A_r,
+        forward_aqk.reshape(H, B, NT, BT, BT),
+        h_r,
+        do_r,
+        dht_arr,
+        vn_r,
+    ]
     scratch_shapes += [
         *[pltpu.VMEM((MB, 1, 1, BT, K), q.dtype) for _ in range(3)],
-        pltpu.VMEM((MB, 1, 1, BT, V), v.dtype),
+        pltpu.VMEM(
+            (MB, 1, 1, BT, V), v_new.dtype if v_new is not None else v.dtype
+        ),
         pltpu.VMEM((MB, 1, 1, BT, BT), jnp.float32),
         pltpu.VMEM((MB, 1, 1, BT, V), do.dtype),
     ]
@@ -1576,6 +1783,7 @@ def chunk_kda_bwd_dAv_kernel(
     "max_num_segments",
     "has_initial_state",
     "fuse_backward",
+    "fuse_rematerialization",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1595,6 +1803,7 @@ def chunk_kda_bwd_custom(
         Float[Array, "B H K V"] | Float[Array, "B N H K V"] | None,
     ],
     fuse_backward: bool = True,
+    fuse_rematerialization: bool = False,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
     Float[Array, "H B T_ORIG K"],
@@ -1728,9 +1937,20 @@ def chunk_kda_bwd_custom(
   # ============= assert input shapes and static properties =============
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
-  fuse_saved_state = (
-      fuse_backward and disable_recompute and not _cp_active
-      and K % 128 == 0 and V % 128 == 0
+  fuse_remat = (
+      fuse_rematerialization
+      and fuse_backward
+      and not disable_recompute
+      and not _cp_active
+      and K % 128 == 0
+      and V % 128 == 0
+  )
+  fuse_local_backward = (
+      fuse_backward
+      and (disable_recompute or fuse_remat)
+      and not _cp_active
+      and K % 128 == 0
+      and V % 128 == 0
   )
 
   if disable_recompute:
@@ -1755,7 +1975,7 @@ def chunk_kda_bwd_custom(
       raise ValueError(f"saved h has NT={h.shape[2]}, expected {NT}")
 
     # M1 fusion: recompute w/qg/kg + v_new in one kernel (no u HBM round-trip).
-    if fuse_saved_state:
+    if fuse_local_backward:
       w = qg = kg = v_new = None
     else:
       w, qg, kg, v_new = fused_recompute_w_u_vnew_from_h_pallas(
@@ -1784,38 +2004,44 @@ def chunk_kda_bwd_custom(
       )
       g = g_cumsum  # already [H,B,T,K]
 
-    # recompute_w_u_fwd is natively [H,B,T,X]
-    w, u, qg, kg = _recompute_w_u_fwd(
-      k=k,
-      v=v,
-      beta=beta,
-      A=Akk,
-      q=q,
-      gk=g,
-      chunk_size=BT,
-    )
-    if kg is None:
-      raise RuntimeError("KDA recompute did not produce gated keys.")
+    if fuse_remat:
+      h, v_new = _rematerialize_states_pallas(
+          q, k, v, beta, Akk, g, initial_state, segment_ids, chunk_size=BT
+      )
+      w = u = qg = kg = None
+    else:
+      # recompute_w_u_fwd is natively [H,B,T,X]
+      w, u, qg, kg = _recompute_w_u_fwd(
+          k=k,
+          v=v,
+          beta=beta,
+          A=Akk,
+          q=q,
+          gk=g,
+          chunk_size=BT,
+      )
+      if kg is None:
+        raise RuntimeError("KDA recompute did not produce gated keys.")
 
-    # chunk_gated_delta_rule_fwd_h expects [B,T,H,X]
-    h, v_new, _ = chunk_gated_delta_rule_fwd_h(
-      k=kg,
-      w=w,
-      u=u,
-      gk=g,
-      initial_state=initial_state,
-      output_final_state=False,
-      chunk_size=chunk_size,
-      cu_seqlens=cu_seqlens,
-      chunk_indices=chunk_indices,
-      use_exp2=True,
-    )
-    # Varlen: pad h from NT_total to NT chunks (padding chunks get zero state)
-    if cu_seqlens is not None and h.shape[2] < NT:
-      h = jnp.pad(h, ((0, 0), (0, 0), (0, NT - h.shape[2]), (0, 0), (0, 0)))
+      # chunk_gated_delta_rule_fwd_h expects [B,T,H,X]
+      h, v_new, _ = chunk_gated_delta_rule_fwd_h(
+          k=kg,
+          w=w,
+          u=u,
+          gk=g,
+          initial_state=initial_state,
+          output_final_state=False,
+          chunk_size=chunk_size,
+          cu_seqlens=cu_seqlens,
+          chunk_indices=chunk_indices,
+          use_exp2=True,
+      )
+      # Varlen: pad h from NT_total to NT chunks (padding chunks get zero state)
+      if cu_seqlens is not None and h.shape[2] < NT:
+        h = jnp.pad(h, ((0, 0), (0, 0), (0, NT - h.shape[2]), (0, 0), (0, 0)))
 
   # ---- Stage 1: dAqk and initial dv ----
-  if fuse_saved_state:
+  if fuse_local_backward:
     dAqk = dv = None
   else:
     dAqk, dv = chunk_kda_bwd_dAv_kernel(
@@ -1930,8 +2156,8 @@ def chunk_kda_bwd_custom(
     use_exp2=True,
     return_dh0=initial_state is not None,
     max_num_segments=max_num_segments,
-    fuse_recompute=fuse_saved_state,
-    forward_aqk=Aqk if fuse_saved_state else None,
+    fuse_recompute=fuse_local_backward,
+    forward_aqk=Aqk if fuse_local_backward else None,
   )
 
   dA, dbias = None, None
