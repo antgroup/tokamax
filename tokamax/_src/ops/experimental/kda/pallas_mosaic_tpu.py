@@ -56,12 +56,15 @@ class Config:
   from forward residuals and manually rebuilds them in the custom backward.
   `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
   128-aligned K/V. Other shapes and CP retain the staged implementation.
+  `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
+  state rematerialization and CP retain their existing backward paths.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
   safe_gate: bool | None = None
   rematerialize_for_backward: bool = False
   fuse_forward: bool = True
+  fuse_backward: bool = True
 
 
 def _resolve_safe_gate(
@@ -186,7 +189,7 @@ class PallasMosaicTpuKimiDeltaAttention(
 
   def __post_init__(self):
     if self.vjp is None:
-      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp())
+      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp(config=self.config))
 
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
@@ -521,6 +524,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         initial_state is not None,
         residuals,
         dout,
+        fuse_backward=config.fuse_backward,
     )
 
     grads = {

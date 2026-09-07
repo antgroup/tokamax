@@ -66,7 +66,12 @@ class KdaBenchmark(parameterized.TestCase):
   """Performance benchmarks for the XLA and Mosaic KDA implementations."""
 
   @parameterized.product(
-      implementation=("xla", "mosaic_staged", "mosaic_fused"),
+      implementation=(
+          "xla",
+          "mosaic_staged",
+          "mosaic_fwd_fused",
+          "mosaic_fused",
+      ),
       benchmark_mode=("forward", "forward_and_vjp"),
       args_spec_name=tuple(EXAMPLES.keys()),
   )
@@ -90,7 +95,8 @@ class KdaBenchmark(parameterized.TestCase):
       example.pop("implementation")
       attention = pallas_mosaic_tpu.PallasMosaicTpuKimiDeltaAttention(
           config=pallas_mosaic_tpu.Config(
-              fuse_forward=implementation == "mosaic_fused",
+              fuse_forward=implementation != "mosaic_staged",
+              fuse_backward=implementation == "mosaic_fused",
           )
       )
     fn, args = tokamax.standardize_function(

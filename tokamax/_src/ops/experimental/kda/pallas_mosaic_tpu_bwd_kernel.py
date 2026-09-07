@@ -1065,33 +1065,136 @@ def _fused_dhu_wy_intra_cumsum_kernel(
     dh0_ref[:, 0, 0, :] = dh_tmp_ref[:].astype(dh0_ref.dtype)
 
 
+def _saved_state_backward_kernel(
+    chunk_seg_ids_ref,
+    q_ref,
+    k_ref,
+    v_ref,
+    g_ref,
+    beta_ref,
+    akk_ref,
+    aqk_ref,
+    h_ref,
+    do_ref,
+    dht_ref,
+    dq_ref,
+    dk_ref,
+    dv_ref,
+    db_ref,
+    dg_ref,
+    dh0_ref,
+    dh_ref,
+    w_ref,
+    qg_ref,
+    kg_ref,
+    v_new_ref,
+    dAqk_ref,
+    dv0_ref,
+    *,
+    BT,
+    K,
+    V,
+    NT,
+    scale,
+    MB,
+):
+  """Fuses saved-state recomputation and all local backward stages.
+
+  The bridge refs retain the staged kernels' dtypes, including FP32 dAqk
+  and dv0, so fusion does not change the rounding at their former HBM
+  boundaries. dh_ref persists across the reverse-ordered chunk grid.
+  """
+  _fused_recompute_w_u_vnew_from_h_kernel(
+      k_ref.at[:, 0, 0],
+      v_ref.at[:, 0, 0],
+      beta_ref.at[:, 0, 0, :, 0],
+      akk_ref.at[:, 0, 0],
+      q_ref.at[:, 0, 0],
+      g_ref.at[:, 0, 0],
+      h_ref.at[:, 0, 0],
+      w_ref.at[:, 0, 0],
+      qg_ref.at[:, 0, 0],
+      kg_ref.at[:, 0, 0],
+      v_new_ref.at[:, 0, 0],
+      BT=BT,
+      K=K,
+      V=V,
+      MB=MB,
+  )
+  _chunk_kda_bwd_dAv_kernel(
+      v_new_ref.at[:, 0, 0],
+      aqk_ref.at[:, 0, 0],
+      do_ref.at[:, 0, 0],
+      dAqk_ref.at[:, 0, 0],
+      dv0_ref.at[:, 0, 0],
+      scale=scale,
+      BT=BT,
+      BV=V,
+      NV=1,
+      V=V,
+      MB=MB,
+  )
+  _fused_dhu_wy_intra_cumsum_kernel(
+      chunk_seg_ids_ref,
+      q_ref,
+      k_ref,
+      v_ref,
+      v_new_ref,
+      qg_ref,
+      kg_ref,
+      w_ref,
+      g_ref,
+      beta_ref,
+      akk_ref,
+      h_ref,
+      do_ref,
+      dv0_ref,
+      dAqk_ref,
+      dht_ref,
+      dq_ref,
+      dk_ref,
+      dv_ref,
+      db_ref,
+      dg_ref,
+      dh0_ref,
+      dh_ref,
+      BT=BT,
+      K=K,
+      V=V,
+      NT=NT,
+      scale=scale,
+      MB=MB,
+  )
+
+
 @partial(
-  jax.jit,
-  static_argnames=[
-      "chunk_size",
-      "use_exp2",
-      "scale",
-      "mini_batch",
-      "return_dh0",
-      "max_num_segments",
-  ],
+    jax.jit,
+    static_argnames=[
+        "chunk_size",
+        "use_exp2",
+        "scale",
+        "mini_batch",
+        "return_dh0",
+        "max_num_segments",
+        "fuse_recompute",
+    ],
 )
 @jaxtyping.jaxtyped
 def _fused_dhu_wy_intra_cumsum_pallas_jit(
   q: Float[Array, "H B T K"],
   k: Float[Array, "H B T K"],
   v: Float[Array, "H B T V"],
-  v_new: Float[Array, "H B T V"],
-  qg: Float[Array, "H B T K"],
-  kg: Float[Array, "H B T K"],
-  w: Float[Array, "H B T K"],
+  v_new: Float[Array, "H B T V"] | None,
+  qg: Float[Array, "H B T K"] | None,
+  kg: Float[Array, "H B T K"] | None,
+  w: Float[Array, "H B T K"] | None,
   g: Float[Array, "H B T K"],
   beta: Float[Array, "H B T"],
   A: Float[Array, "H B T BT"],
   h: Float[Array, "H B NT K V"],
   do: Float[Array, "H B T V"],
-  dv0: Float[Array, "H B T V"],
-  dAqk: Float[Array, "H B T BT"],
+  dv0: Float[Array, "H B T V"] | None,
+  dAqk: Float[Array, "H B T BT"] | None,
   dht: Float[Array, "B N H K V"] | None,
   scale: float,
   *,
@@ -1101,6 +1204,8 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
   mini_batch: int | None = None,
   return_dh0: bool = True,
   max_num_segments: int | None = None,
+  fuse_recompute: bool = False,
+  forward_aqk: Float[Array, "H B T BT"] | None = None,
 ) -> tuple[
   Float[Array, "H B T K"],
   Float[Array, "H B T K"],
@@ -1112,7 +1217,9 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
   """Fuses Dhu recurrence, WY backward, intra backward, and gate cumsum.
 
   `segment_ids` applies per-batch varlen boundaries, and `return_dh0`
-  controls whether the initial-state gradient is materialized.
+  controls whether the initial-state gradient is materialized. With
+  `fuse_recompute`, w/qg/kg/v_new/dAqk/dv0 are produced in VMEM from h
+  and forward_aqk rather than read from HBM. Output shapes are unchanged.
   """
   H, B, T, K = q.shape
   V = v.shape[-1]
@@ -1158,22 +1265,28 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     MB = mini_batch
     assert H % MB == 0, f"H={H} must be divisible by mini_batch={MB}"
 
+  if fuse_recompute:
+    if forward_aqk is None or forward_aqk.shape != A.shape:
+      raise ValueError("Fused backward requires forward Aqk matching Akk.")
+    if K % 128 or V % 128 or BT != 64:
+      raise ValueError("Fused backward requires BT=64 and 128-aligned K/V.")
+
   # Keep [H, B, ...] layout; reshape T → (NT, BT) only. No transpose.
   # B is an independent dimension handled by a separate grid axis.
   q_r = q.reshape(H, B, NT, BT, K)
   k_r = k.reshape(H, B, NT, BT, K)
   v_r = v.reshape(H, B, NT, BT, V)
-  vn_r = v_new.reshape(H, B, NT, BT, V)
-  qg_r = qg.reshape(H, B, NT, BT, K)
-  kg_r = kg.reshape(H, B, NT, BT, K)
-  w_r = w.reshape(H, B, NT, BT, K)
+  vn_r = v_new.reshape(H, B, NT, BT, V) if v_new is not None else None
+  qg_r = qg.reshape(H, B, NT, BT, K) if qg is not None else None
+  kg_r = kg.reshape(H, B, NT, BT, K) if kg is not None else None
+  w_r = w.reshape(H, B, NT, BT, K) if w is not None else None
   g_r = g.reshape(H, B, NT, BT, K)
   beta_r = beta.reshape(H, B, NT, BT, 1)
   A_r = A.reshape(H, B, NT, BT, BT)
   h_r = h  # already [H, B, NT, K, V]
   do_r = do.reshape(H, B, NT, BT, V)
-  dv0_r = dv0.reshape(H, B, NT, BT, V)
-  dAqk_r = dAqk.reshape(H, B, NT, BT, BT)
+  dv0_r = dv0.reshape(H, B, NT, BT, V) if dv0 is not None else None
+  dAqk_r = dAqk.reshape(H, B, NT, BT, BT) if dAqk is not None else None
 
   def idx_chunk(head_group, batch, chunk, chunk_seg_ids_ref):
     return (head_group, batch, NT - 1 - chunk, 0, 0)
@@ -1212,31 +1325,35 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     jax.ShapeDtypeStruct((H, B, N, K, V), jnp.float32),
   ]
 
+  in_specs = [qk_spec, qk_spec, v_spec, v_spec, qk_spec, qk_spec,
+              qk_spec, qk_spec, b_spec, A_spec, h_spec, v_spec, v_spec,
+              A_spec, state_spec]
+  kernel_inputs = [q_r, k_r, v_r, vn_r, qg_r, kg_r, w_r, g_r, beta_r,
+                   A_r, h_r, do_r, dv0_r, dAqk_r, dht_arr]
+  scratch_shapes = [dh_tmp]
+  if fuse_recompute:
+    kernel = partial(_saved_state_backward_kernel, BT=BT, K=K, V=V,
+                     NT=NT, scale=scale, MB=MB)
+    in_specs = [qk_spec, qk_spec, v_spec, qk_spec, b_spec, A_spec,
+                A_spec, h_spec, v_spec, state_spec]
+    kernel_inputs = [q_r, k_r, v_r, g_r, beta_r, A_r,
+                     forward_aqk.reshape(H, B, NT, BT, BT), h_r, do_r, dht_arr]
+    scratch_shapes += [
+        *[pltpu.VMEM((MB, 1, 1, BT, K), q.dtype) for _ in range(3)],
+        pltpu.VMEM((MB, 1, 1, BT, V), v.dtype),
+        pltpu.VMEM((MB, 1, 1, BT, BT), jnp.float32),
+        pltpu.VMEM((MB, 1, 1, BT, V), do.dtype),
+    ]
+
   dq_r, dk_r, dv_r, db_r, dg_r, dh0_r = pl.pallas_call(
     kernel,
     out_shape=out_shape,
     grid_spec=pltpu.PrefetchScalarGridSpec(
       num_scalar_prefetch=1,
       grid=(H // MB, B, NT),
-      in_specs=[
-        qk_spec,
-        qk_spec,
-        v_spec,
-        v_spec,
-        qk_spec,
-        qk_spec,
-        qk_spec,
-        qk_spec,
-        b_spec,
-        A_spec,
-        h_spec,
-        v_spec,
-        v_spec,
-        A_spec,
-        state_spec,
-      ],
+      in_specs=in_specs,
       out_specs=[qk_spec, qk_spec, v_spec, b_spec, qk_spec, state_spec],
-      scratch_shapes=[dh_tmp],
+      scratch_shapes=scratch_shapes,
     ),
     compiler_params=pltpu.CompilerParams(
       dimension_semantics=("parallel", "parallel", "arbitrary"),
@@ -1244,24 +1361,7 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
       vmem_limit_bytes=get_tpu_limits().vmem_limit_bytes,
     ),
     interpret=get_interpret(),
-  )(
-    chunk_seg_ids,
-    q_r,
-    k_r,
-    v_r,
-    vn_r,
-    qg_r,
-    kg_r,
-    w_r,
-    g_r,
-    beta_r,
-    A_r,
-    h_r,
-    do_r,
-    dv0_r,
-    dAqk_r,
-    dht_arr,
-  )
+  )(chunk_seg_ids, *kernel_inputs)
 
   dh0_out = dh0_r.transpose(1, 2, 0, 3, 4) if return_dh0 else None
   return (
@@ -1475,6 +1575,7 @@ def chunk_kda_bwd_dAv_kernel(
     "chunk_size",
     "max_num_segments",
     "has_initial_state",
+    "fuse_backward",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1493,6 +1594,7 @@ def chunk_kda_bwd_custom(
         Float[Array, "H B T_ORIG V"],
         Float[Array, "B H K V"] | Float[Array, "B N H K V"] | None,
     ],
+    fuse_backward: bool = True,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
     Float[Array, "H B T_ORIG K"],
@@ -1626,6 +1728,11 @@ def chunk_kda_bwd_custom(
   # ============= assert input shapes and static properties =============
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
+  fuse_saved_state = (
+      fuse_backward and disable_recompute and not _cp_active
+      and K % 128 == 0 and V % 128 == 0
+  )
+
   if disable_recompute:
     # Path A: save-h fast path.
     if use_gate_in_kernel:
@@ -1648,16 +1755,19 @@ def chunk_kda_bwd_custom(
       raise ValueError(f"saved h has NT={h.shape[2]}, expected {NT}")
 
     # M1 fusion: recompute w/qg/kg + v_new in one kernel (no u HBM round-trip).
-    w, qg, kg, v_new = fused_recompute_w_u_vnew_from_h_pallas(
-      q=q,
-      k=k,
-      v=v,
-      beta=beta,
-      A=Akk,
-      g=g,
-      h=h,
-      chunk_size=BT,
-    )
+    if fuse_saved_state:
+      w = qg = kg = v_new = None
+    else:
+      w, qg, kg, v_new = fused_recompute_w_u_vnew_from_h_pallas(
+        q=q,
+        k=k,
+        v=v,
+        beta=beta,
+        A=Akk,
+        g=g,
+        h=h,
+        chunk_size=BT,
+      )
   else:
     # Path B: full recompute fallback.
     if use_gate_in_kernel:
@@ -1705,15 +1815,18 @@ def chunk_kda_bwd_custom(
       h = jnp.pad(h, ((0, 0), (0, 0), (0, NT - h.shape[2]), (0, 0), (0, 0)))
 
   # ---- Stage 1: dAqk and initial dv ----
-  dAqk, dv = chunk_kda_bwd_dAv_kernel(
-    q=q,
-    k=k,
-    v=v_new,
-    do=do,
-    A=Aqk,
-    scale=scale,
-    chunk_size=chunk_size,
-  )
+  if fuse_saved_state:
+    dAqk = dv = None
+  else:
+    dAqk, dv = chunk_kda_bwd_dAv_kernel(
+      q=q,
+      k=k,
+      v=v_new,
+      do=do,
+      A=Aqk,
+      scale=scale,
+      chunk_size=chunk_size,
+    )
 
   if _cp_active:
     assert context_parallel_metadata is not None
@@ -1817,6 +1930,8 @@ def chunk_kda_bwd_custom(
     use_exp2=True,
     return_dh0=initial_state is not None,
     max_num_segments=max_num_segments,
+    fuse_recompute=fuse_saved_state,
+    forward_aqk=Aqk if fuse_saved_state else None,
   )
 
   dA, dbias = None, None
