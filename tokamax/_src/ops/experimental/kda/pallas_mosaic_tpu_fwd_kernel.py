@@ -36,6 +36,7 @@ from tokamax._src.ops.experimental.kda.cp_utils import (
   _merge_initial_state,
   all_gather_into_tensor,
 )
+from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_output import compact_output
 from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_types import KdaResiduals
 from tokamax._src.ops.experimental.kda.utils import (
   _unalign_output,
@@ -1848,6 +1849,7 @@ def chunk_kda_fwd_custom(
     q_rstd: Float[Array, "H B T_ALIGNED"] | None = None,
     k_rstd: Float[Array, "H B T_ALIGNED"] | None = None,
     fuse_forward: bool = True,
+    packed_output: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
 ) -> tuple[
     tuple[
@@ -2011,7 +2013,8 @@ def chunk_kda_fwd_custom(
   if aligned_cu_seqlens is not None:
     if segment_ids is None:
       raise ValueError("Aligned varlen metadata requires `segment_ids`.")
-    output = _unalign_output(
+    compact = compact_output if packed_output and not _cp_active else _unalign_output
+    output = compact(
         output,
         cu_seqlens,
         aligned_cu_seqlens,
