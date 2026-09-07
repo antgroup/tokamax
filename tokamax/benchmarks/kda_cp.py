@@ -33,9 +33,9 @@ from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu as mosaic
 class KdaCpBenchmark(parameterized.TestCase):
 
   @parameterized.product(
-      cp_size=(2, 4), fused=(False, True), remat=(False, True)
+      cp_size=(2, 4), mode=("staged", "local", "mega"), remat=(False, True)
   )
-  def test_forward_and_vjp(self, cp_size, fused, remat):
+  def test_forward_and_vjp(self, cp_size, mode, remat):
     if jax.default_backend() != "tpu" or jax.device_count() < cp_size:
       self.skipTest("Requires sufficient TPU devices")
     mesh = jax.sharding.Mesh(np.array(jax.devices()[:cp_size]), ("context",))
@@ -44,9 +44,10 @@ class KdaCpBenchmark(parameterized.TestCase):
     beta_spec = jax.sharding.PartitionSpec(None, None, "context")
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
-            fuse_cp_backward=fused,
+            fuse_cp_backward=mode == "local",
+            cp_megakernel=mode == "mega",
             rematerialize_for_backward=remat,
-            fuse_rematerialization=fused and remat,
+            fuse_rematerialization=mode != "staged" and remat,
         )
     )
 
@@ -79,10 +80,10 @@ class KdaCpBenchmark(parameterized.TestCase):
     with jaxtyping.disable_jaxtyping(), jax.set_mesh(mesh):
       result = tokamax.benchmark(fn, args)
     logging.info(
-        "device_kind=%s cp_size=%s fuse_cp_backward=%s remat=%s median_time_ms=%s",
+        "device_kind=%s cp_size=%s mode=%s remat=%s median_time_ms=%s",
         jax.devices()[0].device_kind,
         cp_size,
-        fused,
+        mode,
         remat,
         result.median_evaluation_time_ms,
     )
