@@ -71,6 +71,7 @@ class KdaBenchmark(parameterized.TestCase):
           "mosaic_staged",
           "mosaic_fwd_fused",
           "mosaic_packed_inputs",
+          "mosaic_packed_outputs",
       ),
       benchmark_mode=("forward", "forward_and_vjp"),
       args_spec_name=tuple(EXAMPLES.keys()),
@@ -96,7 +97,9 @@ class KdaBenchmark(parameterized.TestCase):
       attention = pallas_mosaic_tpu.PallasMosaicTpuKimiDeltaAttention(
           config=pallas_mosaic_tpu.Config(
               fuse_forward=implementation != "mosaic_staged",
-              packed_forward=implementation == "mosaic_packed_inputs",
+              packed_forward=implementation
+              in ("mosaic_packed_inputs", "mosaic_packed_outputs"),
+              packed_output=implementation == "mosaic_packed_outputs",
           )
       )
     fn, args = tokamax.standardize_function(

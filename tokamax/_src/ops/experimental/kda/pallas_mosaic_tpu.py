@@ -58,6 +58,8 @@ class Config:
   128-aligned K/V. Other shapes and CP retain the staged implementation.
   `packed_forward=True` reads non-CP packed input windows directly while
   retaining aligned outputs and backward residuals. It requires fused forward.
+  `packed_output=True` uses Pallas output compaction when its full head-group
+  buffers fit VMEM; other shapes retain gather. It is independently opt-in.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
@@ -66,6 +68,7 @@ class Config:
   fuse_forward: bool = True
   # Opt-in until TPU lowering, allocation and device-time validation completes.
   packed_forward: bool = False
+  packed_output: bool = False
 
 
 def _resolve_safe_gate(
@@ -450,6 +453,7 @@ class PallasMosaicTpuKimiDeltaAttention(
         disable_recompute=save_intermediates_for_backward,
         fuse_forward=config.fuse_forward,
         packed_inputs=packed_inputs,
+        packed_output=config.packed_output,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
         return_residuals=return_residuals,
