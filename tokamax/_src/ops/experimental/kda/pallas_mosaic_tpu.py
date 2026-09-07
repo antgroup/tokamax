@@ -57,7 +57,8 @@ class Config:
   `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
   128-aligned K/V. Other shapes and CP retain the staged implementation.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
-  state rematerialization and CP retain their existing backward paths.
+  state rematerialization is fused separately with `fuse_rematerialization=True`;
+  CP retains its existing backward path.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
@@ -65,6 +66,8 @@ class Config:
   rematerialize_for_backward: bool = False
   fuse_forward: bool = True
   fuse_backward: bool = True
+  # Opt-in until TPU compilation and device-time validation completes.
+  fuse_rematerialization: bool = False
 
 
 def _resolve_safe_gate(
@@ -525,6 +528,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         residuals,
         dout,
         fuse_backward=config.fuse_backward,
+        fuse_rematerialization=config.fuse_rematerialization,
     )
 
     grads = {
