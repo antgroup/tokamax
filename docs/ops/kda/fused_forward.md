@@ -66,17 +66,10 @@ fixed/packed inputs, initial/final state, empty state slots, normalization,
 gate activation, and both rematerialization settings. The existing KDA
 kernel suite continues to compare Mosaic with XLA, including CP fallbacks.
 
-CPU interpretation exposes a pre-existing limitation of the staged packed
-raw-gate backward: unwritten padding values can propagate into a_log/bias
-gradient reductions; padding-token and empty-slot gradients can also be
-non-finite. The focused tests follow the existing suite's gradient comparison
-domain (valid tokens and occupied state slots), not a validation of empty-slot
-gradient semantics. They check forward and valid token/state
-gradients first, then explicitly xfail the affected CPU cases when the
-staged parameter gradients are non-finite. These cases are not xfailed on
-TPU and must pass before the change is ready. Fixed-length raw-gate tests
-also compare finite parameter gradients with XLA autodiff. This PR does not
-change backward padding semantics to work around that baseline limitation.
+The separate [packed backward correctness fix](packed_gradients.md) resolves
+non-finite padding and empty-state gradients found during CPU interpretation.
+The focused suite now compares full gradients, including padding, empty
+states, and gate parameters; the former CPU xfails have been removed.
 
 ```bash
 python -m pytest tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_fwd_fused_test.py -v
@@ -101,7 +94,7 @@ Windows CPU, Python 3.12.14, JAX/JAXLIB 0.11.1:
 - KDA API/adapter tests: 36 passed, 9 subtests passed.
 - CI shard consistency and its 53 unit tests passed.
 
-TPU lowering, device correctness (including the CPU-xfailed cases), VMEM
+TPU lowering, device correctness, VMEM
 allocation, and staged/fused device-time measurements remain pending.
 No speedup is claimed from the CPU tests. Keep the PR in draft until these
 checks have completed; adjust the fused dispatch heuristic if measured
