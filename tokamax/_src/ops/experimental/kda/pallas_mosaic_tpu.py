@@ -60,6 +60,8 @@ class Config:
   retaining aligned outputs and backward residuals. It requires fused forward.
   `packed_output=True` uses Pallas output compaction when its full head-group
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
+  `packed_backward=True` reads original packed Q/K/V/beta in the non-CP
+  fused reverse pass; aligned gradient outputs and residuals are retained.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
   CP retains its existing backward path.
@@ -72,6 +74,7 @@ class Config:
   # Opt-in until TPU lowering, allocation and device-time validation completes.
   packed_forward: bool = False
   packed_output: bool = False
+  packed_backward: bool = False
   fuse_backward: bool = True
   # Opt-in until TPU compilation and device-time validation completes.
   fuse_rematerialization: bool = False
@@ -520,15 +523,31 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       return_residuals: bool,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
-    # Tokamax's VJP contract replays the original inputs here, but the backward
-    # kernel consumes the aligned and optionally L2-normalized copies retained
-    # in `residuals`. Reusing these arguments would skip that preprocessing.
-    del out, query, key, value, gate, beta, output_final_state, return_residuals
+    # Packed loading normalizes the replayed original Q/K explicitly. The
+    # aligned residuals still supply gate prefixes and normalization backward.
+    del out, gate, output_final_state, return_residuals
     chunk_size = config.chunk_size
     # The forward residual set records the selected policy: a retained hidden
     # state means backward can use the saved-state path; otherwise it must
     # rematerialize the forward state recurrence.
     use_saved_state = residuals.h is not None
+
+    packed_inputs = None
+    if (
+        config.packed_backward
+        and config.fuse_backward
+        and (use_saved_state or config.fuse_rematerialization)
+        and residuals.cu_seqlens is not None
+        and not (
+            context_parallel_metadata is not None
+            and context_parallel_metadata.is_cp_enabled
+        )
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+    ):
+      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
+      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      packed_inputs = (packed_q, packed_k, value, beta)
 
     (
         dq,
@@ -554,6 +573,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         dout,
         fuse_backward=config.fuse_backward,
         fuse_rematerialization=config.fuse_rematerialization,
+        packed_inputs=packed_inputs,
     )
 
     grads = {
