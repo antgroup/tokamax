@@ -73,6 +73,7 @@ class KdaBenchmark(parameterized.TestCase):
           "mosaic_fused",
           "mosaic_packed_inputs",
           "mosaic_packed_outputs",
+          "mosaic_packed_backward",
           "mosaic_remat",
           "mosaic_remat_fused",
       ),
@@ -105,12 +106,19 @@ class KdaBenchmark(parameterized.TestCase):
                   "mosaic_fused",
                   "mosaic_packed_inputs",
                   "mosaic_packed_outputs",
+                  "mosaic_packed_backward",
                   "mosaic_remat",
                   "mosaic_remat_fused",
               ),
               packed_forward=implementation
-              in ("mosaic_packed_inputs", "mosaic_packed_outputs"),
-              packed_output=implementation == "mosaic_packed_outputs",
+              in (
+                  "mosaic_packed_inputs",
+                  "mosaic_packed_outputs",
+                  "mosaic_packed_backward",
+              ),
+              packed_output=implementation
+              in ("mosaic_packed_outputs", "mosaic_packed_backward"),
+              packed_backward=implementation == "mosaic_packed_backward",
               rematerialize_for_backward=implementation.startswith(
                   "mosaic_remat"
               ),
