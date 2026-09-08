@@ -1264,7 +1264,8 @@ def _saved_state_backward_kernel(
   boundaries. dh_ref persists across the reverse-ordered chunk grid.
   """
   if rematerialized_v_new_ref is not None:
-    # Preserve FP32 v_new from the running state, not the rounded h snapshot.
+    # Preserve supplied v_new: FP32 running-state values during rematerialization
+    # or the pre-collective saved-path values during CP backward.
     # Only WY weights and gated Q/K are needed in this reverse pass.
     q = q_ref[:, 0, 0]
     k = k_ref[:, 0, 0]
@@ -1699,13 +1700,14 @@ def _chunk_kda_bwd_dAv_kernel(
     b_do_blk = bdo[:, :, vs:ve]  # [MB, BT, BV]
 
     # dA += do @ v^T — contract BV (dim 2), batch MB (dim 0)
-    b_dA += jax.lax.dot_general(
-      b_do_blk,
-      b_v_blk,
-      (((2,), (2,)), ((0,), (0,))),
-      precision=precision,
-      preferred_element_type=jnp.float32,
-    )
+    if dA_ref is not None:
+      b_dA += jax.lax.dot_general(
+        b_do_blk,
+        b_v_blk,
+        (((2,), (2,)), ((0,), (0,))),
+        precision=precision,
+        preferred_element_type=jnp.float32,
+      )
 
     # dv = A^T @ do — contract BT_row (dim 1), batch MB (dim 0)
     b_dv_blk = jax.lax.dot_general(
@@ -1722,7 +1724,8 @@ def _chunk_kda_bwd_dAv_kernel(
   # Apply causal mask and scale
   b_dA = jnp.where(m_causal[None, :, :], b_dA * scale, 0.0)
 
-  dA_ref[:] = b_dA
+  if dA_ref is not None:
+    dA_ref[:] = b_dA
   dv_ref[:] = b_dv.astype(do_ref.dtype)
 
 
@@ -1733,6 +1736,7 @@ def _chunk_kda_bwd_dAv_kernel(
     "scale",
     "block_V",
     "mini_batch",
+    "store_dAqk",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1746,14 +1750,16 @@ def chunk_kda_bwd_dAv_kernel(
   chunk_size: int = 64,
   block_V: int | None = None,
   mini_batch: int | None = None,
+  store_dAqk: bool = True,
 ) -> tuple[
-    Float[Array, "H B T BT"],
+    Float[Array, "H B T BT"] | None,
     Float[Array, "H B T V"],
 ]:
   """Computes attention and value gradients with a tiled Pallas kernel.
 
   `block_V` controls value-dimension tiling; `mini_batch` controls the
-  flattened chunks processed by each program.
+  flattened chunks processed by each program. With `store_dAqk=False`,
+  only value gradients are computed; the first returned value is None.
   """
   H, B, T, K = q.shape
   V = v.shape[-1]
@@ -1796,12 +1802,12 @@ def chunk_kda_bwd_dAv_kernel(
   ]
 
   out_specs = [
-    _spec3(BT, BT),  # dA
+    _spec3(BT, BT) if store_dAqk else None,  # dA
     _spec3(BT, V),   # dv
   ]
 
   out_shape = [
-    jax.ShapeDtypeStruct((total, BT, BT), jnp.float32),
+    jax.ShapeDtypeStruct((total, BT, BT), jnp.float32) if store_dAqk else None,
     jax.ShapeDtypeStruct((total, BT, V), do.dtype),
   ]
 
@@ -1838,7 +1844,7 @@ def chunk_kda_bwd_dAv_kernel(
   def _ir(x, d):
     return x.reshape(H, B, T, d)
 
-  return _ir(dA_r, BT), _ir(dv_r, V)
+  return _ir(dA_r, BT) if dA_r is not None else None, _ir(dv_r, V)
 
 
 # =====================================================================
@@ -1860,6 +1866,8 @@ def chunk_kda_bwd_dAv_kernel(
     "fuse_backward",
     "fuse_rematerialization",
     "packed_gradients",
+    "fuse_cp_backward",
+    "cp_megakernel",
   ],
 )
 @jaxtyping.jaxtyped
@@ -1881,6 +1889,8 @@ def chunk_kda_bwd_custom(
     fuse_backward: bool = True,
     fuse_rematerialization: bool = False,
     packed_gradients: bool = False,
+    fuse_cp_backward: bool = False,
+    cp_megakernel: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
@@ -2015,231 +2025,261 @@ def chunk_kda_bwd_custom(
   # ============= assert input shapes and static properties =============
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
-  fuse_remat = (
-      fuse_rematerialization
-      and fuse_backward
-      and not disable_recompute
-      and not _cp_active
-      and K % 128 == 0
-      and V % 128 == 0
-  )
-  fuse_local_backward = (
-      fuse_backward
-      and (disable_recompute or fuse_remat)
-      and not _cp_active
-      and K % 128 == 0
-      and V % 128 == 0
-  )
-
-  if disable_recompute:
-    # Path A: save-h fast path.
+  if cp_megakernel and _cp_active and K % 128 == 0 and V % 128 == 0:
+    from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu_cp_megakernel as mega
     if use_gate_in_kernel:
-      if a_log is None:
-        raise ValueError("a_log is required when use_gate_in_kernel=True")
-      assert g_org is not None
-      g_cumsum = kda_gate_chunk_cumsum(
-        g=g_org,
-        a_log=a_log,
-        chunk_size=BT,
-        scale=RCP_LN2,
-        delta_time_bias=delta_time_bias,
-        lower_bound=lower_bound,
+      g = kda_gate_chunk_cumsum(
+          g=g_org, a_log=a_log, chunk_size=BT, scale=RCP_LN2,
+          delta_time_bias=delta_time_bias, lower_bound=lower_bound,
       )
-      g = g_cumsum  # already [H,B,T,K]
-
-    if h is None:
-      raise ValueError("saved h is required when recompute is disabled")
-    if h.shape[2] != NT:
-      raise ValueError(f"saved h has NT={h.shape[2]}, expected {NT}")
-
-    # M1 fusion: recompute w/qg/kg + v_new in one kernel (no u HBM round-trip).
-    if fuse_local_backward:
-      w = qg = kg = v_new = None
-    else:
-      w, qg, kg, v_new = fused_recompute_w_u_vnew_from_h_pallas(
-        q=q,
-        k=k,
-        v=v,
-        beta=beta,
-        A=Akk,
-        g=g,
-        h=h,
-        chunk_size=BT,
-      )
+    dq, dk, dv, db, dg, dh0 = mega.chunk_kda_bwd_fusion(
+        q, k, v, beta, Aqk, Akk, g, h, do, dht, initial_state, scale,
+        segment_ids=segment_ids, chunk_size=BT, disable_recompute=disable_recompute,
+        cp_active=True, cp_context=context_parallel_metadata,
+        cp_size=context_parallel_metadata.cp_size,
+        cp_axis_name=context_parallel_metadata.axis_name,
+        N_MAX=max_num_segments, return_dh0=False,
+        has_initial_state=initial_state is not None,
+    )
+    initial_state = None
   else:
-    # Path B: full recompute fallback.
-    if use_gate_in_kernel:
-      if a_log is None:
-        raise ValueError("a_log is required when use_gate_in_kernel=True")
-      assert g_org is not None
-      g_cumsum = kda_gate_chunk_cumsum(
-        g=g_org,
-        a_log=a_log,
-        chunk_size=BT,
-        scale=RCP_LN2,
-        delta_time_bias=delta_time_bias,
-        lower_bound=lower_bound,
-      )
-      g = g_cumsum  # already [H,B,T,K]
+    # CP still needs w/qg/kg and dv before its state-gradient collective.
+    # Rematerialization retains CP state reconstruction before that barrier.
+    fuse_cp_local = (
+        fuse_cp_backward
+        and fuse_backward
+        and (disable_recompute or fuse_rematerialization)
+        and _cp_active
+        and K % 128 == 0
+        and V % 128 == 0
+    )
+    fuse_remat = (
+        fuse_rematerialization
+        and fuse_backward
+        and not disable_recompute
+        and not _cp_active
+        and K % 128 == 0
+        and V % 128 == 0
+    )
+    fuse_local_backward = (
+        fuse_backward
+        and (disable_recompute or fuse_remat)
+        and not _cp_active
+        and K % 128 == 0
+        and V % 128 == 0
+    )
 
-    if fuse_remat:
-      h, v_new = _rematerialize_states_pallas(
-          q, k, v, beta, Akk, g, initial_state, segment_ids, chunk_size=BT
-      )
-      w = u = qg = kg = None
-    else:
-      # recompute_w_u_fwd is natively [H,B,T,X]
-      w, u, qg, kg = _recompute_w_u_fwd(
+    if disable_recompute:
+      # Path A: save-h fast path.
+      if use_gate_in_kernel:
+        if a_log is None:
+          raise ValueError("a_log is required when use_gate_in_kernel=True")
+        assert g_org is not None
+        g_cumsum = kda_gate_chunk_cumsum(
+          g=g_org,
+          a_log=a_log,
+          chunk_size=BT,
+          scale=RCP_LN2,
+          delta_time_bias=delta_time_bias,
+          lower_bound=lower_bound,
+        )
+        g = g_cumsum  # already [H,B,T,K]
+
+      if h is None:
+        raise ValueError("saved h is required when recompute is disabled")
+      if h.shape[2] != NT:
+        raise ValueError(f"saved h has NT={h.shape[2]}, expected {NT}")
+
+      # M1 fusion: recompute w/qg/kg + v_new in one kernel (no u HBM round-trip).
+      if fuse_local_backward:
+        w = qg = kg = v_new = None
+      else:
+        w, qg, kg, v_new = fused_recompute_w_u_vnew_from_h_pallas(
+          q=q,
           k=k,
           v=v,
           beta=beta,
           A=Akk,
-          q=q,
-          gk=g,
+          g=g,
+          h=h,
           chunk_size=BT,
-      )
-      if kg is None:
-        raise RuntimeError("KDA recompute did not produce gated keys.")
+        )
+    else:
+      # Path B: full recompute fallback.
+      if use_gate_in_kernel:
+        if a_log is None:
+          raise ValueError("a_log is required when use_gate_in_kernel=True")
+        assert g_org is not None
+        g_cumsum = kda_gate_chunk_cumsum(
+          g=g_org,
+          a_log=a_log,
+          chunk_size=BT,
+          scale=RCP_LN2,
+          delta_time_bias=delta_time_bias,
+          lower_bound=lower_bound,
+        )
+        g = g_cumsum  # already [H,B,T,K]
 
-      # chunk_gated_delta_rule_fwd_h expects [B,T,H,X]
-      h, v_new, _ = chunk_gated_delta_rule_fwd_h(
-          k=kg,
-          w=w,
-          u=u,
-          gk=g,
-          initial_state=initial_state,
-          output_final_state=False,
-          chunk_size=chunk_size,
-          cu_seqlens=cu_seqlens,
-          chunk_indices=chunk_indices,
-          use_exp2=True,
-      )
-      # Varlen: pad h from NT_total to NT chunks (padding chunks get zero state)
-      if cu_seqlens is not None and h.shape[2] < NT:
-        h = jnp.pad(h, ((0, 0), (0, 0), (0, NT - h.shape[2]), (0, 0), (0, 0)))
+      if fuse_remat:
+        h, v_new = _rematerialize_states_pallas(
+            q, k, v, beta, Akk, g, initial_state, segment_ids, chunk_size=BT
+        )
+        w = u = qg = kg = None
+      else:
+        # recompute_w_u_fwd is natively [H,B,T,X]
+        w, u, qg, kg = _recompute_w_u_fwd(
+            k=k,
+            v=v,
+            beta=beta,
+            A=Akk,
+            q=q,
+            gk=g,
+            chunk_size=BT,
+        )
+        if kg is None:
+          raise RuntimeError("KDA recompute did not produce gated keys.")
 
-  # ---- Stage 1: dAqk and initial dv ----
-  if fuse_local_backward:
-    dAqk = dv = None
-  else:
-    dAqk, dv = chunk_kda_bwd_dAv_kernel(
+        # chunk_gated_delta_rule_fwd_h expects [B,T,H,X]
+        h, v_new, _ = chunk_gated_delta_rule_fwd_h(
+            k=kg,
+            w=w,
+            u=u,
+            gk=g,
+            initial_state=initial_state,
+            output_final_state=False,
+            chunk_size=chunk_size,
+            cu_seqlens=cu_seqlens,
+            chunk_indices=chunk_indices,
+            use_exp2=True,
+        )
+        # Varlen: pad h from NT_total to NT chunks (padding chunks get zero state)
+        if cu_seqlens is not None and h.shape[2] < NT:
+          h = jnp.pad(h, ((0, 0), (0, 0), (0, NT - h.shape[2]), (0, 0), (0, 0)))
+
+    # ---- Stage 1: dAqk and initial dv ----
+    if fuse_local_backward:
+      dAqk = dv = None
+    else:
+      dAqk, dv = chunk_kda_bwd_dAv_kernel(
+        q=q,
+        k=k,
+        v=v_new,
+        do=do,
+        A=Aqk,
+        scale=scale,
+        chunk_size=chunk_size,
+        store_dAqk=not fuse_cp_local,
+      )
+
+    if _cp_active:
+      assert context_parallel_metadata is not None
+      if segment_ids is None:
+        raise ValueError("backward CP requires rank-local segment_ids")
+      if context_parallel_metadata.post_num_ranks is None:
+        raise ValueError("backward CP requires post_num_ranks")
+      if context_parallel_metadata.is_last_rank is None:
+        raise ValueError("backward CP requires is_last_rank")
+      # pre_process requires segment_ids length == aligned T (q.shape[2]).
+      # Caller's segment_ids is un-aligned (length T_orig); pad with 0
+      # (= padding seg id, OOB chunks naturally inactive).
+      if segment_ids.ndim == 1:
+        segment_ids = segment_ids[None,]
+      T_seg = segment_ids.shape[-1]
+      if T_seg < T:
+        pad_width = ((0, 0), (0, T - T_seg))
+        segment_ids = jnp.pad(segment_ids, pad_width)
+      elif T_seg > T:
+        segment_ids = segment_ids[..., :T]
+      # Inputs already in [H, B, T, X]; pre_process consumes this layout
+      # directly (no transpose round-trip).
+      dS_ext, dM = chunk_gated_delta_rule_bwd_dhu_pre_process(
+        q=qg,
+        k=kg,
+        w=w,
+        do=do,
+        dv=dv,
+        gk=g,
+        scale=scale,
+        segment_ids=segment_ids,
+        chunk_size=BT,
+        use_exp2=True,
+      )
+      # Pack dS_ext [B,H,K,V] and dM [B,H,K,K] into one tensor along the last
+      # axis so a single all_gather covers both, halving the CP collective cost.
+      packed = jnp.concatenate([dS_ext, dM], axis=-1)  # [B, H, K, V+K]
+      packed_all, _ = all_gather_into_tensor(packed, context_parallel_metadata.axis_name)
+      dS_ext_all = packed_all[..., :V]                  # [cp, B, H, K, V]
+      dM_all = packed_all[..., V:V + K]                 # [cp, B, H, K, K]
+      rank = jax.lax.axis_index(context_parallel_metadata.axis_name)
+      post_num = jnp.asarray(context_parallel_metadata.post_num_ranks)
+      is_last = jnp.asarray(context_parallel_metadata.is_last_rank)
+      ds_list = []
+      for b in range(B):
+        ds_b = _merge_dht(
+          dS_ext_all[:, b:b+1],  # [cp, 1, H, K, V]
+          dM_all[:, b:b+1],      # [cp, 1, H, K, K]
+          rank=rank,
+          post_num_ranks=post_num[b],
+          is_last_rank=is_last[b],
+        )
+        ds_list.append(ds_b)  # [1, H, K, V]
+      dS_in = jnp.concatenate(ds_list, axis=0)  # [B, H, K, V]
+
+      # dS_in: [B, H, K, V] — merged downstream gradient for each batch element.
+      # M4 expects dht as [B, N, H, K, V] with per-batch segment indexing.
+      # dS_in[b] goes to slot (last_seg_id_b - 1) in its own N dimension.
+      assert max_num_segments is not None
+      N = max_num_segments
+      dht = jnp.zeros((B, N, H, K, V), dtype=jnp.float32)
+      max_per_batch = jnp.max(segment_ids, axis=1)  # [B]
+      for b in range(B):
+        last_seg_id_b = max_per_batch[b]
+        has_real_b = last_seg_id_b > 0
+        dht_slot = jnp.maximum(last_seg_id_b - 1, 0)
+        dht_slot = jnp.minimum(dht_slot, N - 1)
+        dht_value_b = jnp.where(has_real_b, dS_in[b], jnp.zeros_like(dS_in[b]))
+        dht = dht.at[b, dht_slot, :, :, :].set(dht_value_b)
+      initial_state = None
+
+    # M4 requires 2D segment_ids [B, T]
+    if segment_ids is not None and segment_ids.ndim == 1:
+      segment_ids = segment_ids[None,]
+
+    # ---- Stage 2+3+4+5: M4 mega fusion (dhu + WY + intra + cumsum) ----
+    # M4 expects dht as [B, N, H, K, V].
+    # Normalize 4D dht to 5D (uniform: insert N=1 at dim1).
+    if dht is not None and dht.ndim == 4 and segment_ids is None:
+      dht = dht[:, None, :, :, :]
+    dht_m4 = dht
+    fuse_reverse = fuse_local_backward or fuse_cp_local
+    dq, dk, dv, db, dg, dh0 = _fused_dhu_wy_intra_cumsum_pallas_jit(
       q=q,
       k=k,
-      v=v_new,
-      do=do,
-      A=Aqk,
-      scale=scale,
-      chunk_size=chunk_size,
-    )
-
-  if _cp_active:
-    assert context_parallel_metadata is not None
-    if segment_ids is None:
-      raise ValueError("backward CP requires rank-local segment_ids")
-    if context_parallel_metadata.post_num_ranks is None:
-      raise ValueError("backward CP requires post_num_ranks")
-    if context_parallel_metadata.is_last_rank is None:
-      raise ValueError("backward CP requires is_last_rank")
-    # pre_process requires segment_ids length == aligned T (q.shape[2]).
-    # Caller's segment_ids is un-aligned (length T_orig); pad with 0
-    # (= padding seg id, OOB chunks naturally inactive).
-    if segment_ids.ndim == 1:
-      segment_ids = segment_ids[None,]
-    T_seg = segment_ids.shape[-1]
-    if T_seg < T:
-      pad_width = ((0, 0), (0, T - T_seg))
-      segment_ids = jnp.pad(segment_ids, pad_width)
-    elif T_seg > T:
-      segment_ids = segment_ids[..., :T]
-    # Inputs already in [H, B, T, X]; pre_process consumes this layout
-    # directly (no transpose round-trip).
-    dS_ext, dM = chunk_gated_delta_rule_bwd_dhu_pre_process(
-      q=qg,
-      k=kg,
+      v=v,
+      v_new=v_new,
+      qg=qg,
+      kg=kg,
       w=w,
+      g=g,
+      beta=beta,
+      A=Akk,
+      h=h,
       do=do,
-      dv=dv,
-      gk=g,
+      dv0=dv,
+      dAqk=dAqk,
+      dht=dht_m4,
       scale=scale,
       segment_ids=segment_ids,
-      chunk_size=BT,
+      chunk_size=chunk_size,
       use_exp2=True,
+      return_dh0=initial_state is not None,
+      max_num_segments=max_num_segments,
+      fuse_recompute=fuse_reverse,
+      forward_aqk=Aqk if fuse_reverse else None,
+      packed_inputs=packed_inputs if fuse_local_backward else None,
+      original_cu_seqlens=original_cu_seqlens,
+      aligned_cu_seqlens=aligned_cu,
     )
-    # Pack dS_ext [B,H,K,V] and dM [B,H,K,K] into one tensor along the last
-    # axis so a single all_gather covers both, halving the CP collective cost.
-    packed = jnp.concatenate([dS_ext, dM], axis=-1)  # [B, H, K, V+K]
-    packed_all, _ = all_gather_into_tensor(packed, context_parallel_metadata.axis_name)
-    dS_ext_all = packed_all[..., :V]                  # [cp, B, H, K, V]
-    dM_all = packed_all[..., V:V + K]                 # [cp, B, H, K, K]
-    rank = jax.lax.axis_index(context_parallel_metadata.axis_name)
-    post_num = jnp.asarray(context_parallel_metadata.post_num_ranks)
-    is_last = jnp.asarray(context_parallel_metadata.is_last_rank)
-    ds_list = []
-    for b in range(B):
-      ds_b = _merge_dht(
-        dS_ext_all[:, b:b+1],  # [cp, 1, H, K, V]
-        dM_all[:, b:b+1],      # [cp, 1, H, K, K]
-        rank=rank,
-        post_num_ranks=post_num[b],
-        is_last_rank=is_last[b],
-      )
-      ds_list.append(ds_b)  # [1, H, K, V]
-    dS_in = jnp.concatenate(ds_list, axis=0)  # [B, H, K, V]
-
-    # dS_in: [B, H, K, V] — merged downstream gradient for each batch element.
-    # M4 expects dht as [B, N, H, K, V] with per-batch segment indexing.
-    # dS_in[b] goes to slot (last_seg_id_b - 1) in its own N dimension.
-    assert max_num_segments is not None
-    N = max_num_segments
-    dht = jnp.zeros((B, N, H, K, V), dtype=jnp.float32)
-    max_per_batch = jnp.max(segment_ids, axis=1)  # [B]
-    for b in range(B):
-      last_seg_id_b = max_per_batch[b]
-      has_real_b = last_seg_id_b > 0
-      dht_slot = jnp.maximum(last_seg_id_b - 1, 0)
-      dht_slot = jnp.minimum(dht_slot, N - 1)
-      dht_value_b = jnp.where(has_real_b, dS_in[b], jnp.zeros_like(dS_in[b]))
-      dht = dht.at[b, dht_slot, :, :, :].set(dht_value_b)
-    initial_state = None
-
-  # M4 requires 2D segment_ids [B, T]
-  if segment_ids is not None and segment_ids.ndim == 1:
-    segment_ids = segment_ids[None,]
-
-  # ---- Stage 2+3+4+5: M4 mega fusion (dhu + WY + intra + cumsum) ----
-  # M4 expects dht as [B, N, H, K, V].
-  # Normalize 4D dht to 5D (uniform: insert N=1 at dim1).
-  if dht is not None and dht.ndim == 4 and segment_ids is None:
-    dht = dht[:, None, :, :, :]
-  dht_m4 = dht
-  dq, dk, dv, db, dg, dh0 = _fused_dhu_wy_intra_cumsum_pallas_jit(
-    q=q,
-    k=k,
-    v=v,
-    v_new=v_new,
-    qg=qg,
-    kg=kg,
-    w=w,
-    g=g,
-    beta=beta,
-    A=Akk,
-    h=h,
-    do=do,
-    dv0=dv,
-    dAqk=dAqk,
-    dht=dht_m4,
-    scale=scale,
-    segment_ids=segment_ids,
-    chunk_size=chunk_size,
-    use_exp2=True,
-    return_dh0=initial_state is not None,
-    max_num_segments=max_num_segments,
-    fuse_recompute=fuse_local_backward,
-    forward_aqk=Aqk if fuse_local_backward else None,
-    packed_inputs=packed_inputs if fuse_local_backward else None,
-    original_cu_seqlens=original_cu_seqlens,
-    aligned_cu_seqlens=aligned_cu,
-  )
 
   # Invalid aligned tokens do not participate in the recurrence. Mask before
   # gate-parameter reductions: padding scratch can be unwritten, and the raw

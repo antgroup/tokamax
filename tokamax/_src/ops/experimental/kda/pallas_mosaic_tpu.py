@@ -66,7 +66,11 @@ class Config:
   normalization backward; beta retains its existing gather.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
-  CP retains its existing backward path.
+  `fuse_cp_backward=True` fuses the saved-state local reverse pass after
+  CP communication. With `fuse_rematerialization=True`, this also applies
+  to CP rematerialization, preserving its staged state reconstruction.
+  `cp_megakernel=True` selects the full CP core (including remote DMA)
+  instead, for 128-aligned K/V. It is opt-in pending TPU validation.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
@@ -79,6 +83,8 @@ class Config:
   packed_backward: bool = False
   packed_gradients: bool = False
   fuse_backward: bool = True
+  fuse_cp_backward: bool = False
+  cp_megakernel: bool = False
   # Opt-in until TPU compilation and device-time validation completes.
   fuse_rematerialization: bool = False
 
@@ -578,6 +584,8 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         fuse_rematerialization=config.fuse_rematerialization,
         packed_inputs=packed_inputs,
         packed_gradients=config.packed_gradients,
+        fuse_cp_backward=config.fuse_cp_backward,
+        cp_megakernel=config.cp_megakernel,
     )
 
     grads = {
