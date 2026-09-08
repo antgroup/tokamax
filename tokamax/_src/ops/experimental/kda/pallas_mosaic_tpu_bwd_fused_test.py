@@ -18,6 +18,7 @@ import functools
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 import pytest
 from tokamax._src.ops.experimental.kda import api
 from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu as mosaic
@@ -27,14 +28,46 @@ from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu_fwd_fused_test a
 interpret_on_cpu = forward_tests.interpret_on_cpu
 
 
+@pytest.mark.parametrize("fuse_backward", [False, True])
+@pytest.mark.parametrize("rematerialize", [False, True])
+@pytest.mark.parametrize("lower_bound", [None, -1.0])
+@pytest.mark.parametrize("output_final_state", [False, True])
+def test_packed_padding_and_empty_state_gradients(
+    fuse_backward, rematerialize, lower_bound, output_final_state
+):
+  args, kwargs = forward_tests._inputs(jnp.float32, True)
+  kwargs.update(lower_bound=lower_bound, output_final_state=output_final_state)
+  op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+      config=mosaic.Config(
+          fuse_backward=fuse_backward,
+          rematerialize_for_backward=rematerialize,
+      )
+  )
+  results = []
+  for implementation in (
+      op,
+      functools.partial(api.kimi_delta_attention, implementation="xla"),
+  ):
+    output, pullback = jax.vjp(
+        functools.partial(forward_tests._call, implementation, kwargs), *args
+    )
+    results.append(
+        pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
+    )
+  forward_tests._assert_close(results[0], results[1], tolerance=0.002)
+  for gradient in results[0][:5]:
+    np.testing.assert_array_equal(np.asarray(gradient[:, :, 96:]), 0)
+  np.testing.assert_allclose(
+      np.asarray(results[0][5][:, 2]), 0.1 if output_final_state else 0
+  )
+
+
 @pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])
 @pytest.mark.parametrize("packed", [False, True])
 @pytest.mark.parametrize("fuse_forward", [False, True])
 def test_saved_state_backward(dtype, packed, fuse_forward):
   args, kwargs = forward_tests._inputs(dtype, packed)
-  # Pre-activated gates isolate backward fusion from the baseline's known
-  # packed raw-gate padding reduction issue. Fixed raw-gate parameter tests
-  # are also retained in the forward fusion test module.
+  # Cover pre-activated gates separately from the raw-gate regression above.
   args = (*args[:3], -jnp.ones_like(args[3]) * 0.01, *args[4:6], None, None)
   kwargs.update(use_gate_in_kernel=False, lower_bound=None)
   results = []
@@ -49,12 +82,9 @@ def test_saved_state_backward(dtype, packed, fuse_forward):
     grads = pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
     results.append((output, grads))
   forward_tests._assert_close(results[1][0], results[0][0], tolerance=1e-5)
-  for index, (actual, expected) in enumerate(
-      zip(results[1][1][:6], results[0][1][:6], strict=True)
+  for actual, expected in zip(
+      results[1][1][:6], results[0][1][:6], strict=True
   ):
-    if packed:
-      actual = actual[:, :2] if index == 5 else actual[:, :, :96]
-      expected = expected[:, :2] if index == 5 else expected[:, :, :96]
     forward_tests._assert_close(
         actual, expected, tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
     )
