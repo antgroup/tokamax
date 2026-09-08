@@ -41,14 +41,14 @@ state and recomputation temporaries.
 
 ## Validation and benchmark
 
-CPU interpretation tests cover fixed-length BF16/FP32 gradients, raw gate
+CPU interpretation tests cover fixed/packed BF16/FP32 gradients, raw gate
 parameters, initial/final states and padding/empty-state semantics. Further
 tests compare reconstructed h/FP32 v_new directly, exercise two heads and
 two batches with K/V=256, and check saved-state/disabled-fusion fallbacks.
 
 ```bash
 python -m pytest tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_remat_test.py -v
-python -m tokamax.benchmarks.kda --skip_implementations=xla,mosaic_staged,mosaic_fwd_fused,mosaic_fused
+python -m tokamax.benchmarks.kda --skip_implementations=xla,mosaic_staged,mosaic_fwd_fused,mosaic_fused,mosaic_packed_inputs
 ```
 
 Compare `mosaic_remat` against `mosaic_remat_fused`, both with identical
@@ -61,5 +61,3 @@ tests passed. Shard consistency and all 28 benchmark collections passed.
 CPU interpretation does not establish TPU lowering, allocation, accuracy or
 performance. Those device checks remain pending; keep the option disabled
 by default and the PR in draft until they are available.
-
-Packed gradient coverage is enabled by the separate padding-correctness PR; native packed DMA coverage is added by the packed I/O PR.

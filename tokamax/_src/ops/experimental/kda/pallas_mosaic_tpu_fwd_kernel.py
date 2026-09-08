@@ -36,6 +36,7 @@ from tokamax._src.ops.experimental.kda.cp_utils import (
   _merge_initial_state,
   all_gather_into_tensor,
 )
+from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_output import compact_output
 from tokamax._src.ops.experimental.kda.pallas_mosaic_tpu_types import KdaResiduals
 from tokamax._src.ops.experimental.kda.utils import (
   _unalign_output,
@@ -1524,6 +1525,34 @@ def _fused_forward_kernel(
     gate_out_ref[...] = gate_ref[...]
 
 
+def _packed_fused_forward_kernel(
+    seqlens_ref, mapping_ref, packed_seqlens_ref, *refs, **kwargs
+):
+  """Load an 8-row-aligned packed window, then mask the sequence tail."""
+  chunk_size = kwargs["chunk_size"]
+  batch, chunk = pl.program_id(1), pl.program_id(2)
+  seq = mapping_ref[batch, chunk]
+  block = chunk - seqlens_ref[batch, seq] // chunk_size
+  start = packed_seqlens_ref[batch, seq] + block * chunk_size
+  end = packed_seqlens_ref[batch, seq + 1]
+  active = (block >= 0) & (start < end)
+  start = jnp.where(active, start, 0)
+  offset = start % 8
+  valid = active & (start + jnp.arange(chunk_size) < end)
+  # Separate static slices keep the TPU sublane shift bounded to 0..7.
+  branches = tuple(
+      (lambda x, i=i: x[:, :, i : i + chunk_size, :]) for i in range(8)
+  )
+  for index, (window, tile) in enumerate(zip(refs[:5], refs[-5:], strict=True)):
+    values = jax.lax.switch(offset, branches, window[...])
+    fill = -1e4 if index == 2 and kwargs["use_gate_in_kernel"] else 0
+    values = jnp.where(valid[None, None, :, None], values, fill)
+    tile[...] = values.reshape(tile.shape)
+  _fused_forward_kernel(
+      seqlens_ref, mapping_ref, *refs[-5:], *refs[5:-5], **kwargs
+  )
+
+
 @functools.partial(
     jax.jit,
     static_argnames=(
@@ -1551,6 +1580,8 @@ def chunk_kda_fwd_fused(
     a_log: Float[Array, "H"] | None,
     delta_time_bias: Float[Array, "H*K"] | None,
     *,
+    packed_inputs: tuple[jax.Array, ...] | None = None,
+    packed_cu_seqlens: jax.Array | None = None,
     scale: float,
     chunk_size: int,
     safe_gate: bool,
@@ -1590,11 +1621,15 @@ def chunk_kda_fwd_fused(
   # Include persistent state, bridge buffers, double-buffered I/O and
   # intra-chunk solve temporaries. Retain compiler headroom rather than
   # inheriting the smaller staged kernels' independent VMEM estimates.
+  packed = packed_inputs is not None
   per_head = 4 * (
       key_dim * value_dim
       + 16 * chunk_size * (key_dim + value_dim)
       + 12 * chunk_size * chunk_size
   )
+  if packed:
+    # Additional packed input windows and aligned VMEM staging refs.
+    per_head += 4 * (3 * key_dim + value_dim + 1) * (3 * chunk_size + 16)
   mini_batch = estimate_mini_batch(per_head, heads, max_mb=16)
   token_shape = lambda width: (heads, batch, chunks, chunk_size, width)
   tile_shape = lambda width: (mini_batch, 1, 1, chunk_size, width)
@@ -1605,6 +1640,51 @@ def chunk_kda_fwd_fused(
         lambda h, b, c, *_: (h, b, c, 0, 0),
     )
 
+  scalar_inputs = [
+      cu_seqlens.astype(jnp.int32),
+      chunk_indices[..., 0].astype(jnp.int32),
+  ]
+  input_values = [
+      q.reshape(token_shape(key_dim)),
+      k.reshape(token_shape(key_dim)),
+      g.reshape(token_shape(key_dim)),
+      beta.reshape(token_shape(1)),
+      v.reshape(token_shape(value_dim)),
+  ]
+  input_specs = [
+      token_spec(width) for width in (key_dim, key_dim, key_dim, 1, value_dim)
+  ]
+  if packed:
+    if packed_cu_seqlens is None:
+      raise ValueError("Packed inputs require original sequence boundaries.")
+    scalar_inputs.append(packed_cu_seqlens.astype(jnp.int32))
+    pq, pk, pv, pg, pb = packed_inputs
+    # Round the allocation to eight rows and append a full guard window.
+    input_values = [
+        jnp.pad(
+            x, ((0, 0), (0, 0), (0, (-x.shape[2]) % 8 + chunk_size + 8), (0, 0))
+        )
+        for x in (pq, pk, pg, pb[..., None], pv)
+    ]
+
+    def packed_index(h, b, c, aligned, mapping, original):
+      seq = mapping[b, c]
+      block = c - aligned[b, seq] // chunk_size
+      start = original[b, seq] + block * chunk_size
+      active = (block >= 0) & (start < original[b, seq + 1])
+      start = jnp.where(active, start, 0)
+      return h * mini_batch, b, pl.multiple_of(start - start % 8, 8), 0
+
+    input_specs = [
+        pl.BlockSpec(
+            tuple(
+                pl.Element(d) for d in (mini_batch, 1, chunk_size + 8, width)
+            ),
+            packed_index,
+        )
+        for width in (key_dim, key_dim, key_dim, 1, value_dim)
+    ]
+
   def parameter_spec(width):
     return pl.BlockSpec(
         (mini_batch, 1, 1, 1, width),
@@ -1614,7 +1694,7 @@ def chunk_kda_fwd_fused(
   state_shape = (batch, segments, heads, key_dim, value_dim)
   state_spec = pl.BlockSpec(
       (1, 1, mini_batch, key_dim, value_dim),
-      lambda h, b, c, seqlens, mapping: (b, mapping[b, c], h, 0, 0),
+      lambda h, b, c, seqlens, mapping, *_: (b, mapping[b, c], h, 0, 0),
   )
   saved_state_shape = (heads, batch, chunks, key_dim, value_dim)
   saved_state_spec = pl.BlockSpec(
@@ -1644,7 +1724,7 @@ def chunk_kda_fwd_fused(
   ]
   results = pl.pallas_call(
       functools.partial(
-          _fused_forward_kernel,
+          _packed_fused_forward_kernel if packed else _fused_forward_kernel,
           chunk_size=chunk_size,
           key_dim=key_dim,
           value_dim=value_dim,
@@ -1663,14 +1743,10 @@ def chunk_kda_fwd_fused(
           ),
       ),
       grid_spec=pltpu.PrefetchScalarGridSpec(
-          num_scalar_prefetch=2,
+          num_scalar_prefetch=len(scalar_inputs),
           grid=(heads // mini_batch, batch, chunks),
           in_specs=[
-              token_spec(key_dim),
-              token_spec(key_dim),
-              token_spec(key_dim),
-              token_spec(1),
-              token_spec(value_dim),
+              *input_specs,
               parameter_spec(1),
               parameter_spec(key_dim),
               state_spec if initial_state is not None else None,
@@ -1697,6 +1773,14 @@ def chunk_kda_fwd_fused(
                   )
               ],
               pltpu.VMEM(tile_shape(key_dim), jnp.float32),
+              *(
+                  [
+                      pltpu.VMEM(tile_shape(x.shape[-1]), x.dtype)
+                      for x in input_values
+                  ]
+                  if packed
+                  else []
+              ),
           ],
       ),
       out_shape=out_shapes,
@@ -1705,13 +1789,8 @@ def chunk_kda_fwd_fused(
       ),
       interpret=get_interpret(),
   )(
-      cu_seqlens.astype(jnp.int32),
-      chunk_indices[..., 0].astype(jnp.int32),
-      q.reshape(token_shape(key_dim)),
-      k.reshape(token_shape(key_dim)),
-      g.reshape(token_shape(key_dim)),
-      beta.reshape(token_shape(1)),
-      v.reshape(token_shape(value_dim)),
+      *scalar_inputs,
+      *input_values,
       a_log.astype(jnp.float32).reshape(heads, 1, 1, 1, 1),
       delta_time_bias.astype(jnp.float32).reshape(heads, 1, 1, 1, key_dim),
       initial_state,
@@ -1770,6 +1849,8 @@ def chunk_kda_fwd_custom(
     q_rstd: Float[Array, "H B T_ALIGNED"] | None = None,
     k_rstd: Float[Array, "H B T_ALIGNED"] | None = None,
     fuse_forward: bool = True,
+    packed_output: bool = False,
+    packed_inputs: tuple[jax.Array, ...] | None = None,
 ) -> tuple[
     tuple[
         Float[Array, "H B T V"],
@@ -1833,6 +1914,7 @@ def chunk_kda_fwd_custom(
     o, final_state, h, Aqk, Akk, g_cumsum = chunk_kda_fwd_fused(
         q, k, v, g, beta, stage34_cu_seqlens, stage34_chunk_indices,
         stage34_initial_state, a_log, delta_time_bias,
+        packed_inputs=packed_inputs, packed_cu_seqlens=original_cu_seqlens,
         scale=scale_val, chunk_size=BT, safe_gate=safe_gate,
         use_gate_in_kernel=use_gate_in_kernel, lower_bound=lower_bound,
         store_h=save_for_backward, store_residuals=return_residuals,
@@ -1931,7 +2013,8 @@ def chunk_kda_fwd_custom(
   if aligned_cu_seqlens is not None:
     if segment_ids is None:
       raise ValueError("Aligned varlen metadata requires `segment_ids`.")
-    output = _unalign_output(
+    compact = compact_output if packed_output and not _cp_active else _unalign_output
+    output = compact(
         output,
         cu_seqlens,
         aligned_cu_seqlens,
