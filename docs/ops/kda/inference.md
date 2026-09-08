@@ -37,3 +37,11 @@ against XLA and race detection), 33 CI shard checks passed, shard consistency
 passed, and four TPU benchmark cases collected without timing. Interpreter
 execution completes before the CPU reference starts to avoid callback dispatch
 contention. Chunk size and head grouping are not public API tuning arguments.
+
+Token selection in the boundary recurrence uses mask/reduce, and output
+updates use select. JAX 0.11.1 TPU lowering does not support dynamic_slice or
+dynamic_update_slice even when the interpreter accepts them. The loop remains
+rolled. Four inference_lowering_test.py cases export to an abstract TPU7x
+target with interpretation disabled, covering both initial/final-state options.
+These check Pallas lowering, not device execution or performance. The updated
+kernel passes the 16 numerical tests and four export tests locally.
