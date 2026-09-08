@@ -779,7 +779,8 @@ def _fwd_mega_kernel_native_segids(
 
     def token_step(t, carry):
       state, previous, output = carry
-      current = seg[t]
+      token_mask = jnp.arange(BT) == t
+      current = jnp.max(jnp.where(token_mask, seg, 0))
       valid = current > 0
       changed = valid & (current != previous)
       if STORE_FINAL_STATE:
@@ -817,18 +818,22 @@ def _fwd_mega_kernel_native_segids(
       else:
         initial = jnp.zeros_like(state)
       state = jnp.where(changed, initial, state)
-      kt = k[:, t, :]
-      decayed = state * jnp.exp(gate[:, t, :])[:, :, None]
-      correction = beta[:, t, None] * (
-          v[:, t, :] - jnp.sum(kt[:, :, None] * decayed, axis=1)
+      # Dynamic array slices have no Pallas TPU lowering.
+      def token(x):
+        return jnp.sum(jnp.where(token_mask[None, :, None], x, 0), axis=1)
+
+      kt = token(k)
+      decayed = state * jnp.exp(token(gate))[:, :, None]
+      correction = token(beta[:, :, None]) * (
+          token(v) - jnp.sum(kt[:, :, None] * decayed, axis=1)
       )
       updated = decayed + kt[:, :, None] * correction[:, None, :]
       state = jnp.where(valid, updated, state)
       value = jnp.where(
-          valid, jnp.sum(q[:, t, :, None] * state, axis=1) * scale, 0
+          valid, jnp.sum(token(q)[:, :, None] * state, axis=1) * scale, 0
       )
-      output = jax.lax.dynamic_update_slice(
-          output, value[:, None, :], (0, t, 0)
+      output = jnp.where(
+          token_mask[None, :, None], value[:, None, :], output
       )
       return state, jnp.where(valid, current, previous), output
 
