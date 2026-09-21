@@ -1167,24 +1167,24 @@ def _fused_dhu_wy_intra_cumsum_kernel(
 
   @pl.when(is_last_chunk)
   def _():
-    dh_tmp_ref[:] = dht_ref[:, 0, :].astype(dh_tmp_ref.dtype)
+    dh_tmp_ref[:] = dht_ref[:, 0, 0, :].astype(dh_tmp_ref.dtype)
 
   dh = dh_tmp_ref[:].astype(jnp.float32)
-  bq = q_ref[:, 0].astype(jnp.float32)
-  bk = k_ref[:, 0].astype(jnp.float32)
-  bv = v_ref[:, 0].astype(jnp.float32)
-  bvn = v_new_ref[:, 0].astype(jnp.float32)
-  bqg = qg_ref[:, 0].astype(jnp.float32)
-  bkg = kg_ref[:, 0]
-  bw = w_ref[:, 0].astype(jnp.float32)
-  bg = g_ref[:, 0].astype(jnp.float32)
+  bq = q_ref[:, 0, 0].astype(jnp.float32)
+  bk = k_ref[:, 0, 0].astype(jnp.float32)
+  bv = v_ref[:, 0, 0].astype(jnp.float32)
+  bvn = v_new_ref[:, 0, 0].astype(jnp.float32)
+  bqg = qg_ref[:, 0, 0].astype(jnp.float32)
+  bkg = kg_ref[:, 0, 0]
+  bw = w_ref[:, 0, 0].astype(jnp.float32)
+  bg = g_ref[:, 0, 0].astype(jnp.float32)
   g_exp_last = jnp.exp2(bg[:, BT - 1, :])
-  bb = beta_ref[:, 0, :, 0].astype(jnp.float32)
-  bA = A_ref[:, 0].astype(jnp.float32)
-  bh = h_ref[:, 0].astype(jnp.float32)
-  bdo = do_ref[:, 0]
-  bdv0 = dv0_ref[:, 0].astype(jnp.float32)
-  bdAqk = dAqk_ref[:, 0].astype(jnp.float32)
+  bb = beta_ref[:, 0, 0, :, 0].astype(jnp.float32)
+  bA = A_ref[:, 0, 0].astype(jnp.float32)
+  bh = h_ref[:, 0, 0].astype(jnp.float32)
+  bdo = do_ref[:, 0, 0]
+  bdv0 = dv0_ref[:, 0, 0].astype(jnp.float32)
+  bdAqk = dAqk_ref[:, 0, 0].astype(jnp.float32)
 
   # --- dhu reverse recurrence ---
   bdv, dh_new = compute_dhu_recurrence(
@@ -1482,46 +1482,40 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     if K % 128 or V % 128 or BT != 64:
       raise ValueError("Fused backward requires BT=64 and 128-aligned K/V.")
 
-  # Keep [H, ...] layout; flatten B and NT into BNT to avoid squeeze issues with tiled size-1 dims.
-  # This fixes Mosaic error "When multiple tiles are present, no tiled dimensions can be squeezed"
-  # which occurs when H=1 or B=1 causes size-1 dimensions to be tiled.
-  BNT = B * NT
-  q_r = q.reshape(H, BNT, BT, K)
-  k_r = k.reshape(H, BNT, BT, K)
-  v_r = v.reshape(H, BNT, BT, V)
-  vn_r = v_new.reshape(H, BNT, BT, V) if v_new is not None else None
-  qg_r = qg.reshape(H, BNT, BT, K) if qg is not None else None
-  kg_r = kg.reshape(H, BNT, BT, K) if kg is not None else None
-  w_r = w.reshape(H, BNT, BT, K) if w is not None else None
-  g_r = g.reshape(H, BNT, BT, K)
-  beta_r = beta.reshape(H, BNT, BT, 1)
-  A_r = A.reshape(H, BNT, BT, BT)
-  h_r = h.reshape(H, BNT, K, V)  # [H, B, NT, K, V] -> [H, B*NT, K, V]
-  do_r = do.reshape(H, BNT, BT, V)
-  dv0_r = dv0.reshape(H, BNT, BT, V) if dv0 is not None else None
-  dAqk_r = dAqk.reshape(H, BNT, BT, BT) if dAqk is not None else None
+  # Keep [H, B, ...] layout; reshape T → (NT, BT) only. No transpose.
+  # B is an independent dimension handled by a separate grid axis.
+  q_r = q.reshape(H, B, NT, BT, K)
+  k_r = k.reshape(H, B, NT, BT, K)
+  v_r = v.reshape(H, B, NT, BT, V)
+  vn_r = v_new.reshape(H, B, NT, BT, V) if v_new is not None else None
+  qg_r = qg.reshape(H, B, NT, BT, K) if qg is not None else None
+  kg_r = kg.reshape(H, B, NT, BT, K) if kg is not None else None
+  w_r = w.reshape(H, B, NT, BT, K) if w is not None else None
+  g_r = g.reshape(H, B, NT, BT, K)
+  beta_r = beta.reshape(H, B, NT, BT, 1)
+  A_r = A.reshape(H, B, NT, BT, BT)
+  h_r = h  # already [H, B, NT, K, V]
+  do_r = do.reshape(H, B, NT, BT, V)
+  dv0_r = dv0.reshape(H, B, NT, BT, V) if dv0 is not None else None
+  dAqk_r = dAqk.reshape(H, B, NT, BT, BT) if dAqk is not None else None
 
   def idx_chunk(head_group, batch, chunk, chunk_seg_ids_ref, *_):
-    # Flatten (batch, chunk) into single index: batch * NT + (NT - 1 - chunk)
-    return (head_group, batch * NT + (NT - 1 - chunk), 0, 0)
+    return (head_group, batch, NT - 1 - chunk, 0, 0)
 
   def idx_state(head_group, batch, chunk, chunk_seg_ids_ref, *_):
     chunk_id = NT - 1 - chunk
     _, seq_idx, _, _, _ = _chunk_segment_metadata(chunk_seg_ids_ref, batch, chunk_id, NT)
-    # For state, we need the actual segment's chunk index
-    return (head_group, batch * NT + seq_idx, 0, 0)
+    return (head_group, batch, seq_idx, 0, 0)
 
-  # dht_arr [B, N, H, K, V] → [H, B, N, K, V] → [H, B*N, K, V]
+  # dht_arr [B, N, H, K, V] → [H, B, N, K, V]
   dht_arr = dht_arr.transpose(2, 0, 1, 3, 4)
-  N = dht_arr.shape[1]
-  dht_arr = dht_arr.reshape(H, B * N, K, V)
 
-  qk_spec = pl.BlockSpec((MB, 1, BT, K), index_map=idx_chunk)
-  v_spec = pl.BlockSpec((MB, 1, BT, V), index_map=idx_chunk)
-  b_spec = pl.BlockSpec((MB, 1, BT, 1), index_map=idx_chunk)
-  A_spec = pl.BlockSpec((MB, 1, BT, BT), index_map=idx_chunk)
-  h_spec = pl.BlockSpec((MB, 1, K, V), index_map=idx_chunk)
-  state_spec = pl.BlockSpec((MB, 1, K, V), index_map=idx_state)
+  qk_spec = pl.BlockSpec((MB, 1, 1, BT, K), index_map=idx_chunk)
+  v_spec = pl.BlockSpec((MB, 1, 1, BT, V), index_map=idx_chunk)
+  b_spec = pl.BlockSpec((MB, 1, 1, BT, 1), index_map=idx_chunk)
+  A_spec = pl.BlockSpec((MB, 1, 1, BT, BT), index_map=idx_chunk)
+  h_spec = pl.BlockSpec((MB, 1, 1, K, V), index_map=idx_chunk)
+  state_spec = pl.BlockSpec((MB, 1, 1, K, V), index_map=idx_state)
 
   kernel = partial(
     _fused_dhu_wy_intra_cumsum_kernel,
@@ -1533,14 +1527,13 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     MB=MB,
   )
   dh_tmp = pltpu.VMEM((MB, K, V), jnp.float32)
-  # Output shapes are 4D (H, BNT, ...) to match the 4D BlockSpec
   out_shape = [
-    jax.ShapeDtypeStruct((H, BNT, BT, K), jnp.float32),
-    jax.ShapeDtypeStruct((H, BNT, BT, K), jnp.float32),
-    jax.ShapeDtypeStruct((H, BNT, BT, V), jnp.float32),
-    jax.ShapeDtypeStruct((H, BNT, BT, 1), jnp.float32),
-    jax.ShapeDtypeStruct((H, BNT, BT, K), jnp.float32),
-    jax.ShapeDtypeStruct((H, B * N, K, V), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, NT, BT, V), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, NT, BT, 1), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
+    jax.ShapeDtypeStruct((H, B, N, K, V), jnp.float32),
   ]
 
   in_specs = [qk_spec, qk_spec, v_spec, v_spec, qk_spec, qk_spec,
@@ -1653,12 +1646,7 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     interpret=get_interpret(),
   )(*scalar_inputs, *kernel_inputs)
 
-  # dh0_r is (H, B*N, K, V), reshape back to (H, B, N, K, V) for transpose
-  if return_dh0:
-    dh0_r = dh0_r.reshape(H, B, N, K, V)
-    dh0_out = dh0_r.transpose(2, 0, 1, 3, 4)  # (N, H, B, K, V) -> (B, N, H, K, V)
-  else:
-    dh0_out = None
+  dh0_out = dh0_r.transpose(1, 2, 0, 3, 4) if return_dh0 else None
   return (
     dq_r.reshape(H, B, T, K),
     dk_r.reshape(H, B, T, K),
