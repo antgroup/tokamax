@@ -1538,7 +1538,6 @@ def _packed_fused_forward_kernel(
   active = (block >= 0) & (start < end)
   start = jnp.where(active, start, 0)
   offset = start % 8
-  valid = active & (start + jnp.arange(chunk_size) < end)
   # Separate static slices keep the TPU sublane shift bounded to 0..7.
   branches = tuple(
       (lambda x, i=i: x[:, :, i : i + chunk_size, :]) for i in range(8)
@@ -1546,7 +1545,10 @@ def _packed_fused_forward_kernel(
   for index, (window, tile) in enumerate(zip(refs[:5], refs[-5:], strict=True)):
     values = jax.lax.switch(offset, branches, window[...])
     fill = -1e4 if index == 2 and kwargs["use_gate_in_kernel"] else 0
-    values = jnp.where(valid[None, None, :, None], values, fill)
+    # Build the mask directly at the tile rank.  Adding singleton dimensions
+    # to a [BT] predicate creates an unsupported Mosaic shape cast for MB=1.
+    token = jax.lax.broadcasted_iota(jnp.int32, values.shape, dimension=2)
+    values = jnp.where(active & (start + token < end), values, fill)
     tile[...] = values.reshape(tile.shape)
   _fused_forward_kernel(
       seqlens_ref, mapping_ref, *refs[-5:], *refs[5:-5], **kwargs
