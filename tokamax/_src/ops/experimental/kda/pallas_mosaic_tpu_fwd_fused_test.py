@@ -49,7 +49,7 @@ def interpret_on_cpu(monkeypatch):
 
 
 def _inputs(dtype, packed, *, key_dim=128):
-  heads, batch, tokens, value_dim = 1, 1, 128, 128
+  heads, batch, tokens, value_dim = 2, 2, 128, 128
   keys = jax.random.split(jax.random.key(31), 8)
 
   def normal(key, shape):
