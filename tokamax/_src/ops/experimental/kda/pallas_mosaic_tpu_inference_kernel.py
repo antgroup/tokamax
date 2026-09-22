@@ -406,9 +406,13 @@ def _fwd_mega_kernel_native_segids(
       )
       solve_bt = 2 * BT
       solve_I = jnp.eye(solve_bt, dtype=inv_dt)
-    _idx = jnp.arange(solve_bt, dtype=jnp.int32)
-    _blk = _idx // BC_inv
-    _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
+    _row = jax.lax.broadcasted_iota(
+        jnp.int32, (solve_bt, solve_bt), dimension=0
+    )
+    _col = jax.lax.broadcasted_iota(
+        jnp.int32, (solve_bt, solve_bt), dimension=1
+    )
+    _same = (_row // BC_inv == _col // BC_inv).astype(inv_dt)
     L_diag = L_inv * _same[None]
     F = L_inv - L_diag
     neg_Ld = -L_diag
@@ -652,9 +656,9 @@ def _fwd_mega_kernel_native_segids(
     NC_inv = BT // BC_inv
     inv_dt = jnp.float32
     L_inv = L.astype(inv_dt)
-    _idx = jnp.arange(BT, dtype=jnp.int32)
-    _blk = _idx // BC_inv
-    _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
+    _row = jax.lax.broadcasted_iota(jnp.int32, (BT, BT), dimension=0)
+    _col = jax.lax.broadcasted_iota(jnp.int32, (BT, BT), dimension=1)
+    _same = (_row // BC_inv == _col // BC_inv).astype(inv_dt)
     L_diag = L_inv * _same[None]
     F = L_inv - L_diag
     neg_Ld = -L_diag
@@ -779,7 +783,9 @@ def _fwd_mega_kernel_native_segids(
 
     def token_step(t, carry):
       state, previous, output = carry
-      token_mask = jnp.arange(BT) == t
+      token_mask = (
+          jax.lax.broadcasted_iota(jnp.int32, (BT,), dimension=0) == t
+      )
       current = jnp.max(jnp.where(token_mask, seg, 0))
       valid = current > 0
       changed = valid & (current != previous)
@@ -820,7 +826,10 @@ def _fwd_mega_kernel_native_segids(
       state = jnp.where(changed, initial, state)
       # Dynamic array slices have no Pallas TPU lowering.
       def token(x):
-        return jnp.sum(jnp.where(token_mask[None, :, None], x, 0), axis=1)
+        token_position = jax.lax.broadcasted_iota(
+            jnp.int32, x.shape, dimension=1
+        )
+        return jnp.sum(jnp.where(token_position == t, x, 0), axis=1)
 
       kt = token(k)
       decayed = state * jnp.exp(token(gate))[:, :, None]
@@ -832,9 +841,10 @@ def _fwd_mega_kernel_native_segids(
       value = jnp.where(
           valid, jnp.sum(token(q)[:, :, None] * state, axis=1) * scale, 0
       )
-      output = jnp.where(
-          token_mask[None, :, None], value[:, None, :], output
+      output_position = jax.lax.broadcasted_iota(
+          jnp.int32, output.shape, dimension=1
       )
+      output = jnp.where(output_position == t, value[:, None, :], output)
       return state, jnp.where(valid, current, previous), output
 
     state, previous, output = jax.lax.fori_loop(
