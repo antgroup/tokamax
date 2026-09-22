@@ -634,6 +634,21 @@ def _rematerialize_states_pallas(
     raise ValueError(
         "Fused rematerialization requires BT=64 and 128-aligned K/V."
     )
+  if heads == 1:
+    # The fused MB=1 recursive state update is not numerically equivalent to
+    # the established staged kernel on current Mosaic. Preserve correctness
+    # for this degenerate edge case without changing the multi-head fast path.
+    w, u, _, kg = _recompute_w_u_fwd(q, k, v, beta, a, g, chunk_size)
+    h, v_new, _ = chunk_gated_delta_rule_fwd_h(
+        k=kg,
+        w=w,
+        u=u,
+        gk=g,
+        initial_state=initial_state,
+        output_final_state=False,
+        chunk_size=chunk_size,
+    )
+    return h, v_new
   if segment_ids is None:
     segment_ids = jnp.ones((batch, tokens), jnp.int32)
     if initial_state is not None and initial_state.ndim == 4:
@@ -1179,7 +1194,9 @@ def _fused_dhu_wy_intra_cumsum_kernel(
   bw = w_ref[:, 0, 0].astype(jnp.float32)
   bg = g_ref[:, 0, 0].astype(jnp.float32)
   g_exp_last = jnp.exp2(bg[:, BT - 1, :])
-  bb = beta_ref[:, 0, 0, :, 0].astype(jnp.float32)
+  # Keep the trailing tiled dimension while loading from VMEM. Squeezing it
+  # on the ref produces an unsupported tpu.memref_squeeze with nested tiles.
+  bb = beta_ref[:, 0, 0].astype(jnp.float32).reshape(MB, BT)
   bA = A_ref[:, 0, 0].astype(jnp.float32)
   bh = h_ref[:, 0, 0].astype(jnp.float32)
   bdo = do_ref[:, 0, 0]
@@ -1215,7 +1232,7 @@ def _fused_dhu_wy_intra_cumsum_kernel(
   dq_ref[:, 0, 0] = dq_total.astype(dq_ref.dtype)
   dk_ref[:, 0, 0] = dk_total.astype(dk_ref.dtype)
   dv_ref[:, 0, 0] = (b_dvb * bb[:, :, None]).astype(dv_ref.dtype)
-  db_ref[:, 0, 0, :, 0] = db_total.astype(db_ref.dtype)
+  db_ref[:, 0, 0] = db_total.astype(db_ref.dtype)[..., None]
   dg_ref[:, 0, 0] = dg_reverse_cumsum.astype(dg_ref.dtype)
 
   @pl.when(is_first_chunk)
@@ -1285,10 +1302,13 @@ def _saved_state_backward_kernel(
     kg_ref[:, 0, 0] = (k * jnp.exp2(g[:, -1:] - g)).astype(kg_ref.dtype)
     v_new_ref[...] = rematerialized_v_new_ref[...]
   else:
+    # Load beta before dropping its trailing singleton dimension. Passing a
+    # squeezed Ref view is illegal for the nested tiled VMEM layout.
+    beta_tile = beta_ref[:, 0, 0].reshape(MB, BT)
     _fused_recompute_w_u_vnew_from_h_kernel(
         k_ref.at[:, 0, 0],
         v_ref.at[:, 0, 0],
-        beta_ref.at[:, 0, 0, :, 0],
+        beta_tile,
         akk_ref.at[:, 0, 0],
         q_ref.at[:, 0, 0],
         g_ref.at[:, 0, 0],
@@ -1356,16 +1376,17 @@ def _packed_saved_state_backward_kernel(
   chunk = kwargs["NT"] - 1 - pl.program_id(2)
   start, end = windows_ref[batch, chunk, 0], windows_ref[batch, chunk, 1]
   offset = start % 8
-  valid = start + jnp.arange(kwargs["BT"]) < end
   branches = tuple(
       (lambda x, i=i: x[:, :, i : i + kwargs["BT"], :]) for i in range(8)
   )
   args = list(refs[:-4])
   for index, tile in zip((0, 1, 2, 4), refs[-4:], strict=True):
     values = jax.lax.switch(offset, branches, refs[index][...])
-    tile[...] = jnp.where(valid[None, None, :, None], values, 0).reshape(
-        tile.shape
+    token = jax.lax.broadcasted_iota(
+        jnp.int32, values.shape, dimension=2
     )
+    values = jnp.where(start + token < end, values, 0)
+    tile[...] = values.reshape(tile.shape)
     args[index] = tile
   _saved_state_backward_kernel(segments_ref, *args, **kwargs)
 
@@ -2020,6 +2041,7 @@ def chunk_kda_bwd_custom(
       and fuse_backward
       and not disable_recompute
       and not _cp_active
+      and H > 1
       and K % 128 == 0
       and V % 128 == 0
   )
