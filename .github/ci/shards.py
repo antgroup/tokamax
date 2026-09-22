@@ -531,6 +531,13 @@ SHARDS: ShardMap = {
     'experimental-kda-kernel': Spec(
         paths=(
             'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_kernel_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_fwd_fused_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_packed_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_remat_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_output_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_packed_bwd_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_packed_gradients_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_bwd_fused_test.py',
         ),
         minutes=16,
     ),
@@ -547,8 +554,10 @@ SHARDS: ShardMap = {
         paths=(
             'tokamax/_src/ops/experimental/kda/base_test.py',
             'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_cp_fused_test.py',
+            'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_cp_megakernel_test.py',
         ),
-        minutes=1,
+        minutes=5,
     ),
     # The topk tests that are not the kernel. Separate from
     # `experimental-topk-kernel` because that one is TPU-pinned and these two
