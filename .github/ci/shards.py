@@ -554,6 +554,8 @@ SHARDS: ShardMap = {
         paths=(
             'tokamax/_src/ops/experimental/kda/base_test.py',
             'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_test.py',
+            'tokamax/_src/ops/experimental/kda/inference_test.py',
+            'tokamax/_src/ops/experimental/kda/inference_lowering_test.py',
             'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_cp_fused_test.py',
             'tokamax/_src/ops/experimental/kda/pallas_mosaic_tpu_cp_megakernel_test.py',
         ),
