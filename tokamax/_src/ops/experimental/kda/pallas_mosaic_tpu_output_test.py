@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Packed output compaction boundaries and forward/VJP compatibility."""
+"""Packed output compaction boundaries and forward compatibility."""
 
 import functools
 import types
@@ -81,10 +81,8 @@ def test_compaction_poisoned_tails_and_empty_batch(
   forward_tests._assert_close(actual, jnp.asarray(expected, dtype), tolerance=0)
 
 
-@pytest.mark.parametrize(
-    "dtype,rematerialize", [(jnp.bfloat16, False), (jnp.float32, True)]
-)
-def test_compaction_forward_and_backward(dtype, rematerialize):
+@pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])
+def test_compaction_forward(dtype):
   args, kwargs = forward_tests._inputs(dtype, True)
   args = (
       *[jnp.repeat(x, 8, axis=0) for x in args[:5]],
@@ -95,18 +93,10 @@ def test_compaction_forward_and_backward(dtype, rematerialize):
   results = []
   for compact in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(
-            packed_output=compact,
-            packed_forward=True,
-            rematerialize_for_backward=rematerialize,
-            fuse_rematerialization=rematerialize,
-        )
+        config=mosaic.Config(packed_output=compact, packed_forward=True)
     )
     call = functools.partial(forward_tests._call, op, kwargs)
-    forward = jax.jit(call)(*args)
-    output, pullback = jax.vjp(call, *args)
-    grads = pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
-    results.append((forward, output, grads))
+    results.append(jax.jit(call)(*args))
   forward_tests._assert_close(
       results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
   )

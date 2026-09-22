@@ -57,8 +57,11 @@ def _compact_output_kernel(
       )
 
   values = packed_ref[:tokens].transpose(1, 0, 2)
-  valid = jnp.arange(tokens) < original_ref[batch, -1]
-  output_ref[:, 0] = jnp.where(valid[None, :, None], values, 0)
+  # Materialize the predicate at the destination rank. Broadcasting a 1-D
+  # i1 vector through the tiled output can produce an illegal TPU shape cast.
+  token = jax.lax.broadcasted_iota(jnp.int32, values.shape, dimension=1)
+  valid = token < original_ref[batch, -1]
+  output_ref[:, 0] = jnp.where(valid, values, 0)
 
 
 @functools.partial(jax.jit, static_argnames=("tokens", "chunk_size"))

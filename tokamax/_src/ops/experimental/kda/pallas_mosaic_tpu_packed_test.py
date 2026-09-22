@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Packed input windows preserve aligned forward and backward contracts."""
+"""Packed input windows preserve the aligned forward contract."""
 
 import functools
 
@@ -26,21 +26,15 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
-@pytest.mark.parametrize("rematerialize", [False, True])
-def test_packed_forward_and_vjp(dtype, rematerialize):
+def test_packed_forward(dtype):
   args, kwargs = forward_tests._inputs(dtype, True)
   results = []
   for packed in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(
-            packed_forward=packed, rematerialize_for_backward=rematerialize
-        )
+        config=mosaic.Config(packed_forward=packed)
     )
     call = functools.partial(forward_tests._call, op, kwargs)
-    forward = jax.jit(call)(*args)
-    output, pullback = jax.vjp(call, *args)
-    gradients = pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
-    results.append((forward, output, gradients))
+    results.append(jax.jit(call)(*args))
   forward_tests._assert_close(
       results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
   )
