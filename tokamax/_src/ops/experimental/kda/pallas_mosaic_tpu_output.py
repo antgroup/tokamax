@@ -50,6 +50,12 @@ def _compact_output_kernel(
           ),
           :,
       ]
+      token = jax.lax.broadcasted_iota(
+          jnp.int32, values.shape, dimension=1
+      )
+      values = jnp.where(
+          chunk * chunk_size + token < length, values, 0
+      )
       # Token-major scratch makes arbitrary packed starts a major-axis slice.
       # Later sequences overwrite the preceding sequence's copied tail.
       packed_ref[pl.ds(start + chunk * chunk_size, chunk_size), :, :] = (
@@ -57,11 +63,7 @@ def _compact_output_kernel(
       )
 
   values = packed_ref[:tokens].transpose(1, 0, 2)
-  # Materialize the predicate at the destination rank. Broadcasting a 1-D
-  # i1 vector through the tiled output can produce an illegal TPU shape cast.
-  token = jax.lax.broadcasted_iota(jnp.int32, values.shape, dimension=1)
-  valid = token < original_ref[batch, -1]
-  output_ref[:, 0] = jnp.where(valid, values, 0)
+  output_ref[:, 0] = values
 
 
 @functools.partial(jax.jit, static_argnames=("tokens", "chunk_size"))
