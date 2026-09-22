@@ -54,8 +54,11 @@ def test_full_gradient_compaction(dtype, rematerialize):
     results.append(
         pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
     )
-  # Compaction changes token placement only, including final dtype casts.
-  forward_tests._assert_close(results[1], results[0], tolerance=0)
+  # Compaction changes token placement only. Separate XLA compilations can
+  # still schedule the preceding FP32 reductions differently by a few ULPs.
+  forward_tests._assert_close(
+      results[1], results[0], tolerance=0 if dtype == jnp.bfloat16 else 1e-7
+  )
 
 
 def test_fixed_length_retains_existing_path(monkeypatch):
