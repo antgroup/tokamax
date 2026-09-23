@@ -19,6 +19,8 @@ Run from the repository root, for example:
 
 The four suites correspond to the forward, backward, CP backward and inference
 PRs. Later suites are only available on branches containing those features.
+To compare with openxla/tokamax PR #1103, check out its pinned head in a
+separate tree, copy this script into that tree, and pass ``--baseline``.
 """
 
 import argparse
@@ -45,7 +47,7 @@ def _report(name, fn, args, iterations):
   }), flush=True)
 
 
-def _training(suite, iterations):
+def _training(suite, iterations, baseline):
   # Non-64-aligned boundaries exercise native packed I/O.
   heads, batch, tokens, dim = 8, 1, 1024, 128
   key = jax.random.key(19)
@@ -74,7 +76,10 @@ def _training(suite, iterations):
     ).astype(jnp.int32)
     example["max_num_segments"] = 4
 
-  if suite == "forward":
+  if baseline:
+    configs = [("upstream-1103", mosaic.Config())]
+    mode = "forward" if suite.startswith("forward") else "forward_and_vjp"
+  elif suite == "forward":
     configs = [("staged", mosaic.Config(fuse_forward=False)),
                ("fused", mosaic.Config(fuse_forward=True))]
     mode = "forward"
@@ -102,7 +107,7 @@ def _training(suite, iterations):
     _report(f"{suite}/{name}", fn, args, iterations)
 
 
-def _cp(iterations):
+def _cp(iterations, baseline):
   import numpy as np
   from jax.sharding import Mesh, PartitionSpec as P
   from tokamax._src import jaxtyping
@@ -123,9 +128,10 @@ def _cp(iterations):
   beta = jnp.full(q.shape[:-1], 0.5)
   segments = jnp.ones((batch, tokens), jnp.int32)
   spec = P(None, None, "context", None)
-  for fused in (False, True):
+  for fused in ((False,) if baseline else (False, True)):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(cp_megakernel=fused))
+        config=mosaic.Config() if baseline else
+        mosaic.Config(cp_megakernel=fused))
 
     def local(q, k, v, g, beta, segments):
       def forward(q, k, v, g, beta):
@@ -141,13 +147,16 @@ def _cp(iterations):
                                    P(None, "context")),
           out_specs=(spec,) * 4 + (P(None, None, "context"),),
           check_vma=False)
-      _report("cp/megakernel" if fused else "cp/staged",
+      _report("cp/upstream-1103" if baseline else
+              ("cp/megakernel" if fused else "cp/staged"),
               lambda x: mapped(*x), (q, k, v, g, beta, segments),
               iterations)
 
 
-def _inference(iterations, tokens):
-  from tokamax._src.ops.experimental.kda import api, inference
+def _inference(iterations, tokens, baseline):
+  from tokamax._src.ops.experimental.kda import api
+  if not baseline:
+    from tokamax._src.ops.experimental.kda import inference
 
   heads, dim = 8, 128
   q, k, v, g = [
@@ -174,9 +183,11 @@ def _inference(iterations, tokens):
         *x, **kwargs, use_qk_l2norm_in_kernel=True)
 
   args = (q, k, v, g, beta)
-  _report(f"inference-t{tokens}/existing-mosaic-forward",
+  _report(f"inference-t{tokens}/" + (
+      "upstream-1103" if baseline else "existing-mosaic-forward"),
           existing_mosaic_forward, args, iterations)
-  _report(f"inference-t{tokens}/native", native, args, iterations)
+  if not baseline:
+    _report(f"inference-t{tokens}/native", native, args, iterations)
 
 
 def main():
@@ -187,15 +198,17 @@ def main():
   parser.add_argument("--iterations", type=int, default=10)
   parser.add_argument("--tokens", type=int, default=512,
                       help="Inference sequence length (default: 512)")
+  parser.add_argument("--baseline", action="store_true",
+                      help="Run only the default KDA path, for PR #1103")
   args = parser.parse_args()
   if jax.default_backend() != "tpu":
     raise RuntimeError("KDA megakernel benchmarks require a TPU")
   if args.suite == "cp":
-    _cp(args.iterations)
+    _cp(args.iterations, args.baseline)
   elif args.suite == "inference":
-    _inference(args.iterations, args.tokens)
+    _inference(args.iterations, args.tokens, args.baseline)
   else:
-    _training(args.suite, args.iterations)
+    _training(args.suite, args.iterations, args.baseline)
 
 
 if __name__ == "__main__":
