@@ -2025,7 +2025,13 @@ def chunk_kda_bwd_custom(
   # ============= assert input shapes and static properties =============
   # initial_state/dht: [B, H, K, V] (non-varlen) or [N, H, K, V] (varlen)
 
-  if cp_megakernel and _cp_active and K % 128 == 0 and V % 128 == 0:
+  if (
+      cp_megakernel
+      and _cp_active
+      and q.dtype == jnp.bfloat16
+      and K % 128 == 0
+      and V % 128 == 0
+  ):
     from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu_cp_megakernel as mega
     if use_gate_in_kernel:
       g = kda_gate_chunk_cumsum(
