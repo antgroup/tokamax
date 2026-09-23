@@ -162,7 +162,7 @@ def _inference(iterations, tokens):
                 use_gate_in_kernel=True, lower_bound=-5.0,
                 max_num_segments=2)
 
-  def staged(x):
+  def existing_mosaic_forward(x):
     q, k, v, g, beta = x
     return api.kimi_delta_attention(
         *(z.transpose(2, 0, 1, 3) for z in (q, k, v, g)),
@@ -174,7 +174,8 @@ def _inference(iterations, tokens):
         *x, **kwargs, use_qk_l2norm_in_kernel=True)
 
   args = (q, k, v, g, beta)
-  _report(f"inference-t{tokens}/staged", staged, args, iterations)
+  _report(f"inference-t{tokens}/existing-mosaic-forward",
+          existing_mosaic_forward, args, iterations)
   _report(f"inference-t{tokens}/native", native, args, iterations)
 
 
