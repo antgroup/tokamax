@@ -107,7 +107,7 @@ def _training(suite, iterations, baseline):
     _report(f"{suite}/{name}", fn, args, iterations)
 
 
-def _cp(iterations, baseline):
+def _cp(iterations, baseline, tokens):
   import numpy as np
   from jax.sharding import Mesh, PartitionSpec as P
   from tokamax._src import jaxtyping
@@ -118,7 +118,7 @@ def _cp(iterations, baseline):
     raise RuntimeError("CP benchmark requires four TPU devices")
   mesh = Mesh(np.array(jax.devices()[:cp_size]), ("context",))
   meta = ContextParallelMetadata(mesh=mesh, axis_name="context")
-  heads, batch, tokens, dim = 8, 2, 512, 128
+  heads, batch, dim = 8, 2, 128
   keys = jax.random.split(jax.random.key(97), 3)
   q, k, v = [
       jax.random.normal(x, (heads, batch, tokens, dim), jnp.bfloat16)
@@ -147,8 +147,8 @@ def _cp(iterations, baseline):
                                    P(None, "context")),
           out_specs=(spec,) * 4 + (P(None, None, "context"),),
           check_vma=False)
-      _report("cp/upstream-1103" if baseline else
-              ("cp/megakernel" if fused else "cp/staged"),
+      _report(f"cp-t{tokens}/" + ("upstream-1103" if baseline else
+              ("megakernel" if fused else "staged")),
               lambda x: mapped(*x), (q, k, v, g, beta, segments),
               iterations)
 
@@ -198,13 +198,15 @@ def main():
   parser.add_argument("--iterations", type=int, default=10)
   parser.add_argument("--tokens", type=int, default=512,
                       help="Inference sequence length (default: 512)")
+  parser.add_argument("--cp-tokens", type=int, default=512,
+                      help="Global CP sequence length (default: 512)")
   parser.add_argument("--baseline", action="store_true",
                       help="Run only the default KDA path, for PR #1103")
   args = parser.parse_args()
   if jax.default_backend() != "tpu":
     raise RuntimeError("KDA megakernel benchmarks require a TPU")
   if args.suite == "cp":
-    _cp(args.iterations, args.baseline)
+    _cp(args.iterations, args.baseline, args.cp_tokens)
   elif args.suite == "inference":
     _inference(args.iterations, args.tokens, args.baseline)
   else:
