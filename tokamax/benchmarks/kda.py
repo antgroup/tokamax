@@ -72,6 +72,11 @@ class KdaBenchmark(parameterized.TestCase):
           "mosaic_fwd_fused",
           "mosaic_packed_inputs",
           "mosaic_packed_outputs",
+          "mosaic_fused",
+          "mosaic_packed_backward",
+          "mosaic_packed_gradients",
+          "mosaic_remat",
+          "mosaic_remat_fused",
       ),
       benchmark_mode=("forward", "forward_and_vjp"),
       args_spec_name=tuple(EXAMPLES.keys()),
@@ -98,8 +103,35 @@ class KdaBenchmark(parameterized.TestCase):
           config=pallas_mosaic_tpu.Config(
               fuse_forward=implementation != "mosaic_staged",
               packed_forward=implementation
-              in ("mosaic_packed_inputs", "mosaic_packed_outputs"),
-              packed_output=implementation == "mosaic_packed_outputs",
+              in (
+                  "mosaic_packed_inputs",
+                  "mosaic_packed_outputs",
+                  "mosaic_packed_backward",
+                  "mosaic_packed_gradients",
+              ),
+              packed_output=implementation
+              in (
+                  "mosaic_packed_outputs",
+                  "mosaic_packed_backward",
+                  "mosaic_packed_gradients",
+              ),
+              fuse_backward=implementation
+              in (
+                  "mosaic_fused",
+                  "mosaic_packed_inputs",
+                  "mosaic_packed_outputs",
+                  "mosaic_packed_backward",
+                  "mosaic_packed_gradients",
+                  "mosaic_remat",
+                  "mosaic_remat_fused",
+              ),
+              packed_backward=implementation
+              in ("mosaic_packed_backward", "mosaic_packed_gradients"),
+              packed_gradients=implementation == "mosaic_packed_gradients",
+              rematerialize_for_backward=implementation.startswith(
+                  "mosaic_remat"
+              ),
+              fuse_rematerialization=implementation == "mosaic_remat_fused",
           )
       )
     fn, args = tokamax.standardize_function(
