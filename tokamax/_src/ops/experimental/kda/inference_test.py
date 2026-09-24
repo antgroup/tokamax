@@ -167,7 +167,10 @@ def test_inference_shared_segment_map(batch):
   expected = api.kimi_delta_attention(
       *[x.transpose(2, 0, 1, 3) for x in (q, k, v, g)],
       beta.transpose(2, 0, 1),
-      segment_ids=jnp.array(ids_1d),
+      # The XLA reference only accepts the documented [B, T] layout, so
+      # broadcast the shared map here; the inference wrapper under test must
+      # handle the raw 1D form.
+      segment_ids=jnp.broadcast_to(ids_1d[None], (batch, t)),
       a_log=alog,
       delta_time_bias=bias,
       use_qk_l2norm=True,
