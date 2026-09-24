@@ -1303,10 +1303,13 @@ def _saved_state_backward_kernel(
     kg_ref[:, 0, 0] = (k * jnp.exp2(g[:, -1:] - g)).astype(kg_ref.dtype)
     v_new_ref[...] = rematerialized_v_new_ref[...]
   else:
+    # Load beta before dropping its trailing singleton dimension. Passing a
+    # squeezed Ref view is illegal for the nested tiled VMEM layout.
+    beta_tile = beta_ref[:, 0, 0].reshape(MB, BT)
     _fused_recompute_w_u_vnew_from_h_kernel(
         k_ref.at[:, 0, 0],
         v_ref.at[:, 0, 0],
-        beta_ref.at[:, 0, 0, :, 0],
+        beta_tile,
         akk_ref.at[:, 0, 0],
         q_ref.at[:, 0, 0],
         g_ref.at[:, 0, 0],
