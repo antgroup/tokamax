@@ -112,3 +112,81 @@ def test_cp_megakernel(dtype, split, state_policy, cp_size):
   if dtype == jnp.bfloat16:
     for gradients in results[:2]:
       f._assert_close(gradients, results[2], tolerance=0.02)
+
+
+@pytest.mark.parametrize("state_policy", ["saved", "remat"])
+@pytest.mark.parametrize("cp_size", [2, 4])
+def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
+  """The CP megakernel must return dh0 when an initial_state is supplied.
+
+  Regression test: ``return_dh0=False`` used to discard the initial-state
+  gradient, so the VJP substituted zeros and training could not propagate
+  through the supplied state.
+  """
+  if jax.device_count() < cp_size:
+    pytest.skip("Requires enough devices for the CP mesh")
+  mesh = Mesh(np.array(jax.devices()[:cp_size]), ("context",))
+  meta = ContextParallelMetadata(mesh=mesh, axis_name="context")
+  tokens = 128 * cp_size
+  keys = jax.random.split(jax.random.key(103), 4)
+  q = (jax.random.normal(keys[0], (2, 2, tokens, 128)) * 0.05).astype(jnp.bfloat16)
+  k = (jax.random.normal(keys[1], q.shape) * 0.05).astype(jnp.bfloat16)
+  v = jax.random.normal(keys[2], q.shape).astype(jnp.bfloat16)
+  g = jnp.full_like(q, -0.01)
+  beta = jnp.full(q.shape[:-1], 0.5, jnp.bfloat16)
+  segments = jnp.ones((2, tokens), jnp.int32)
+  initial_state = jax.random.normal(
+      keys[3], (2, 2, 2, 128, 128), jnp.float32
+  ) * 0.05
+
+  kernels.chunk_kda_bwd_custom.clear_cache()
+  results = []
+  for fused in (False, True):
+    op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+        config=mosaic.Config(
+            cp_megakernel=fused is True,
+            rematerialize_for_backward=state_policy != "saved",
+            fuse_rematerialization=state_policy == "remat",
+        )
+    )
+
+    def local(q, k, v, g, beta, segments, initial_state):
+      def forward(q, k, v, g, beta, initial_state):
+        return op(
+            q,
+            k,
+            v,
+            g,
+            beta,
+            segment_ids=segments,
+            max_num_segments=2,
+            initial_state=initial_state,
+            context_parallel_metadata=meta,
+        )[0]
+
+      out, back = jax.vjp(forward, q, k, v, g, beta, initial_state)
+      return back(jnp.ones_like(out))
+
+    spec = P(None, None, "context", None)
+    with jaxtyping.disable_jaxtyping(), jax.set_mesh(mesh):
+      grads = jax.jit(
+          jax.shard_map(
+              local,
+              mesh=mesh,
+              in_specs=(spec,) * 4
+              + (P(None, None, "context"), P(None, "context"), None),
+              out_specs=(spec,) * 4
+              + (P(None, None, "context"), None),
+              check_vma=False,
+          )
+      )(q, k, v, g, beta, segments, initial_state)
+    results.append(grads)
+
+  # The fused CP megakernel must match the staged CP backward, including the
+  # initial-state gradient (grads[-1]).
+  f._assert_close(results[1], results[0], tolerance=0.02)
+  # A zero initial-state gradient indicates the discarded-dh0 regression.
+  max_grad = jnp.max(jnp.abs(results[1][-1]))
+  assert max_grad > 1e-6, (
+      "CP megakernel initial_state gradient is zero; dh0 was discarded"
+  )
