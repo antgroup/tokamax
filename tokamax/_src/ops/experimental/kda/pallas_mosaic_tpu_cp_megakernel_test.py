@@ -169,7 +169,7 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
       # The forward replaced the (absent) user state with the CP-prepared
       # zeros state; simulate a caller that did supply one.
       residuals = dataclasses.replace(residuals, initial_state=initial_state)
-      return kernels.chunk_kda_bwd_custom(
+      result = kernels.chunk_kda_bwd_custom(
           128**-0.5,
           False,
           False,
@@ -185,6 +185,14 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
           fuse_rematerialization=state_policy == "remat",
           cp_megakernel=fused is True,
       )
+      # Return a uniform pytree: the backward tuple keeps its None leaves
+      # (dA, dbias, placeholder), which shard_map out_specs cannot describe.
+      # The staged CP path frees initial_state before its state collective
+      # and returns dh0=None; substitute zeros to keep the trees identical.
+      dh0 = result[7]
+      if dh0 is None:
+        dh0 = jnp.zeros_like(initial_state)
+      return (result[0], result[1], result[2], result[4], result[3], dh0)
 
     spec = P(None, None, "context", None)
     with jaxtyping.disable_jaxtyping(), jax.set_mesh(mesh):
@@ -194,26 +202,21 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
               mesh=mesh,
               in_specs=(spec,) * 4
               + (P(None, None, "context"), P(None, "context"), None),
-              # The backward tuple flattens away its None leaves (dA, dbias,
-              # trailing placeholder), leaving six arrays; db is rank-3
-              # [H, B, T] and dh0 (index 5) is replicated.
-              out_specs=(spec,) * 4
-              + (P(None, None, "context"), P(None, None)),
+              # (dq, dk, dv, db, dg, dh0): db is rank-3 [H, B, T] and the
+              # replicated dh0 is [B, N, H, K, V].
+              out_specs=(spec,) * 3
+              + (P(None, None, "context"), spec, P(None, None)),
               check_vma=False,
           )
       )(q, k, v, g, beta, segments, initial_state)
     results.append(grads)
 
   # The fused CP megakernel must match the staged CP backward on the token
-  # gradients. The staged CP path frees initial_state before its state
-  # collective and therefore never returns dh0, so the initial-state gradient
-  # (index 7 of the backward tuple) is asserted on the fused path directly.
+  # gradients (dq, dk, dv, db, dg). The staged path never returns dh0 (its
+  # zeros placeholder occupies index 5), so the initial-state gradient is
+  # asserted on the fused path directly.
   f._assert_close(results[1][:5], results[0][:5], tolerance=0.02)
-  assert results[1][7] is not None, (
-      "CP megakernel discarded dh0 despite a caller-reported initial state"
-  )
-  # A zero initial-state gradient indicates the discarded-dh0 regression.
-  max_grad = jnp.max(jnp.abs(results[1][7]))
+  max_grad = jnp.max(jnp.abs(results[1][5]))
   assert max_grad > 1e-6, (
       "CP megakernel initial_state gradient is zero; dh0 was discarded"
   )
