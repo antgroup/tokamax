@@ -124,3 +124,58 @@ def test_reject_unsupported_options(invalid):
     kwargs["initial_state"] = jnp.zeros((1, 1, 2, 128, 128), jnp.bfloat16)
   with pytest.raises(ValueError):
     inference.kimi_delta_attention_inference(q, q, q, q, beta, **kwargs)
+
+
+@pytest.mark.parametrize("batch", [1, 3])
+def test_inference_shared_segment_map(batch):
+  """A 1D [T] segment_ids must work for every batch size.
+
+  Regression test: the wrapper used to expand [T] to [1, T], so B>1 inputs
+  failed the shape check even though the native kernel broadcasts the map.
+  """
+  h, t, d = 2, 128, 128
+  keys = jax.random.split(jax.random.key(53), 6)
+  q, k, v, g = [
+      jax.random.normal(key, (batch, t, h, d)).astype(jnp.bfloat16)
+      for key in keys[:4]
+  ]
+  beta = jnp.full((batch, t, h), 0.5, jnp.bfloat16)
+  lengths = (64, 64)
+  ids_1d = np.zeros((t,), np.int32)
+  start = 0
+  for i, length in enumerate(lengths):
+    ids_1d[start : start + length] = i + 1
+    start += length
+  n = len(lengths) + 1
+  alog = jnp.zeros((h,), jnp.float32)
+  bias = jnp.full((h * d,), -2.0, jnp.float32)
+  actual = inference.kimi_delta_attention_inference(
+      q,
+      k,
+      v,
+      g,
+      beta,
+      segment_ids=jnp.array(ids_1d),
+      a_log=alog,
+      delta_time_bias=bias,
+      use_qk_l2norm_in_kernel=True,
+      use_gate_in_kernel=True,
+      lower_bound=-5.0,
+      max_num_segments=n,
+  )
+  jax.block_until_ready(actual)
+  expected = api.kimi_delta_attention(
+      *[x.transpose(2, 0, 1, 3) for x in (q, k, v, g)],
+      beta.transpose(2, 0, 1),
+      segment_ids=jnp.array(ids_1d),
+      a_log=alog,
+      delta_time_bias=bias,
+      use_qk_l2norm=True,
+      use_gate_in_kernel=True,
+      lower_bound=-5.0,
+      max_num_segments=n,
+      implementation="xla",
+  )
+  f._assert_close(
+      (actual[0].transpose(2, 0, 1, 3), actual[1]), expected, tolerance=0.05
+  )

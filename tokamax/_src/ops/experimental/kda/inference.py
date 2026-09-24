@@ -101,7 +101,12 @@ def kimi_delta_attention_inference(
   if q.shape[1] % 64:
     raise ValueError("T must be padded to a multiple of 64")
   if segment_ids.ndim == 1:
-    segment_ids = segment_ids[None, :]
+    # A shared [T] segment map covers every batch element, so broadcast it
+    # to the documented [B, T] form. The native kernel already accepts this
+    # broadcast semantics for a 1D map; only the shape check rejected it.
+    segment_ids = jnp.broadcast_to(
+        segment_ids[None, :], (q.shape[0], segment_ids.shape[0])
+    )
   if segment_ids.shape != q.shape[:2]:
     raise ValueError(
         f"segment_ids must have shape {q.shape[:2]}, got {segment_ids.shape}"
