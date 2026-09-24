@@ -14,6 +14,8 @@
 # ==============================================================================
 """CP saved-state and rematerialized local fusion across real shard_map collectives."""
 
+import dataclasses
+
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -117,11 +119,12 @@ def test_cp_megakernel(dtype, split, state_policy, cp_size):
 @pytest.mark.parametrize("state_policy", ["saved", "remat"])
 @pytest.mark.parametrize("cp_size", [2, 4])
 def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
-  """The CP megakernel must return dh0 when an initial_state is supplied.
+  """The CP megakernel must return dh0 for a caller-reported initial state.
 
   Regression test: ``return_dh0=False`` used to discard the initial-state
-  gradient, so the VJP substituted zeros and training could not propagate
-  through the supplied state.
+  gradient, so a VJP would substitute zeros and training could not propagate
+  through the supplied state. The public op currently rejects CP with an
+  initial_state, so this exercises the backward boundary directly.
   """
   if jax.device_count() < cp_size:
     pytest.skip("Requires enough devices for the CP mesh")
@@ -135,6 +138,7 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
   g = jnp.full_like(q, -0.01)
   beta = jnp.full(q.shape[:-1], 0.5, jnp.bfloat16)
   segments = jnp.ones((2, tokens), jnp.int32)
+  # Simulated user-supplied initial state, varlen form [B, N, H, K, V].
   initial_state = jax.random.normal(
       keys[3], (2, 2, 2, 128, 128), jnp.float32
   ) * 0.05
@@ -151,21 +155,36 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
     )
 
     def local(q, k, v, g, beta, segments, initial_state):
-      def forward(q, k, v, g, beta, initial_state):
-        return op(
-            q,
-            k,
-            v,
-            g,
-            beta,
-            segment_ids=segments,
-            max_num_segments=2,
-            initial_state=initial_state,
-            context_parallel_metadata=meta,
-        )[0]
-
-      out, back = jax.vjp(forward, q, k, v, g, beta, initial_state)
-      return back(jnp.ones_like(out))
+      (o, _), residuals = op(
+          q,
+          k,
+          v,
+          g,
+          beta,
+          segment_ids=segments,
+          max_num_segments=2,
+          context_parallel_metadata=meta,
+          return_residuals=True,
+      )
+      # The forward replaced the (absent) user state with the CP-prepared
+      # zeros state; simulate a caller that did supply one.
+      residuals = dataclasses.replace(residuals, initial_state=initial_state)
+      return kernels.chunk_kda_bwd_custom(
+          128**-0.5,
+          False,
+          False,
+          None,
+          residuals.h is not None,
+          meta,
+          64,
+          2,
+          True,
+          residuals,
+          (jnp.ones_like(o), None),
+          fuse_backward=True,
+          fuse_rematerialization=state_policy == "remat",
+          cp_megakernel=fused is True,
+      )
 
     spec = P(None, None, "context", None)
     with jaxtyping.disable_jaxtyping(), jax.set_mesh(mesh):
@@ -175,18 +194,20 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
               mesh=mesh,
               in_specs=(spec,) * 4
               + (P(None, None, "context"), P(None, "context"), None),
-              out_specs=(spec,) * 4
-              + (P(None, None, "context"), None),
+              out_specs=(spec,) * 5 + (None, None, None, None),
               check_vma=False,
           )
       )(q, k, v, g, beta, segments, initial_state)
     results.append(grads)
 
   # The fused CP megakernel must match the staged CP backward, including the
-  # initial-state gradient (grads[-1]).
+  # initial-state gradient (index 7 of the backward tuple).
   f._assert_close(results[1], results[0], tolerance=0.02)
+  assert results[1][7] is not None, (
+      "CP megakernel discarded dh0 despite a caller-reported initial state"
+  )
   # A zero initial-state gradient indicates the discarded-dh0 regression.
-  max_grad = jnp.max(jnp.abs(results[1][-1]))
+  max_grad = jnp.max(jnp.abs(results[1][7]))
   assert max_grad > 1e-6, (
       "CP megakernel initial_state gradient is zero; dh0 was discarded"
   )

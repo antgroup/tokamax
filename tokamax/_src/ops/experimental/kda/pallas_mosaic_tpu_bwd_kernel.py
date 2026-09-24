@@ -2063,11 +2063,17 @@ def chunk_kda_bwd_custom(
         cp_axis_name=context_parallel_metadata.axis_name,
         # The VJP substitutes zeros for a missing dh0, so training cannot
         # propagate through a supplied initial_state unless we request it.
+        # Use the caller-reported flag: in CP the forward replaces a missing
+        # user state with the CP-prepared zeros state, so `initial_state is
+        # not None` would always be true here.
         N_MAX=max_num_segments,
-        return_dh0=initial_state is not None,
-        has_initial_state=initial_state is not None,
+        return_dh0=has_initial_state,
+        has_initial_state=has_initial_state,
     )
     initial_state = None
+    # The shared empty-sequence fixup below reads dht_m4; bind it here so the
+    # staged-only assignment does not leave it unbound on the mega path.
+    dht_m4 = dht
   else:
     # CP still needs w/qg/kg and dv before its state-gradient collective.
     # Rematerialization retains CP state reconstruction before that barrier.
