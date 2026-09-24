@@ -2061,14 +2061,18 @@ def chunk_kda_bwd_custom(
         cp_active=True, cp_context=context_parallel_metadata,
         cp_size=context_parallel_metadata.cp_size,
         cp_axis_name=context_parallel_metadata.axis_name,
-        # The VJP substitutes zeros for a missing dh0, so training cannot
-        # propagate through a supplied initial_state unless we request it.
-        # Use the caller-reported flag: in CP the forward replaces a missing
-        # user state with the CP-prepared zeros state, so `initial_state is
-        # not None` would always be true here.
+        # `return_dh0` and `has_initial_state` answer different questions:
+        # the former follows the caller's intent (propagate the gradient of a
+        # user-supplied state through the VJP), while the latter tells the
+        # kernel whether a recurrence seed actually exists. In CP the forward
+        # replaces a missing user state with the CP-prepared state merged from
+        # the previous rank, so `initial_state is not None` is always true
+        # here and that state must seed the recurrence regardless of user
+        # intent; passing the caller flag instead would drop the seed and
+        # corrupt the gradients.
         N_MAX=max_num_segments,
         return_dh0=has_initial_state,
-        has_initial_state=has_initial_state,
+        has_initial_state=initial_state is not None,
     )
     initial_state = None
     # The shared empty-sequence fixup below reads dht_m4; bind it here so the
