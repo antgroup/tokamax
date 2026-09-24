@@ -63,7 +63,12 @@ def _inputs(dtype, packed, *, key_dim=128, heads=1, batch=1):
   beta = jax.nn.sigmoid(normal(keys[4], shape[:-1]))
   # Include a non-chunk-aligned boundary, padding, and an empty state slot.
   segment_ids = (
-      jnp.array([[1] * 17 + [2] * 79 + [0] * 32], jnp.int32) if packed else None
+      jnp.broadcast_to(
+          jnp.array([[1] * 17 + [2] * 79 + [0] * 32], jnp.int32),
+          (batch, tokens),
+      )
+      if packed
+      else None
   )
   states = 3 if packed else 1
   h0 = 0.1 * normal(keys[5], (batch, states, heads, key_dim, value_dim))
