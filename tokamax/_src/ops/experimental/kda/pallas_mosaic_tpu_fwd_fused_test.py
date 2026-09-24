@@ -48,8 +48,8 @@ def interpret_on_cpu(monkeypatch):
   )
 
 
-def _inputs(dtype, packed, *, key_dim=128):
-  heads, batch, tokens, value_dim = 1, 1, 128, 128
+def _inputs(dtype, packed, *, key_dim=128, heads=1, batch=1):
+  heads, batch, tokens, value_dim = heads, batch, 128, 128
   keys = jax.random.split(jax.random.key(31), 8)
 
   def normal(key, shape):
@@ -247,6 +247,40 @@ def test_forward_without_state(packed):
     results.append(jax.jit(functools.partial(_call, op, kwargs))(*args))
   _assert_close(results[1], results[0], tolerance=0.002)
   assert results[1][1] is None
+
+
+@pytest.mark.parametrize("heads", [2, 4])
+@pytest.mark.parametrize("packed", [False, True])
+def test_multi_head_forward_and_vjp(heads, packed):
+  """Fused and staged kernels must agree with XLA for multiple heads.
+
+  Regression test: the suite only exercised ``heads=1``, where Mosaic's
+  (8, 128) tiling pads the singleton head dimension to eight tiles and
+  masked the multi-head code path entirely.  Uses a nontrivial mini batch
+  to keep the head and batch axes distinct.
+  """
+  args, kwargs = _inputs(jnp.bfloat16, packed, heads=heads, batch=2)
+  results = []
+  for fuse in (False, True):
+    op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+        config=mosaic.Config(fuse_forward=fuse, rematerialize_for_backward=True)
+    )
+    call = functools.partial(_call, op, kwargs)
+    output, pullback = jax.vjp(call, *args)
+    cotangents = jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output)
+    gradients = pullback(cotangents)
+    results.append((output, gradients))
+  _assert_close(results[1], results[0], tolerance=0.002)
+
+  reference = functools.partial(api.kimi_delta_attention, implementation="xla")
+  expected_output, _ = jax.vjp(
+      functools.partial(_call, reference, kwargs), *args
+  )
+  _assert_close(
+      results[1][0],
+      expected_output,
+      tolerance=0.05,
+  )
 
 
 @pytest.mark.parametrize("rematerialize", [False, True])
