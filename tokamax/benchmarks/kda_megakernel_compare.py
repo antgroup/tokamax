@@ -28,6 +28,7 @@ import json
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 import tokamax
 from tokamax._src.ops.experimental.kda import pallas_mosaic_tpu as mosaic
 
@@ -47,9 +48,9 @@ def _report(name, fn, args, iterations):
   }), flush=True)
 
 
-def _training(suite, iterations, baseline):
+def _training(suite, iterations, baseline, heads, tokens, num_segments):
   # Non-64-aligned boundaries exercise native packed I/O.
-  heads, batch, tokens, dim = 8, 1, 1024, 128
+  batch, dim = 1, 128
   key = jax.random.key(19)
   q, k, v = [
       jax.random.normal(x, (heads, batch, tokens, dim), jnp.bfloat16)
@@ -69,12 +70,18 @@ def _training(suite, iterations, baseline):
       output_final_state=False,
   )
   if suite in ("forward-packed", "backward-packed"):
-    example["segment_ids"] = jnp.where(
-        jnp.arange(tokens)[None, :] < 239, 1,
-        jnp.where(jnp.arange(tokens)[None, :] < 496, 2,
-                  jnp.where(jnp.arange(tokens)[None, :] < 737, 3, 4)),
-    ).astype(jnp.int32)
-    example["max_num_segments"] = 4
+    if (tokens, num_segments) == (1024, 4):
+      boundaries = (239, 496, 737, 1024)
+      lengths = np.diff((0, *boundaries))
+    else:
+      segment_len, remainder = divmod(tokens, num_segments)
+      lengths = np.full(num_segments, segment_len, dtype=np.int32)
+      lengths[:remainder] += 1
+    segment_ids = np.repeat(
+        np.arange(1, num_segments + 1, dtype=np.int32), lengths
+    )
+    example["segment_ids"] = jnp.asarray(segment_ids[None, :])
+    example["max_num_segments"] = num_segments
 
   if baseline:
     configs = [("upstream-1103", mosaic.Config())]
@@ -108,7 +115,6 @@ def _training(suite, iterations, baseline):
 
 
 def _cp(iterations, baseline, tokens):
-  import numpy as np
   from jax.sharding import Mesh, PartitionSpec as P
   from tokamax._src import jaxtyping
   from tokamax._src.ops.experimental.kda.cp_utils import ContextParallelMetadata
@@ -198,6 +204,12 @@ def main():
   parser.add_argument("--iterations", type=int, default=10)
   parser.add_argument("--tokens", type=int, default=512,
                       help="Inference sequence length (default: 512)")
+  parser.add_argument("--training-tokens", type=int, default=1024,
+                      help="Training sequence length (default: 1024)")
+  parser.add_argument("--heads", type=int, default=8,
+                      help="Training head count (default: 8)")
+  parser.add_argument("--num-segments", type=int, default=4,
+                      help="Packed training segment count (default: 4)")
   parser.add_argument("--cp-tokens", type=int, default=512,
                       help="Global CP sequence length (default: 512)")
   parser.add_argument("--baseline", action="store_true",
@@ -210,7 +222,12 @@ def main():
   elif args.suite == "inference":
     _inference(args.iterations, args.tokens, args.baseline)
   else:
-    _training(args.suite, args.iterations, args.baseline)
+    if args.training_tokens <= 0 or args.heads <= 0:
+      parser.error("--training-tokens and --heads must be positive")
+    if not 0 < args.num_segments <= args.training_tokens:
+      parser.error("--num-segments must be in [1, --training-tokens]")
+    _training(args.suite, args.iterations, args.baseline, args.heads,
+              args.training_tokens, args.num_segments)
 
 
 if __name__ == "__main__":
