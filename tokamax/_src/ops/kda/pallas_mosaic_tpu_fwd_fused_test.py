@@ -121,7 +121,9 @@ def test_forward_and_existing_vjp(dtype, packed, rematerialize):
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
-            fuse_forward=fuse, rematerialize_for_backward=rematerialize
+            fuse_backward=True,
+            fuse_forward=fuse,
+            rematerialize_for_backward=rematerialize,
         ),
     )
     call = functools.partial(_call, op, kwargs)
@@ -142,33 +144,7 @@ def test_forward_and_existing_vjp(dtype, packed, rematerialize):
       tolerance=0.05 if dtype == jnp.bfloat16 else 0.002,
   )
 
-  # Match the existing KDA suite's gradient comparison domain: valid tokens
-  # and occupied state slots. This does not validate padding/empty-slot
-  # gradient semantics. Parameter gradients must remain finite in full.
-  actual_grads, expected_grads = results[1][2], results[0][2]
-  for index, (actual, expected) in enumerate(
-      zip(actual_grads[:6], expected_grads[:6], strict=True)
-  ):
-    if packed:
-      if index == 5:
-        actual, expected = actual[:, :2], expected[:, :2]
-      else:
-        actual, expected = actual[:, :, :96], expected[:, :, :96]
-    _assert_close(actual, expected, tolerance=tolerance)
-  if packed and jax.default_backend() == "cpu":
-    # CPU interpretation initializes unwritten backward buffers to NaN.
-    # The unchanged raw-gate backward reduces these padding values into
-    # a_log/bias gradients in both paths. Keep this visible until validated
-    # on TPU; do not treat matching NaNs as a correctness pass.
-    baseline_parameters = jax.tree.leaves(expected_grads[6:])
-    if any(
-        not np.isfinite(np.asarray(x, np.float32)).all()
-        for x in baseline_parameters
-    ):
-      pytest.xfail(
-          "Staged CPU packed raw-gate backward has non-finite parameter gradients"
-      )
-  _assert_close(actual_grads[6:], expected_grads[6:], tolerance=tolerance)
+  _assert_close(results[1][2], results[0][2], tolerance=tolerance)
 
 
 @pytest.mark.parametrize("rematerialize", [False, True])
@@ -247,7 +223,7 @@ def test_forward_without_state(packed):
   results = []
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_forward=fuse),
+        config=mosaic.Config(fuse_backward=True, fuse_forward=fuse),
     )
     results.append(jax.jit(functools.partial(_call, op, kwargs))(*args))
   _assert_close(results[1], results[0], tolerance=0.002)
@@ -268,7 +244,11 @@ def test_multi_head_forward_and_vjp(heads, packed):
   results = []
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_forward=fuse, rematerialize_for_backward=True)
+        config=mosaic.Config(
+            fuse_backward=True,
+            fuse_forward=fuse,
+            rematerialize_for_backward=True,
+        )
     )
     call = functools.partial(_call, op, kwargs)
     output, pullback = jax.vjp(call, *args)
@@ -297,6 +277,7 @@ def test_fixed_raw_gate_parameter_gradients(rematerialize):
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
+            fuse_backward=True,
             fuse_forward=fuse,
             rematerialize_for_backward=rematerialize,
         ),
