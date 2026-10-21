@@ -69,7 +69,11 @@ class Config:
   normalization backward; beta retains its existing gather.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
   state rematerialization is fused separately with `fuse_rematerialization=True`;
-  CP retains its existing backward path.
+  `fuse_cp_backward=True` fuses the saved-state local reverse pass after
+  CP communication. With `fuse_rematerialization=True`, this also applies
+  to CP rematerialization, preserving its staged state reconstruction.
+  `cp_megakernel=True` selects the full CP core (including remote DMA)
+  instead, for 128-aligned K/V. It is opt-in pending TPU validation.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
@@ -82,6 +86,11 @@ class Config:
   packed_backward: bool = False
   packed_gradients: bool = False
   fuse_backward: bool = False
+  fuse_cp_backward: bool = False
+  cp_megakernel: bool = False
+  # Opt-in with the stateless CP workspace adapter. Cross-rank labels remain
+  # unchanged; only aligned backward state-slot indices become local ordinals.
+  cp_local_state_indices: bool = False
   # Opt-in until TPU compilation and device-time validation completes.
   fuse_rematerialization: bool = False
 
@@ -258,6 +267,7 @@ class PallasMosaicTpuKimiDeltaAttention(
       context_parallel_metadata: ContextParallelMetadata | None,
       chunk_size: int,
       max_num_segments: int | None,
+      local_state_indices: bool = False,
   ) -> _PreparedKdaInputs:
     """Canonicalizes inputs shared by the forward and backward kernels."""
     context_parallel_metadata, cu_seqlens = derive_context_parallel_metadata(
@@ -376,6 +386,17 @@ class PallasMosaicTpuKimiDeltaAttention(
           ]
       )
 
+    if local_state_indices and aligned_segment_ids is not None:
+      chunk_ids = aligned_segment_ids[:, ::chunk_size]
+      starts = jnp.concatenate(
+          (jnp.ones((chunk_ids.shape[0], 1), jnp.bool_),
+           chunk_ids[:, 1:] != chunk_ids[:, :-1]), axis=1,
+      )
+      ordinal = jnp.cumsum(starts & (chunk_ids != 0), axis=1, dtype=jnp.int32)
+      aligned_segment_ids = jnp.repeat(
+          jnp.where(chunk_ids != 0, ordinal, 0), chunk_size, axis=1
+      )
+
     if use_qk_l2norm:
       q_prepared, q_rstd = l2norm_fwd(q_aligned)
       k_prepared, k_rstd = l2norm_fwd(k_aligned)
@@ -436,6 +457,12 @@ class PallasMosaicTpuKimiDeltaAttention(
     )
     save_intermediates_for_backward = not config.rematerialize_for_backward
 
+    if config.cp_local_state_indices and not (
+        context_parallel_metadata is not None
+        and context_parallel_metadata.is_cp_enabled
+    ):
+      raise NotImplementedError("Local state indices require stateless CP training")
+
     # Reject unsupported calls before preprocessing or tracing a Pallas kernel,
     # so API dispatch can fall through to the next implementation.
     check_inputs_support(
@@ -463,6 +490,7 @@ class PallasMosaicTpuKimiDeltaAttention(
         context_parallel_metadata=context_parallel_metadata,
         chunk_size=chunk_size,
         max_num_segments=max_num_segments,
+        local_state_indices=config.cp_local_state_indices,
     )
 
     packed_inputs = None
@@ -622,6 +650,8 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         fuse_rematerialization=config.fuse_rematerialization,
         packed_inputs=packed_inputs,
         packed_gradients=config.packed_gradients,
+        fuse_cp_backward=config.fuse_cp_backward,
+        cp_megakernel=config.cp_megakernel,
     )
 
     grads = {

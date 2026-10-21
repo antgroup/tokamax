@@ -587,6 +587,15 @@ SHARDS: ShardMap = {
         ),
         minutes=15,
     ),
+    'experimental-kda-megakernel-cp': Spec(
+        paths=(
+            'tokamax/_src/ops/kda/pallas_mosaic_tpu_cp_fused_test.py',
+            'tokamax/_src/ops/kda/pallas_mosaic_tpu_cp_megakernel_test.py',
+            'tokamax/_src/ops/kda/pallas_mosaic_tpu_workspace_test.py',
+            'tokamax/_src/ops/kda/pallas_mosaic_tpu_workspace_tpu_test.py',
+        ),
+        minutes=10,
+    ),
     # The DeepSeek-V4 sparse MLA op, new since the last rebalance. Timed from
     # the catch-all of run 38087594559, where it was the only file group: 11.2m
     # on tpu7x for the `Run shard` step (1.4m on tpu6e, 1.1m on h100).
