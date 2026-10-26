@@ -103,7 +103,7 @@ Windows CPU, Python 3.12.14, JAX/JAXLIB 0.11.1:
 - KDA API/adapter tests: 36 passed, 9 subtests passed.
 - CI shard consistency and its 53 unit tests passed.
 
-TPU lowering, device correctness (including the CPU-xfailed cases), VMEM
+TPU lowering, device correctness, VMEM
 allocation, and staged/fused device-time measurements remain pending.
 No speedup is claimed from the CPU tests. Keep the PR in draft until these
 checks have completed; adjust the fused dispatch heuristic if measured

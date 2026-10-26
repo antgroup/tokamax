@@ -66,6 +66,10 @@ class PallasMosaicTpuKimiDeltaAttentionTest(parameterized.TestCase):
     self.assertFalse(config.fuse_forward)
     self.assertFalse(config.packed_forward)
     self.assertFalse(config.packed_output)
+    self.assertFalse(config.fuse_backward)
+    self.assertFalse(config.fuse_rematerialization)
+    self.assertFalse(config.packed_backward)
+    self.assertFalse(config.packed_gradients)
 
   def test_tpu_limits_use_pallas_hardware_info(self):
     tpu_info = types.SimpleNamespace(

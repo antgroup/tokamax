@@ -134,7 +134,9 @@ def test_forward_and_existing_vjp(dtype, packed, rematerialize):
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
-            fuse_forward=fuse, rematerialize_for_backward=rematerialize
+            fuse_backward=True,
+            fuse_forward=fuse,
+            rematerialize_for_backward=rematerialize,
         ),
     )
     call = functools.partial(_call, op, kwargs)
@@ -239,7 +241,7 @@ def test_forward_without_state(packed):
   results = []
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_forward=fuse),
+        config=mosaic.Config(fuse_backward=True, fuse_forward=fuse),
     )
     results.append(jax.jit(functools.partial(_call, op, kwargs))(*args))
   _assert_close(results[1], results[0], tolerance=0.002)
@@ -260,7 +262,11 @@ def test_multi_head_forward_and_vjp(heads, packed):
   results = []
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_forward=fuse, rematerialize_for_backward=True)
+        config=mosaic.Config(
+            fuse_backward=True,
+            fuse_forward=fuse,
+            rematerialize_for_backward=True,
+        )
     )
     call = functools.partial(_call, op, kwargs)
     output, pullback = jax.vjp(call, *args)
@@ -289,6 +295,7 @@ def test_fixed_raw_gate_parameter_gradients(rematerialize):
   for fuse in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
+            fuse_backward=True,
             fuse_forward=fuse,
             rematerialize_for_backward=rematerialize,
         ),

@@ -64,6 +64,13 @@ class Config:
   retaining aligned outputs and backward residuals. It requires fused forward.
   `packed_output=True` uses Pallas output compaction when its full head-group
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
+  `packed_backward=True` reads original packed Q/K/V/beta in the non-CP
+  fused reverse pass; aligned gradient outputs and residuals are retained.
+  `packed_gradients=True` compacts feature gradients after gate and
+  normalization backward; beta retains its existing gather.
+  `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
+  state rematerialization is fused separately with `fuse_rematerialization=True`;
+  CP retains its existing backward path.
   `compact_forward=True` selects the original-token grid for supported non-CP
   BF16 saved-state profiles. The paired compact backward consumes its tape.
   `compact_sorted_segments=True` declares grouped labels and trailing padding,
@@ -77,6 +84,11 @@ class Config:
   # Opt-in until TPU lowering, allocation and device-time validation completes.
   packed_forward: bool = False
   packed_output: bool = False
+  packed_backward: bool = False
+  packed_gradients: bool = False
+  fuse_backward: bool = False
+  # Opt-in until TPU compilation and device-time validation completes.
+  fuse_rematerialization: bool = False
   # Original-token grid; the dependent backward increment consumes its tape.
   compact_forward: bool = False
   # Static packed-input contract avoids allocating an interleaved-label fallback.
@@ -219,7 +231,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
 
   def __post_init__(self):
     if self.vjp is None:
-      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp())
+      object.__setattr__(self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp(config=self.config))
 
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
@@ -577,9 +589,6 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       return_residuals: bool,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
-    # Tokamax's VJP contract replays the original inputs here, but the backward
-    # kernel consumes the aligned and optionally L2-normalized copies retained
-    # in `residuals`. Reusing these arguments would skip that preprocessing.
     if isinstance(residuals, compact.CompactResiduals):
       gradients = compact.backward(
           residuals,
@@ -596,7 +605,9 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       if segment_ids is not None:
         gradients["segment_ids"] = jnp.zeros_like(segment_ids)
       return gradients, None
-    del out, query, key, value, gate, beta, output_final_state, return_residuals
+    # Packed loading normalizes the replayed original Q/K explicitly. The
+    # aligned residuals still supply gate prefixes and normalization backward.
+    del out, gate, output_final_state, return_residuals
     chunk_size = config.chunk_size
     safe_gate = _resolve_safe_gate(
         config,
@@ -612,6 +623,23 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
     # state means backward can use the saved-state path; otherwise it must
     # rematerialize the forward state recurrence.
     use_saved_state = residuals.h is not None
+
+    packed_inputs = None
+    if (
+        config.packed_backward
+        and config.fuse_backward
+        and (use_saved_state or config.fuse_rematerialization)
+        and residuals.cu_seqlens is not None
+        and not (
+            context_parallel_metadata is not None
+            and context_parallel_metadata.is_cp_enabled
+        )
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+    ):
+      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
+      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      packed_inputs = (packed_q, packed_k, value, beta)
 
     (
         dq,
@@ -635,6 +663,10 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         initial_state is not None,
         residuals,
         dout,
+        fuse_backward=config.fuse_backward,
+        fuse_rematerialization=config.fuse_rematerialization,
+        packed_inputs=packed_inputs,
+        packed_gradients=config.packed_gradients,
     )
 
     grads = {
