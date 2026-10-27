@@ -623,6 +623,13 @@ SHARDS: ShardMap = {
         ),
         minutes=10,
     ),
+    'experimental-kda-megakernel-inference': Spec(
+        paths=(
+            'tokamax/_src/ops/kda/inference_test.py',
+            'tokamax/_src/ops/kda/inference_lowering_test.py',
+        ),
+        minutes=5,
+    ),
     # Unmeasured until now. Slow only on tpu7x, against well under a minute on
     # h100 and tpu6e: 10m there (`gmm_test.py` 5.7m, `moe_test.py` 4.4m)
     # until the gmm-up/gmm-down fusion change of 2026-10-21, and 14-15m in
