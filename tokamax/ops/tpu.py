@@ -54,8 +54,12 @@ from tokamax._src.ops.router_topk.pallas_mosaic_tpu import Config as RouterTopKC
 from tokamax._src.ops.router_topk.pallas_mosaic_tpu import PallasTpuRouterTopK as RouterTopK
 from tokamax._src.ops.sparse_mla.pallas_mosaic_tpu import Config as SparseMlaConfig
 from tokamax._src.ops.sparse_mla.pallas_mosaic_tpu import PallasTpuSparseMla as SparseMla
+from tokamax._src.ops.splash_attention.pallas_mosaic_tpu import Config as SplashAttentionConfig
+from tokamax._src.ops.splash_attention.pallas_mosaic_tpu import PallasMosaicTpuSplashAttention as SplashAttention
 from tokamax._src.ops.topk.pallas_mosaic_tpu import Config as TopKConfig
 from tokamax._src.ops.topk.pallas_mosaic_tpu import PallasTpuTopK as TopK
+from tokamax._src.ops.triangle_multiplication.pallas_mosaic_tpu import Config as TriangleMultiplicationConfig
+from tokamax._src.ops.triangle_multiplication.pallas_mosaic_tpu import PallasMosaicTpuTriangleMultiplication as TriangleMultiplication
 
 # pylint: enable=g-importing-member,useless-import-alias
 
@@ -97,8 +101,12 @@ __all__ = (
     "RouterTopKConfig",
     "SparseMla",
     "SparseMlaConfig",
+    "SplashAttention",
+    "SplashAttentionConfig",
     "TopK",
     "TopKConfig",
+    "TriangleMultiplication",
+    "TriangleMultiplicationConfig",
     "V2RaggedDot",
     "V2RaggedDotConfig",
 )

@@ -2084,7 +2084,7 @@ def _mla_ragged_paged_attention_kernel(
       out = (
           lax.div(acc, l)
           if q_dtype == jnp.float32
-          else (acc * pl.reciprocal(l, approx=True)).astype(q_dtype)
+          else (acc * pltpu.reciprocal(l, approx=True)).astype(q_dtype)
       )
 
       # Wait for previous bo to be fully sent before storing new bo.
@@ -2598,7 +2598,7 @@ def mla_ragged_paged_attention(
         jnp.full((batch_size, 6), -1, jnp.int32),
     )
 
-    scope_name = f"MLA-{case.symbol}-bq_{bq_sz}-bkvp_{bkv_p}-p_{page_size}-bsz_{batch_size}"
+    scope_name = f"V2-MLA-{case.symbol}-bq_{bq_sz}-bkvp_{bkv_p}-p_{page_size}-bsz_{batch_size}"
     kernel = jax.named_scope(scope_name)(
         pl.pallas_call(
             functools.partial(

@@ -47,6 +47,30 @@ def find_bounds(
   return bounds_start, bounds_end
 
 
+def dkv_q_blocks_are_contiguous(
+    mask_info: 'MaskInfo', q_blocks_per_shard: int
+) -> bool:
+  """Returns whether the dkv grid visits each q block in one contiguous run.
+
+  In every shard each q block must appear in a single run of consecutive steps.
+  Trivially true without a dynamic grid.
+
+  Args:
+    mask_info: dKV `MaskInfo` with concrete (non-traced) arrays.
+    q_blocks_per_shard: Number of q blocks in each q sequence shard.
+  """
+  if mask_info.active_cols is None:
+    return True
+  num_active = np.asarray(mask_info.num_active_blocks).reshape(-1)
+  shard_cols = np.asarray(mask_info.active_cols).reshape(num_active.size, -1)
+  for cols, n in zip(shard_cols, num_active):
+    cols = cols[:n].astype(np.int32)
+    run_starts = cols[np.diff(cols, prepend=-1) != 0]
+    if not np.array_equal(np.sort(run_starts), np.arange(q_blocks_per_shard)):
+      return False
+  return True
+
+
 # Logic for processing NumPy masks for kernels
 class MaskInfo(NamedTuple):
   """Contains runtime masking information for the Splash attention kernel.

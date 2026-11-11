@@ -25,6 +25,7 @@ import pydantic
 from tokamax._src import jaxtyping
 from tokamax._src.ops import op
 from tokamax._src.ops.kda import base
+from tokamax._src.ops.kda import compact
 from tokamax._src.ops.kda.cp_utils import (
     ContextParallelMetadata,
     ContextParallelMetadataArg,
@@ -46,6 +47,18 @@ from tokamax._src.ops.kda.utils import (
 )
 from typing_extensions import override
 
+# Dimensions.
+#   B: batch size
+#   H: number of heads (H_QK for query/key heads, H_V for value heads)
+#   T: sequence length
+#   NT: number of chunks (T // BT)
+#   BT: chunk size (64 or 128)
+#   N: max number of segments per batch element
+#   K: key/query head dimension
+#   V: value head dimension
+#   GW: gate channel width (1 for scalar gate, K for per-channel gate)
+#   W: depthwise conv1d kernel width
+
 
 @pydantic.dataclasses.dataclass(frozen=True, kw_only=True, slots=True)
 class Config:
@@ -57,11 +70,30 @@ class Config:
   log-space path without an inferred numerical bound.
   `rematerialize_for_backward=True` omits chunk hidden states from forward
   residuals and manually rebuilds them in the custom backward.
+  `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
+  128-aligned K/V. Other shapes and CP retain the staged implementation.
+  `packed_forward=True` reads non-CP packed input windows directly while
+  retaining aligned outputs and backward residuals. It requires fused forward.
+  `packed_output=True` uses Pallas output compaction when its full head-group
+  buffers fit VMEM; other shapes retain gather. It is independently opt-in.
+  `compact_forward=True` selects the original-token grid for supported non-CP
+  BF16 saved-state profiles. The paired compact backward consumes its tape.
+  `compact_sorted_segments=True` declares grouped labels and trailing padding,
+  omitting the general input permutation and its worst-case temporary buffers.
   """
 
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
+  mini_batch: Annotated[int, pydantic.Field(gt=0)] | None = None
   safe_gate: bool | None = None
   rematerialize_for_backward: bool = False
+  fuse_forward: bool = False
+  # Opt-in until TPU lowering, allocation and device-time validation completes.
+  packed_forward: bool = False
+  packed_output: bool = False
+  # Original-token grid; the dependent backward increment consumes its tape.
+  compact_forward: bool = False
+  # Static packed-input contract avoids allocating an interleaved-label fallback.
+  compact_sorted_segments: bool = False
 
 
 def _resolve_safe_gate(
@@ -109,6 +141,37 @@ class _PreparedKdaInputs:
   k_rstd: jax.Array | None
 
 
+def _requested_chunk_size(ba) -> int:
+  """Returns the requested chunk_size, defaulting to 64 (mandatory for per-channel gates)."""
+  args = getattr(ba, "arguments", None) or {}
+  requested = args.get("chunk_size")
+  if requested is None or args.get("per_channel_gate", True):
+    return 64
+  return int(requested)
+
+
+# Maximum fused conv1d width: the forward kernel keeps an 8-row halo of the
+# previous chunk (`_CONV_HALO` in the forward kernel).
+_MAX_CONV_WIDTH = 8
+
+
+def _check_chunk_size_support(chunk_size: int, *, per_channel_gate: bool):
+  """Checks the chunk sizes supported by the Mosaic TPU kernels."""
+  # Per-channel gates require chunk_size=64; scalar gates support powers of 2
+  # in [16, 512].
+  if per_channel_gate:
+    if chunk_size != 64:
+      raise NotImplementedError(
+          "`mosaic` supports chunk_size=64 with a per-channel gate; got"
+          f" {chunk_size}."
+      )
+  elif chunk_size not in (16, 32, 64, 128, 256, 512):
+    raise NotImplementedError(
+        "`mosaic` scalar-gate path needs a power-of-two chunk_size in"
+        f" [16, 512]; got {chunk_size}."
+    )
+
+
 def check_inputs_support(
     q: jax.Array,
     v: jax.Array,
@@ -119,6 +182,8 @@ def check_inputs_support(
     context_parallel_metadata: ContextParallelMetadata | None,
     chunk_size: int,
     max_num_segments: int | None,
+    per_channel_gate: bool = True,
+    conv_weights: tuple[jax.Array | None, ...] = (),
 ) -> None:
   """Checks whether the Pallas/Mosaic TPU backend supports static inputs."""
   if q.dtype not in (jnp.bfloat16, jnp.float32):
@@ -179,8 +244,16 @@ def check_inputs_support(
           "recurrent state per batch item; got "
           f"N={initial_state.shape[1]}."
       )
-  if chunk_size != 64:
-    raise NotImplementedError("`mosaic` currently supports chunk_size=64.")
+  _check_chunk_size_support(chunk_size, per_channel_gate=per_channel_gate)
+  for conv_weight in conv_weights:
+    if conv_weight is None:
+      continue
+    _, conv_width, _ = conv_weight.shape
+    if not 1 <= conv_width <= _MAX_CONV_WIDTH:
+      raise NotImplementedError(
+          f"`mosaic` supports conv1d widths in [1, {_MAX_CONV_WIDTH}]; got"
+          f" W={conv_width}."
+      )
   if segment_ids is None and seq_len % chunk_size != 0:
     raise NotImplementedError(
         "`mosaic` requires the sequence length to be divisible by "
@@ -189,9 +262,7 @@ def check_inputs_support(
 
 
 @dataclasses.dataclass(frozen=True)
-class PallasMosaicTpuKimiDeltaAttention(
-    base.KimiDeltaAttention[Config, Any]
-):
+class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
   """Pallas/Mosaic TPU KDA backend.
 
   This adapter preserves Tokamax's experimental head-first KDA contract:
@@ -206,15 +277,30 @@ class PallasMosaicTpuKimiDeltaAttention(
 
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
-    del ba
-    return Config(chunk_size=64)
+    return Config(chunk_size=_requested_chunk_size(ba))
 
   @override
-  def _get_autotuning_configs(
-      self, ba: op.BoundArguments
-  ) -> set[Config]:
-    del ba
-    return {Config(chunk_size=64)}
+  def _get_autotuning_configs(self, ba: op.BoundArguments) -> set[Config]:
+    args = getattr(ba, "arguments", None)
+    if not args:
+      return {Config(chunk_size=_requested_chunk_size(ba))}
+    q = args.get("query")
+    heads = q.shape[0] if q is not None and hasattr(q, "shape") else 32
+    per_channel_gate = args.get("per_channel_gate", True)
+    segment_ids = args.get("segment_ids")
+    chunk_sizes = (
+        (64,)
+        if (per_channel_gate or segment_ids is not None)
+        else (32, 64, 128)
+    )
+    mini_batches = tuple(
+        mb for mb in (8, 16, 32) if mb <= heads and heads % mb == 0
+    ) or (None,)
+    configs = set()
+    for cs in chunk_sizes:
+      for mb in mini_batches:
+        configs.add(Config(chunk_size=cs, mini_batch=mb))
+    return configs
 
   @override
   def supported_on(self, device: jax.Device) -> bool:
@@ -236,6 +322,7 @@ class PallasMosaicTpuKimiDeltaAttention(
       context_parallel_metadata: ContextParallelMetadata | None,
       chunk_size: int,
       max_num_segments: int | None,
+      use_conv1d_in_kernel: bool = False,
   ) -> _PreparedKdaInputs:
     """Canonicalizes inputs shared by the forward and backward kernels."""
     context_parallel_metadata, cu_seqlens = derive_context_parallel_metadata(
@@ -269,29 +356,37 @@ class PallasMosaicTpuKimiDeltaAttention(
           cu_seqlens,
           align=chunk_size,
       )
+      _, _, aligned_seq_len, _ = q_aligned.shape
       chunk_indices = prepare_chunk_indices(
           aligned_cu_seqlens,
           chunk_size,
-          max_T=q_aligned.shape[2],
+          max_T=aligned_seq_len,
       )
 
       if use_gate_in_kernel:
-        aligned_seq_len = g_aligned.shape[2]
         original_lengths = jnp.diff(cu_seqlens, axis=-1)
         aligned_starts = aligned_cu_seqlens[..., :-1]
         positions = jnp.arange(aligned_seq_len)
         for batch_index in range(cu_seqlens.shape[0]):
-          in_range = (
-              positions[None, :]
-              >= aligned_starts[batch_index, :, None]
-          ) & (
-              positions[None, :]
-              < (
-                  aligned_starts[batch_index]
-                  + original_lengths[batch_index]
-              )[:, None]
-          )
-          valid_mask = in_range.any(axis=0)
+          if cu_seqlens.shape[-1] > 8193:
+            boundaries = aligned_cu_seqlens[batch_index]
+            seq = jnp.minimum(
+                jnp.searchsorted(boundaries[1:], positions, side="right"),
+                original_lengths.shape[-1] - 1,
+            )
+            valid_mask = (positions < boundaries[-1]) & (
+                positions - boundaries[seq] < original_lengths[batch_index, seq]
+            )
+          else:
+            in_range = (
+                positions[None, :] >= aligned_starts[batch_index, :, None]
+            ) & (
+                positions[None, :]
+                < (aligned_starts[batch_index] + original_lengths[batch_index])[
+                    :, None
+                ]
+            )
+            valid_mask = in_range.any(axis=0)
           g_aligned = g_aligned.at[:, batch_index].set(
               jnp.where(
                   valid_mask[None, :, None],
@@ -344,7 +439,7 @@ class PallasMosaicTpuKimiDeltaAttention(
           ]
       )
 
-    if use_qk_l2norm:
+    if use_qk_l2norm and not use_conv1d_in_kernel:
       q_prepared, q_rstd = l2norm_fwd(q_aligned)
       k_prepared, k_rstd = l2norm_fwd(k_aligned)
     else:
@@ -374,7 +469,7 @@ class PallasMosaicTpuKimiDeltaAttention(
       query: Float[Array, "H B T K"],
       key: Float[Array, "H B T K"],
       value: Float[Array, "H B T V"],
-      gate: Float[Array, "H B T K"],
+      gate: Float[Array, "H B T GW"],
       beta: Float[Array, "H B T"],
       *,
       a_log: Float[Array, "H"] | None,
@@ -384,13 +479,26 @@ class PallasMosaicTpuKimiDeltaAttention(
       output_final_state: bool,
       use_qk_l2norm: bool,
       use_gate_in_kernel: bool,
+      per_channel_gate: bool,
+      chunk_size: int | None,
       segment_ids: Int[Array, "B T"] | None,
       lower_bound: float | None,
       context_parallel_metadata: ContextParallelMetadataArg,
       max_num_segments: int | None,
       return_residuals: bool,
+      conv_weight_q: Float[Array, "H_Q W K"] | None = None,
+      conv_weight_k: Float[Array, "H_K W K"] | None = None,
+      conv_weight_v: Float[Array, "H W V"] | None = None,
+      conv_bias_q: Float[Array, "H_Q K"] | None = None,
+      conv_bias_k: Float[Array, "H_K K"] | None = None,
+      conv_bias_v: Float[Array, "H V"] | None = None,
+      use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[base.Output, base.Residuals]:
+    if chunk_size is not None:
+      # `config.chunk_size` is pinned to 64 for per-channel gates (see
+      # `_requested_chunk_size`), so the requested value is checked as well.
+      _check_chunk_size_support(chunk_size, per_channel_gate=per_channel_gate)
     chunk_size = config.chunk_size
     safe_gate = _resolve_safe_gate(
         config,
@@ -415,7 +523,45 @@ class PallasMosaicTpuKimiDeltaAttention(
         context_parallel_metadata=context_parallel_metadata,
         chunk_size=chunk_size,
         max_num_segments=max_num_segments,
+        per_channel_gate=per_channel_gate,
+        conv_weights=(
+            (conv_weight_q, conv_weight_k, conv_weight_v)
+            if use_conv1d_in_kernel
+            else ()
+        ),
     )
+
+    if (
+        per_channel_gate
+        and not use_conv1d_in_kernel
+        and config.mini_batch is None
+        and compact.supported(
+            query,
+            value,
+            segment_ids=segment_ids,
+            initial_state=initial_state,
+            output_final_state=output_final_state,
+            use_qk_l2norm=use_qk_l2norm,
+            context_parallel_metadata=context_parallel_metadata,
+            config=config,
+        )
+    ):
+      return compact.forward(
+          query,
+          key,
+          value,
+          gate,
+          beta,
+          a_log=a_log,
+          delta_time_bias=delta_time_bias,
+          scale=scale,
+          segment_ids=segment_ids,
+          lower_bound=lower_bound,
+          use_gate_in_kernel=use_gate_in_kernel,
+          return_residuals=return_residuals,
+          sorted_segments=config.compact_sorted_segments,
+          max_num_segments=max_num_segments,
+      )
 
     prepared = self._preprocess_inputs(
         query,
@@ -431,7 +577,24 @@ class PallasMosaicTpuKimiDeltaAttention(
         context_parallel_metadata=context_parallel_metadata,
         chunk_size=chunk_size,
         max_num_segments=max_num_segments,
+        use_conv1d_in_kernel=use_conv1d_in_kernel,
     )
+
+    packed_inputs = None
+    if (
+        config.packed_forward
+        and config.fuse_forward
+        and prepared.cu_seqlens is not None
+        and not (
+            prepared.context_parallel_metadata is not None
+            and prepared.context_parallel_metadata.is_cp_enabled
+        )
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+    ):
+      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
+      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      packed_inputs = (packed_q, packed_k, value, gate, beta)
 
     output, residuals = chunk_kda_fwd_custom(
         prepared.q,
@@ -445,10 +608,14 @@ class PallasMosaicTpuKimiDeltaAttention(
         initial_state=prepared.initial_state,
         output_final_state=output_final_state,
         use_gate_in_kernel=use_gate_in_kernel,
+        per_channel_gate=per_channel_gate,
         segment_ids=segment_ids,
         safe_gate=safe_gate,
         lower_bound=lower_bound,
         disable_recompute=save_intermediates_for_backward,
+        fuse_forward=config.fuse_forward,
+        packed_inputs=packed_inputs,
+        packed_output=config.packed_output,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
         return_residuals=return_residuals,
@@ -458,11 +625,21 @@ class PallasMosaicTpuKimiDeltaAttention(
         aligned_segment_ids=prepared.aligned_segment_ids,
         q_rstd=prepared.q_rstd,
         k_rstd=prepared.k_rstd,
+        conv_weight_q=conv_weight_q,
+        conv_weight_k=conv_weight_k,
+        conv_weight_v=conv_weight_v,
+        conv_bias_q=conv_bias_q,
+        conv_bias_k=conv_bias_k,
+        conv_bias_v=conv_bias_v,
+        use_conv1d_in_kernel=use_conv1d_in_kernel,
+        use_qk_l2norm=use_qk_l2norm,
+        mini_batch=config.mini_batch,
     )
     value, final_state = output
     if final_state is not None and final_state.ndim == 4:
       final_state = final_state[:, None]
     return (value, final_state), residuals
+
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
 class PallasMosaicTpuKimiDeltaAttentionVjp(
@@ -474,19 +651,34 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
 
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
-    del ba
-    return Config(chunk_size=64)
+    return Config(chunk_size=_requested_chunk_size(ba))
 
   @override
-  def _get_autotuning_configs(
-      self, ba: op.BoundArguments
-  ) -> set[Config]:
-    del ba
-    return {Config(chunk_size=64)}
+  def _get_autotuning_configs(self, ba: op.BoundArguments) -> set[Config]:
+    args = getattr(ba, "arguments", None)
+    if not args:
+      return {Config(chunk_size=_requested_chunk_size(ba))}
+    q = args.get("query")
+    heads = q.shape[0] if q is not None and hasattr(q, "shape") else 32
+    per_channel_gate = args.get("per_channel_gate", True)
+    segment_ids = args.get("segment_ids")
+    chunk_sizes = (
+        (64,)
+        if (per_channel_gate or segment_ids is not None)
+        else (32, 64, 128)
+    )
+    mini_batches = tuple(
+        mb for mb in (8, 16, 32) if mb <= heads and heads % mb == 0
+    ) or (None,)
+    configs = set()
+    for cs in chunk_sizes:
+      for mb in mini_batches:
+        configs.add(Config(chunk_size=cs, mini_batch=mb))
+    return configs
 
   def _fwd(
       self,
-      residuals: KdaResiduals,
+      residuals: KdaResiduals | compact.CompactResiduals,
       out: base.Output,
       dout: base.Output,
       query: jax.Array,
@@ -502,17 +694,43 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       output_final_state: bool,
       use_qk_l2norm: bool,
       use_gate_in_kernel: bool,
+      per_channel_gate: bool,
+      chunk_size: int | None,
       segment_ids: jax.Array | None,
       lower_bound: float | None,
       context_parallel_metadata: ContextParallelMetadataArg,
       max_num_segments: int | None,
       return_residuals: bool,
+      conv_weight_q: jax.Array | None = None,
+      conv_weight_k: jax.Array | None = None,
+      conv_weight_v: jax.Array | None = None,
+      conv_bias_q: jax.Array | None = None,
+      conv_bias_k: jax.Array | None = None,
+      conv_bias_v: jax.Array | None = None,
+      use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
     # Tokamax's VJP contract replays the original inputs here, but the backward
     # kernel consumes the aligned and optionally L2-normalized copies retained
     # in `residuals`. Reusing these arguments would skip that preprocessing.
+    if isinstance(residuals, compact.CompactResiduals):
+      gradients = compact.backward(
+          residuals,
+          dout,
+          query=query,
+          value=value,
+          gate=gate,
+          scale=scale,
+          lower_bound=lower_bound,
+          use_gate_in_kernel=use_gate_in_kernel,
+          a_log=a_log,
+          delta_time_bias=delta_time_bias,
+      )
+      if segment_ids is not None:
+        gradients["segment_ids"] = jnp.zeros_like(segment_ids)
+      return gradients, None
     del out, query, key, value, gate, beta, output_final_state, return_residuals
+    del use_conv1d_in_kernel
     chunk_size = config.chunk_size
     safe_gate = _resolve_safe_gate(
         config,
@@ -539,6 +757,12 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         dbias,
         dh0,
         dsegment_ids,
+        dw_q,
+        dw_k,
+        dw_v,
+        db_q,
+        db_k,
+        db_v,
     ) = chunk_kda_bwd_custom(
         scale,
         use_qk_l2norm,
@@ -551,6 +775,8 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         initial_state is not None,
         residuals,
         dout,
+        per_channel_gate=per_channel_gate,
+        mini_batch=config.mini_batch,
     )
 
     grads = {
@@ -560,6 +786,30 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         "gate": dg,
         "beta": db,
     }
+    if conv_weight_q is not None:
+      grads["conv_weight_q"] = (
+          dw_q if dw_q is not None else jnp.zeros_like(conv_weight_q)
+      )
+    if conv_weight_k is not None:
+      grads["conv_weight_k"] = (
+          dw_k if dw_k is not None else jnp.zeros_like(conv_weight_k)
+      )
+    if conv_weight_v is not None:
+      grads["conv_weight_v"] = (
+          dw_v if dw_v is not None else jnp.zeros_like(conv_weight_v)
+      )
+    if conv_bias_q is not None:
+      grads["conv_bias_q"] = (
+          db_q if db_q is not None else jnp.zeros_like(conv_bias_q)
+      )
+    if conv_bias_k is not None:
+      grads["conv_bias_k"] = (
+          db_k if db_k is not None else jnp.zeros_like(conv_bias_k)
+      )
+    if conv_bias_v is not None:
+      grads["conv_bias_v"] = (
+          db_v if db_v is not None else jnp.zeros_like(conv_bias_v)
+      )
     if a_log is not None:
       grads["a_log"] = dA if dA is not None else jnp.zeros_like(a_log)
     if delta_time_bias is not None:
