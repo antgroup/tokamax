@@ -763,6 +763,10 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
     # migrated fused saved-state recomputation has different BF16 storage
     # boundaries and is not yet validated for this contract on every backend.
     fuse_backward = config.fuse_backward and initial_state is None
+    fuse_rematerialization = (
+        config.fuse_rematerialization and initial_state is None
+    )
+    packed_gradients = config.packed_gradients and initial_state is None
 
     packed_inputs = None
     if (
@@ -810,9 +814,9 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         residuals,
         dout,
         fuse_backward=fuse_backward,
-        fuse_rematerialization=config.fuse_rematerialization,
+        fuse_rematerialization=fuse_rematerialization,
         packed_inputs=packed_inputs,
-        packed_gradients=config.packed_gradients,
+        packed_gradients=packed_gradients,
         per_channel_gate=per_channel_gate,
         mini_batch=config.mini_batch,
     )
