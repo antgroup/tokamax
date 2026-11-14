@@ -54,3 +54,12 @@ device correctness and timings remain required before enabling this by default.
 
 Packed output stores, native packed backward and CP backward fusion remain
 separate increments. This PR changes the forward input boundary only.
+
+## Normalized training follow-up (2026-11-15)
+
+Eligible packed Q/K normalize in their VMEM staging tiles before the intra
+stage. Unit Q/K and RSTD populate the existing aligned residual slots when
+needed. This avoids global normalization followed by separate unit-buffer
+alignment. Scalar beta stays aligned with a token-minor layout; only feature
+inputs use unaligned packed windows. The public residual schema is unchanged.
+See the [current performance follow-up](backward_performance_followup_20261115.md).

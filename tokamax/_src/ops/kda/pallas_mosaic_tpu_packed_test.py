@@ -26,8 +26,10 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
-def test_packed_forward(dtype):
+@pytest.mark.parametrize("return_residuals", [False, True])
+def test_packed_forward(dtype, return_residuals):
   args, kwargs = forward_tests._inputs(dtype, True)
+  kwargs["return_residuals"] = return_residuals
   results = []
   for packed in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(

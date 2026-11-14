@@ -43,6 +43,7 @@ from tokamax._src.ops.kda.utils import (
     exp2,
     get_chain_precision,
     get_interpret,
+    l2norm_fwd,
     prepare_chunk_indices,
 )
 
@@ -1987,6 +1988,10 @@ def _fused_forward_kernel(
     akk_out_ref,
     gate_out_ref,
     v_new_out_ref,
+    q_norm_out_ref,
+    k_norm_out_ref,
+    q_rstd_out_ref,
+    k_rstd_out_ref,
     state_ref,
     u_ref,
     w_ref,
@@ -2007,6 +2012,7 @@ def _fused_forward_kernel(
     store_residuals,
     store_gate,
     output_precision,
+    normalize_qk,
 ):
   """Runs both forward stages with the bridge tensors in VMEM.
 
@@ -2014,6 +2020,19 @@ def _fused_forward_kernel(
   scratch refs are overwritten on each iteration. Their dtypes preserve the
   rounding at the staged implementation's HBM boundary.
   """
+  if normalize_qk:
+    # q/k are packed VMEM staging refs here, not caller-owned HBM inputs.
+    for ref, unit_out, rstd_out in (
+        (q_ref, q_norm_out_ref, q_rstd_out_ref),
+        (k_ref, k_norm_out_ref, k_rstd_out_ref),
+    ):
+      unit, rstd = l2norm_fwd(ref[...].astype(jnp.float32))
+      if ref.dtype == jnp.bfloat16:
+        unit = jax.lax.reduce_precision(unit, 8, 7)
+      ref[...] = unit.astype(ref.dtype)
+      if unit_out is not None:
+        unit_out[...] = ref[...]
+        rstd_out[...] = rstd.reshape(rstd_out.shape)
   _fused_gate_intra_kernel(
       q_ref,
       k_ref,
@@ -2098,7 +2117,9 @@ def _packed_fused_forward_kernel(
   branches = tuple(
       (lambda x, i=i: x[:, :, i : i + chunk_size, :]) for i in range(8)
   )
-  for index, (window, tile) in enumerate(zip(refs[:5], refs[-5:], strict=True)):
+  args = list(refs[:-4])
+  for index, tile in zip((0, 1, 2, 4), refs[-4:], strict=True):
+    window = refs[index]
     values = jax.lax.switch(offset, branches, window[...])
     fill = -1e4 if index == 2 and kwargs["use_gate_in_kernel"] else 0
     # Build the mask directly at the tile rank.  Adding singleton dimensions
@@ -2106,9 +2127,8 @@ def _packed_fused_forward_kernel(
     token = jax.lax.broadcasted_iota(jnp.int32, values.shape, dimension=2)
     values = jnp.where(active & (start + token < end), values, fill)
     tile[...] = values.reshape(tile.shape)
-  _fused_forward_kernel(
-      seqlens_ref, mapping_ref, *refs[-5:], *refs[5:-5], **kwargs
-  )
+    args[index] = tile
+  _fused_forward_kernel(seqlens_ref, mapping_ref, *args, **kwargs)
 
 
 def _bounded_chunk_boundaries(boundaries, mapping):
@@ -2132,6 +2152,7 @@ def _bounded_chunk_boundaries(boundaries, mapping):
         "store_residuals",
         "store_gate",
         "output_final_state",
+        "normalize_qk",
     ),
 )
 @jaxtyping.jaxtyped
@@ -2149,6 +2170,7 @@ def chunk_kda_fwd_fused(
     *,
     packed_inputs: tuple[jax.Array, ...] | None = None,
     packed_cu_seqlens: jax.Array | None = None,
+    normalize_qk: bool = False,
     scale: float,
     chunk_size: int,
     safe_gate: bool,
@@ -2166,6 +2188,10 @@ def chunk_kda_fwd_fused(
     Float[Array, "H B T BT"] | None,
     Float[Array, "H B T K"] | None,
     Float[Array, "H B T V"] | None,
+    Float[Array, "H B T K"] | None,
+    Float[Array, "H B T K"] | None,
+    Float[Array, "H B T"] | None,
+    Float[Array, "H B T"] | None,
 ]:
   """Fuses aligned, non-CP KDA forward while retaining backward residuals.
 
@@ -2174,6 +2200,10 @@ def chunk_kda_fwd_fused(
   describe those chunks. K and V must be multiples of 128. Returns output
   [H,B,T,V], optional final state [B,N,H,K,V], optional chunk-start states
   [H,B,NT,K,V], and optional Aqk/Akk [H,B,T,BT] and gate [H,B,T,K].
+
+  `normalize_qk=True` consumes raw Q/K in mutable packed staging tiles.
+  Unit Q/K and RSTD are returned to the existing aligned residual slots
+  when requested, avoiding separate global normalization and alignment.
   """
   heads, batch, tokens, key_dim = q.shape
   value_dim = v.shape[-1]
@@ -2190,6 +2220,10 @@ def chunk_kda_fwd_fused(
   # intra-chunk solve temporaries. Retain compiler headroom rather than
   # inheriting the smaller staged kernels' independent VMEM estimates.
   packed = packed_inputs is not None
+  if normalize_qk and not packed:
+    raise ValueError(
+        "Inline normalization requires mutable packed staging tiles."
+    )
   per_head = 4 * (
       key_dim * value_dim
       + 16 * chunk_size * (key_dim + value_dim)
@@ -2198,8 +2232,12 @@ def chunk_kda_fwd_fused(
   if packed:
     # Additional packed input windows and aligned VMEM staging refs.
     per_head += 4 * (3 * key_dim + value_dim + 1) * (3 * chunk_size + 16)
+  if normalize_qk:
+    per_head += 4 * (8 * chunk_size * key_dim + 2 * chunk_size)
   mini_batch = estimate_mini_batch(per_head, heads, max_mb=16)
   token_shape = lambda width: (heads, batch, chunks, chunk_size, width)
+  rstd_shape = (heads, batch, chunks, 1, chunk_size)
+  retain_norm = normalize_qk and store_residuals
   tile_shape = lambda width: (mini_batch, 1, 1, chunk_size, width)
 
   def token_spec(width):
@@ -2216,26 +2254,29 @@ def chunk_kda_fwd_fused(
       q.reshape(token_shape(key_dim)),
       k.reshape(token_shape(key_dim)),
       g.reshape(token_shape(key_dim)),
-      beta.reshape(token_shape(1)),
+      beta.reshape(heads, batch, chunks, 1, chunk_size),
       v.reshape(token_shape(value_dim)),
   ]
   input_specs = [
       token_spec(width) for width in (key_dim, key_dim, key_dim, 1, value_dim)
   ]
+  # Scalar beta uses a token-minor tile, avoiding width-1 HBM padding.
+  input_specs[3] = pl.BlockSpec(
+      (mini_batch, 1, 1, 1, chunk_size),
+      lambda h, b, c, *_: (h, b, c, 0, 0),
+  )
   if packed:
     if packed_cu_seqlens is None:
       raise ValueError("Packed inputs require original sequence boundaries.")
     scalar_inputs.append(
         _bounded_chunk_boundaries(packed_cu_seqlens, chunk_indices[..., 0])
     )
-    pq, pk, pv, pg, pb = packed_inputs
-    # Round the allocation to eight rows and append a full guard window.
-    input_values = [
-        jnp.pad(
-            x, ((0, 0), (0, 0), (0, (-x.shape[2]) % 8 + chunk_size + 8), (0, 0))
-        )
-        for x in (pq, pk, pg, pb[..., None], pv)
-    ]
+    pq, pk, pv, pg, _ = packed_inputs
+    # Keep aligned scalar beta; pack only the feature-valued inputs.
+    for index, x in zip((0, 1, 2, 4), (pq, pk, pg, pv), strict=True):
+      input_values[index] = jnp.pad(
+          x, ((0, 0), (0, 0), (0, (-x.shape[2]) % 8 + chunk_size + 8), (0, 0))
+      )
 
     def packed_index(h, b, c, aligned, mapping, original):
       seq = mapping[b, c]
@@ -2251,15 +2292,13 @@ def chunk_kda_fwd_fused(
       start = jnp.where(active, start, 0)
       return h * mini_batch, b, pl.multiple_of(start - start % 8, 8), 0
 
-    input_specs = [
-        pl.BlockSpec(
-            tuple(
-                pl.Element(d) for d in (mini_batch, 1, chunk_size + 8, width)
-            ),
-            packed_index,
-        )
-        for width in (key_dim, key_dim, key_dim, 1, value_dim)
-    ]
+    for index, width in zip(
+        (0, 1, 2, 4), (key_dim, key_dim, key_dim, value_dim), strict=True
+    ):
+      input_specs[index] = pl.BlockSpec(
+          tuple(pl.Element(d) for d in (mini_batch, 1, chunk_size + 8, width)),
+          packed_index,
+      )
 
   def parameter_spec(width):
     return pl.BlockSpec(
@@ -2300,6 +2339,14 @@ def chunk_kda_fwd_fused(
       jax.ShapeDtypeStruct(token_shape(value_dim), v.dtype)
       if store_h
       else None,
+      jax.ShapeDtypeStruct(token_shape(key_dim), q.dtype)
+      if retain_norm
+      else None,
+      jax.ShapeDtypeStruct(token_shape(key_dim), k.dtype)
+      if retain_norm
+      else None,
+      jax.ShapeDtypeStruct(rstd_shape, jnp.float32) if retain_norm else None,
+      jax.ShapeDtypeStruct(rstd_shape, jnp.float32) if retain_norm else None,
   ]
   results = pl.pallas_call(
       functools.partial(
@@ -2315,6 +2362,7 @@ def chunk_kda_fwd_fused(
           store_h=store_h,
           store_residuals=store_residuals,
           store_gate=store_gate,
+          normalize_qk=normalize_qk,
           output_precision=(
               jax.lax.Precision.DEFAULT
               if q.dtype == jnp.bfloat16
@@ -2338,6 +2386,10 @@ def chunk_kda_fwd_fused(
               token_spec(chunk_size) if store_residuals else None,
               token_spec(key_dim) if store_gate else None,
               token_spec(value_dim) if store_h else None,
+              token_spec(key_dim) if retain_norm else None,
+              token_spec(key_dim) if retain_norm else None,
+              input_specs[3] if retain_norm else None,
+              input_specs[3] if retain_norm else None,
           ],
           scratch_shapes=[
               pltpu.VMEM((mini_batch, key_dim, value_dim), jnp.float32),
@@ -2355,7 +2407,7 @@ def chunk_kda_fwd_fused(
               *(
                   [
                       pltpu.VMEM(tile_shape(x.shape[-1]), x.dtype)
-                      for x in input_values
+                      for x in (input_values[i] for i in (0, 1, 2, 4))
                   ]
                   if packed
                   else []
@@ -2374,7 +2426,19 @@ def chunk_kda_fwd_fused(
       delta_time_bias.astype(jnp.float32).reshape(heads, 1, 1, 1, key_dim),
       initial_state,
   )
-  output, final_state, h, aqk, akk, gate, v_new = results
+  (
+      output,
+      final_state,
+      h,
+      aqk,
+      akk,
+      gate,
+      v_new,
+      q_norm,
+      k_norm,
+      qrstd,
+      krstd,
+  ) = results
   if final_state is not None:
     empty = jnp.diff(cu_seqlens, axis=-1) == 0
     fill = (
@@ -2397,6 +2461,10 @@ def chunk_kda_fwd_fused(
       flatten(akk),
       flatten(gate),
       flatten(v_new),
+      flatten(q_norm),
+      flatten(k_norm),
+      qrstd.reshape(heads, batch, tokens) if qrstd is not None else None,
+      krstd.reshape(heads, batch, tokens) if krstd is not None else None,
   )
 
 
@@ -2441,6 +2509,7 @@ def chunk_kda_fwd_custom(
     fuse_forward: bool = False,
     packed_output: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
+    normalize_packed_qk: bool = False,
 ) -> tuple[
     tuple[
         Float[Array, "H B T V"],
@@ -2507,7 +2576,19 @@ def chunk_kda_fwd_custom(
           initial_state[:, None, ...] if initial_state is not None else None
       )
 
-    o, final_state, h, Aqk, Akk, g_cumsum, v_new = chunk_kda_fwd_fused(
+    (
+        o,
+        final_state,
+        h,
+        Aqk,
+        Akk,
+        g_cumsum,
+        v_new,
+        q_norm,
+        k_norm,
+        q_norm_rstd,
+        k_norm_rstd,
+    ) = chunk_kda_fwd_fused(
         q,
         k,
         v,
@@ -2520,6 +2601,7 @@ def chunk_kda_fwd_custom(
         delta_time_bias,
         packed_inputs=packed_inputs,
         packed_cu_seqlens=original_cu_seqlens,
+        normalize_qk=normalize_packed_qk,
         scale=1.0 / math.sqrt(K) if scale is None else scale,
         chunk_size=BT,
         safe_gate=safe_gate,
@@ -2532,8 +2614,11 @@ def chunk_kda_fwd_custom(
         output_final_state=output_final_state,
     )
     w = u = kg = None
-    q_res, k_res, v_res = q, k, v
-    q_rstd_res, k_rstd_res = q_rstd, k_rstd
+    q_res = q_norm if q_norm is not None else q
+    k_res = k_norm if k_norm is not None else k
+    v_res = v
+    q_rstd_res = q_norm_rstd if q_norm_rstd is not None else q_rstd
+    k_rstd_res = k_norm_rstd if k_norm_rstd is not None else k_rstd
     q_raw_res = k_raw_res = v_raw_res = None
   else:
     q_raw_in, k_raw_in, v_raw_in = q, k, v

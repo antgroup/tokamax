@@ -81,12 +81,11 @@ def test_dispatch_requires_rematerialization_and_backward_fusion(
   forward_tests._assert_close(grads, grads, tolerance=0)
 
 
-def test_fp32_value_correction_preserves_running_state():
-  args, kwargs = forward_tests._inputs(jnp.bfloat16, False)
+@pytest.mark.parametrize("packed", [False, True])
+def test_fp32_value_correction_preserves_running_state(packed):
+  args, kwargs = forward_tests._inputs(jnp.bfloat16, packed, heads=2)
   op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-      config=mosaic.Config(
-          fuse_forward=True, fuse_backward=True, rematerialize_for_backward=True
-      )
+      config=mosaic.Config(fuse_forward=True, fuse_backward=True)
   )
   _, residuals = forward_tests._call(
       op, dict(kwargs, return_residuals=True), *args
@@ -99,15 +98,43 @@ def test_fp32_value_correction_preserves_running_state():
         r.q, r.k, r.v, r.beta, r.akk, r.g_cumsum, 64
     )
     h, v_new, _ = kernels.chunk_gated_delta_rule_fwd_h(
-        kg, w, u, gk=r.g_cumsum, initial_state=r.initial_state, chunk_size=64
+        kg,
+        w,
+        u,
+        gk=r.g_cumsum,
+        initial_state=r.initial_state,
+        chunk_size=64,
+        cu_seqlens=r.aligned_cu_seqlens,
+        chunk_indices=r.chunk_indices,
     )
     return h, v_new
 
   expected_h, expected_v = staged_reference(r)
   actual_h, actual_v = kernels._rematerialize_states_pallas(
-      r.q, r.k, r.v, r.beta, r.akk, r.g_cumsum, r.initial_state, None
+      r.q,
+      r.k,
+      r.v,
+      r.beta,
+      r.akk,
+      r.g_cumsum,
+      r.initial_state,
+      r.aligned_segment_ids,
+      cu_seqlens=r.aligned_cu_seqlens,
+      chunk_indices=r.chunk_indices,
   )
+  assert actual_h.dtype == (jnp.float32 if packed else r.q.dtype)
   assert actual_v.dtype == jnp.float32
+  if packed:
+    # The shared state launcher leaves inactive intermediate chunks unwritten.
+    # Compare live slots; the poisoned-buffer backward test covers their use.
+    live_h = (r.aligned_segment_ids[:, ::64] != 0)[None, :, :, None, None]
+    live_v = (r.aligned_segment_ids != 0)[None, :, :, None]
+    actual_h, expected_h = (
+        jnp.where(live_h, x, 0) for x in (actual_h, expected_h)
+    )
+    actual_v, expected_v = (
+        jnp.where(live_v, x, 0) for x in (actual_v, expected_v)
+    )
   forward_tests._assert_close(
       (actual_h, actual_v), (expected_h, expected_v), tolerance=1e-6
   )
@@ -140,4 +167,6 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
     )
     output, pullback = jax.vjp(op, *args)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
-  forward_tests._assert_close(results[1], results[0], tolerance=0.002, bf16_internal=True)
+  forward_tests._assert_close(
+      results[1], results[0], tolerance=0.002, bf16_internal=True
+  )

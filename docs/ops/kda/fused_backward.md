@@ -18,8 +18,10 @@ For non-CP calls with saved chunk-start states and 128-aligned K/V,
 The bridge tensors remain in VMEM. Their dtypes match the staged path's
 HBM buffers, including FP32 dAqk and dv0. The existing matrix multiplication
 precision and value-axis reduction order are retained. Gate activation,
-gate-parameter gradients, Q/K normalization backward, and output unalignment
-stay outside this fusion boundary.
+gate-parameter gradients and output unalignment stay outside this fusion
+boundary. Q/K normalization backward shares the canonical local body and
+completes before activation-dtype gradient stores, avoiding FP32 gradient
+HBM round trips.
 
 CP and non-aligned K/V keep their existing implementations. The separate
 [state-rematerialization increment](rematerialized_backward.md) adds opt-in
@@ -85,3 +87,15 @@ interpreter uses optimization barriers at those values, including the
 rematerialized-state path, instead of changing BF16 casts or test tolerances.
 These barriers are absent from native Mosaic execution and do not alter its
 precision policy or allocation contract.
+
+## November 15 follow-up
+
+The local reverse arithmetic now delegates to the staged implementation.
+Beta/db use token-minor storage, cotangents retain activation dtype in HBM,
+and inactive chunks skip computation and clear their VMEM output tiles.
+The default path no longer scans complete q/k/v/db buffers to clear those
+chunks; gate reductions and convolution retain their required masks.
+
+[Current measurements and reference checks](backward_performance_followup_20261115.md)
+replace the October timings for this revision. These are component benchmarks,
+not training step-time or allocator peak-memory measurements.

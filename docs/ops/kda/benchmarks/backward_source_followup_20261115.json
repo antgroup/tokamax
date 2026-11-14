@@ -1,0 +1,45 @@
+{
+  "published_operator_lf_sha256": {
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu.py": "275c2e564cad9ce411bccf0eafb9113efcb9c1883d01eb7eb163eb79a0233738",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_fused_test.py": "4bfba472c3ba69250c961c8672542130bb05ba62346d886c6f2e6e0f70b1ff6e",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py": "3384e7a0b4121f5bf212d51d96dc2ea6fa1d1c9de668caa4cdc8f40b2e3384f1",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py": "da3d11711dc945b1ef80aa23720155335729df5c8562d9c7e81cca65ca4bc623",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py": "67cc8d12d209334df4431a44b12a5ac528a4a3d5b301285dc339311dc88e0069",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_bwd_test.py": "00998b3d143180a0d53402832e1ccc67699054e260e0ea683e2e5787335c30c2",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_test.py": "6bf8cf3eff6b2d2a4e1f38923d388837cde193679af5a02e931a754ae0c97140",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_remat_test.py": "fea8520bcf69d5e19e5266fbc8bf9655acaba0594b9ffa3158e390f214449ed9"
+  },
+  "documentation_only_changes": {
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu.py": {
+      "non_doc_ast_sha256": "8429203b5f0177319d3c438f87e72803dc825e5235f600fff732be3faf9d355c",
+      "ast_unchanged": true,
+      "measured_lf_sha256": "297c04283a32646dd45c492d623a477da16e86f3d6e881f7f750f209d0bcba54",
+      "published_raw_sha256": "d38e444affb23212356c9a98953ea3b8374db46c1794f948a9224428e291b99b",
+      "published_lf_sha256": "275c2e564cad9ce411bccf0eafb9113efcb9c1883d01eb7eb163eb79a0233738"
+    },
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py": {
+      "non_doc_ast_sha256": "4a40cf95b57811fe82c2a244955a78ec6ddecd9cfef10555f4545dab6123df0d",
+      "ast_unchanged": true,
+      "measured_lf_sha256": "979e98d36180133131442def64102894a2caa4b97f25097fef3a2d12759886eb",
+      "published_raw_sha256": "8f52924ccf1a1bcb688c27ae02c65b8e414a7831bbfc817c2b9ce877bcf30140",
+      "published_lf_sha256": "67cc8d12d209334df4431a44b12a5ac528a4a3d5b301285dc339311dc88e0069"
+    },
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py": {
+      "non_doc_ast_sha256": "305b833c26669bb30124e7423697b43d37412d2c7a5accb6f4fb5e6cb61ca26d",
+      "ast_unchanged": true,
+      "measured_lf_sha256": "4dd03712716c11b9df43173746791ae0fb04e6fb9b8c635173fad904b452e252",
+      "published_raw_sha256": "5756df3bd1109a673bc6a51d1e8e6166ca722c8abfc416efe642d794305596ab",
+      "published_lf_sha256": "da3d11711dc945b1ef80aa23720155335729df5c8562d9c7e81cca65ca4bc623"
+    }
+  },
+  "measured_operator_lf_sha256": {
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu.py": "297c04283a32646dd45c492d623a477da16e86f3d6e881f7f750f209d0bcba54",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_fused_test.py": "4bfba472c3ba69250c961c8672542130bb05ba62346d886c6f2e6e0f70b1ff6e",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py": "3384e7a0b4121f5bf212d51d96dc2ea6fa1d1c9de668caa4cdc8f40b2e3384f1",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py": "4dd03712716c11b9df43173746791ae0fb04e6fb9b8c635173fad904b452e252",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py": "979e98d36180133131442def64102894a2caa4b97f25097fef3a2d12759886eb",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_bwd_test.py": "00998b3d143180a0d53402832e1ccc67699054e260e0ea683e2e5787335c30c2",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_test.py": "6bf8cf3eff6b2d2a4e1f38923d388837cde193679af5a02e931a754ae0c97140",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_remat_test.py": "fea8520bcf69d5e19e5266fbc8bf9655acaba0594b9ffa3158e390f214449ed9"
+  }
+}

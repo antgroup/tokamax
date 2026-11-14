@@ -1,3 +1,5 @@
+> Current follow-up: [November 15 corrected schedule and benchmark](backward_performance_followup_20261115.md). The tables below remain pinned historical evidence.
+
 > Compatibility update (2026-11-11): this branch now includes upstream main
 > `9827bb1860e7feab372bb553bcd3f9f6273cc4c9`. The measurements below remain
 > pinned to the October 27 revisions. They are not timings or native TPU

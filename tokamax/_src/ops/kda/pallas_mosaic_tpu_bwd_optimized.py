@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Opt-in per-channel KDA backward schedules with packed VMEM bridges.
+"""Opt-in non-CP backward schedules with VMEM bridges.
 
-These schedules retain the migrated rounding and operand layouts. The default,
-scalar-gate, convolution and explicitly tuned mini-batch paths stay in the
-upstream backward module; unchanged arithmetic helpers are shared with it.
+The local reverse body and normalization share the canonical staged code.
+Parallel WY reconstruction reuses the canonical state recurrence. Scalar,
+convolution and explicitly tuned mini-batch paths stay in the upstream module.
 """
 
 from __future__ import annotations
@@ -25,6 +25,7 @@ import dataclasses
 import functools
 from functools import partial
 import math
+import types
 
 import jax
 from jax.experimental import pallas as pl
@@ -37,6 +38,7 @@ from tokamax._src.ops.kda.common import (
     chunk_gated_delta_rule_fwd_h,
     estimate_mini_batch,
     get_tpu_limits,
+    get_max_mini_batch,
     kda_gate_chunk_cumsum,
 )
 from tokamax._src.ops.kda.cp_utils import (
@@ -51,19 +53,15 @@ from tokamax._src.ops.kda.utils import (
     _unalign_output,
     exp2,
     get_interpret,
-    l2norm_bwd,
     segment_ids_to_seqlens,
 )
 
 
 from tokamax._src.ops.kda.pallas_mosaic_tpu_bwd_kernel import (
-    compute_wy_backward,
-    compute_intra_backward,
+    _fused_dhu_wy_intra_cumsum_kernel as _staged_local_backward_kernel,
     _chunk_segment_metadata,
     chunk_gated_delta_rule_bwd_dhu_pre_process,
-    compute_dhu_recurrence,
     compute_m1_recompute,
-    compute_reverse_cumsum_dg,
     fused_recompute_w_u_vnew_from_h_pallas,
     kda_gate_bwd,
 )
@@ -98,15 +96,24 @@ def _recompute_w_u_fwd(q, k, v, beta, A, gk, chunk_size):
       (v_chunks * beta_chunks).astype(jnp.float32),
       precision=precision,
       preferred_element_type=jnp.float32,
-  ).astype(v.dtype)
+  )
+  if v.dtype == jnp.bfloat16:
+    u = jax.lax.reduce_precision(u, 8, 7)
+  u = u.astype(v.dtype)
   w = jnp.matmul(
       A_chunks,
-      (k_chunks * beta_chunks * g_exp).astype(jnp.float32),
+      k_chunks.astype(jnp.float32) * beta_chunks.astype(jnp.float32) * g_exp,
       precision=precision,
       preferred_element_type=jnp.float32,
-  ).astype(k.dtype)
+  )
+  if k.dtype == jnp.bfloat16:
+    w = jax.lax.reduce_precision(w, 8, 7)
+  w = w.astype(k.dtype)
   qg = (q_chunks * g_exp).astype(q.dtype)
-  kg = (k_chunks * jnp.exp2(g_chunks[:, -1:, :] - g_chunks)).astype(k.dtype)
+  kg = k_chunks * jnp.exp2(g_chunks[:, -1:, :] - g_chunks)
+  if k.dtype == jnp.bfloat16:
+    kg = jax.lax.reduce_precision(kg, 8, 7)
+  kg = kg.astype(k.dtype)
   if get_interpret():
     u, w, qg, kg = jax.lax.optimization_barrier((u, w, qg, kg))
 
@@ -118,65 +125,22 @@ def _recompute_w_u_fwd(q, k, v, beta, A, gk, chunk_size):
   )
 
 
-def _rematerialize_states_kernel(
-    segments_ref,
-    q_ref,
-    k_ref,
-    v_ref,
-    beta_ref,
-    a_ref,
-    g_ref,
-    initial_ref,
-    h_ref,
-    v_new_ref,
-    state_ref,
-    *,
-    chunk_size,
-    chunks,
+def _rematerialize_wy_kernel(
+    k_ref, v_ref, beta_ref, a_ref, g_ref, w_ref, u_ref, kg_ref, *, chunk_size
 ):
-  """Rebuild chunk states with WY intermediates local to each program."""
-  batch, chunk = pl.program_id(1), pl.program_id(2)
-  _, _, valid, first, _ = _chunk_segment_metadata(
-      segments_ref, batch, chunk, chunks
-  )
-
-  @pl.when(first | ~valid)
-  def initialize():
-    state_ref[...] = jnp.zeros_like(state_ref[...])
-    if initial_ref is not None:
-      state_ref[...] = jnp.where(
-          valid, initial_ref[:, 0, 0].astype(jnp.float32), 0
-      )
-
-  state = state_ref[...]
-  h_ref[:, 0, 0] = _storage_boundary(state, h_ref.dtype)
+  beta = beta_ref[:, 0, 0, 0].reshape(k_ref.shape[:-1])
   w, u, _, kg = _recompute_w_u_fwd(
-      q_ref[...],
+      k_ref[...],
       k_ref[...],
       v_ref[...],
-      beta_ref[..., 0],
+      beta,
       a_ref[...],
       g_ref[...],
       chunk_size,
   )
-  w, u, kg = w[:, 0], u[:, 0], kg[:, 0]
-  v_new = u.astype(jnp.float32) - jnp.matmul(
-      w.astype(jnp.float32),
-      state,
-      precision=jax.lax.Precision.HIGHEST,
-      preferred_element_type=jnp.float32,
-  )
-  v_new_ref[:, 0] = _storage_boundary(
-      jnp.where(valid, v_new, 0), v_new_ref.dtype
-  )
-  gate_last = g_ref[:, 0, -1].astype(jnp.float32)
-  state = state * exp2(gate_last)[:, :, None] + jnp.matmul(
-      kg.astype(jnp.float32).transpose(0, 2, 1),
-      v_new,
-      precision=jax.lax.Precision.HIGHEST,
-      preferred_element_type=jnp.float32,
-  )
-  state_ref[...] = jnp.where(valid, state, 0)
+  w_ref[...] = w
+  u_ref[...] = u
+  kg_ref[...] = kg
 
 
 @partial(jax.jit, static_argnames=["chunk_size"])
@@ -191,9 +155,16 @@ def _rematerialize_states_pallas(
     segment_ids,
     *,
     chunk_size=64,
+    cu_seqlens=None,
+    chunk_indices=None,
 ):
-  """Return the existing low-memory path's h and FP32 v_new layouts."""
-  heads, batch, tokens, key_dim = q.shape
+  """Fuse parallel WY reconstruction, then reuse the canonical state recurrence.
+
+  Materialize rounded W/U/gated keys before the serial recurrence. Fusing
+  their producers into that recurrence changes long-sequence gradients.
+  The shared launcher also preserves FP32 snapshots for varlen execution.
+  """
+  heads, batch, tokens, key_dim = k.shape
   value_dim = v.shape[-1]
   chunks = tokens // chunk_size
   if (
@@ -205,91 +176,61 @@ def _rematerialize_states_pallas(
     raise ValueError(
         "Fused rematerialization requires BT=64 and 128-aligned K/V."
     )
-  if heads == 1:
-    # The fused MB=1 recursive state update is not numerically equivalent to
-    # the established staged kernel on current Mosaic. Preserve correctness
-    # for this degenerate edge case without changing the multi-head fast path.
-    w, u, _, kg = _recompute_w_u_fwd(q, k, v, beta, a, g, chunk_size)
-    h, v_new, _ = chunk_gated_delta_rule_fwd_h(
-        k=kg,
-        w=w,
-        u=u,
-        gk=g,
-        initial_state=initial_state,
-        output_final_state=False,
-        chunk_size=chunk_size,
+  if segment_ids is not None and (cu_seqlens is None or chunk_indices is None):
+    raise ValueError(
+        "Varlen reconstruction requires aligned boundaries and chunks."
     )
-    return h, v_new
-  if segment_ids is None:
-    segment_ids = jnp.ones((batch, tokens), jnp.int32)
-    if initial_state is not None and initial_state.ndim == 4:
-      initial_state = initial_state[:, None]
-  segments = segment_ids.reshape(batch, chunks, chunk_size)[:, :, 0]
   per_head = 4 * (
-      3 * key_dim * value_dim
-      + 12 * chunk_size * (key_dim + value_dim)
-      + 4 * chunk_size**2
+      8 * chunk_size * (2 * key_dim + value_dim) + 8 * chunk_size * chunk_size
   )
-  mini_batch = estimate_mini_batch(per_head, heads, max_mb=16)
+  mini_batch = estimate_mini_batch(per_head, heads, max_mb=get_max_mini_batch())
 
   def token_spec(width):
     return pl.BlockSpec(
-        (mini_batch, 1, chunk_size, width), lambda h, b, c, _: (h, b, c, 0)
+        (mini_batch, 1, chunk_size, width), lambda h, b, c: (h, b, c, 0)
     )
 
-  def state_index(h, b, c, segments):
-    _, seq, _, _, _ = _chunk_segment_metadata(segments, b, c, chunks)
-    return h, b, seq, 0, 0
-
-  initial_spec = pl.BlockSpec(
-      (mini_batch, 1, 1, key_dim, value_dim), state_index
+  beta_spec = pl.BlockSpec(
+      (mini_batch, 1, 1, 1, chunk_size), lambda h, b, c: (h, b, c, 0, 0)
   )
-  state_spec = pl.BlockSpec(
-      (mini_batch, 1, 1, key_dim, value_dim), lambda h, b, c, _: (h, b, c, 0, 0)
-  )
-  return pl.pallas_call(
-      partial(
-          _rematerialize_states_kernel, chunk_size=chunk_size, chunks=chunks
-      ),
+  w, u, kg = pl.pallas_call(
+      partial(_rematerialize_wy_kernel, chunk_size=chunk_size),
       out_shape=(
-          jax.ShapeDtypeStruct(
-              (heads, batch, chunks, key_dim, value_dim), k.dtype
-          ),
-          jax.ShapeDtypeStruct(v.shape, jnp.float32),
+          jax.ShapeDtypeStruct(k.shape, k.dtype),
+          jax.ShapeDtypeStruct(v.shape, v.dtype),
+          jax.ShapeDtypeStruct(k.shape, k.dtype),
       ),
-      grid_spec=pltpu.PrefetchScalarGridSpec(
-          num_scalar_prefetch=1,
-          grid=(heads // mini_batch, batch, chunks),
-          in_specs=[
-              token_spec(key_dim),
-              token_spec(key_dim),
-              token_spec(value_dim),
-              token_spec(1),
-              token_spec(chunk_size),
-              token_spec(key_dim),
-              initial_spec if initial_state is not None else None,
-          ],
-          out_specs=(state_spec, token_spec(value_dim)),
-          scratch_shapes=[
-              pltpu.VMEM((mini_batch, key_dim, value_dim), jnp.float32)
-          ],
+      grid=(heads // mini_batch, batch, chunks),
+      in_specs=(
+          token_spec(key_dim),
+          token_spec(value_dim),
+          beta_spec,
+          token_spec(chunk_size),
+          token_spec(key_dim),
+      ),
+      out_specs=(
+          token_spec(key_dim),
+          token_spec(value_dim),
+          token_spec(key_dim),
       ),
       compiler_params=pltpu.CompilerParams(
-          dimension_semantics=("parallel", "parallel", "arbitrary")
+          dimension_semantics=("parallel", "parallel", "parallel")
       ),
       interpret=get_interpret(),
-  )(
-      segments,
-      q,
-      k,
-      v,
-      beta[..., None],
-      a,
-      g,
-      initial_state.transpose(2, 0, 1, 3, 4)
-      if initial_state is not None
-      else None,
+  )(k, v, beta.reshape(heads, batch, chunks, 1, chunk_size), a, g)
+  h, v_new, _ = chunk_gated_delta_rule_fwd_h(
+      k=kg,
+      w=w,
+      u=u,
+      gk=g,
+      initial_state=initial_state,
+      output_final_state=False,
+      chunk_size=chunk_size,
+      cu_seqlens=cu_seqlens,
+      chunk_indices=chunk_indices,
+      use_exp2=True,
   )
+  return h, v_new
 
 
 def _fused_recompute_w_u_vnew_from_h_kernel(
@@ -354,6 +295,8 @@ def _fused_dhu_wy_intra_cumsum_kernel(
     dv0_ref,
     dAqk_ref,
     dht_ref,
+    rstd_q_ref,
+    rstd_k_ref,
     dq_ref,
     dk_ref,
     dv_ref,
@@ -368,99 +311,47 @@ def _fused_dhu_wy_intra_cumsum_kernel(
     NT,
     scale,
     MB,
+    step=None,
 ):
-  """Fuse Dhu, WY, intra backward, and reverse cumsum for one chunk tile."""
-  head_group = pl.program_id(0)
-  batch_idx = pl.program_id(1)
-  rev_c = pl.program_id(2)
-  chunk_id = NT - 1 - rev_c
-  _, seq_idx, _, is_first_chunk, is_last_chunk = _chunk_segment_metadata(
+  """Share the staged arithmetic and fused normalization contract."""
+  if step is None:
+    step = types.SimpleNamespace(
+        index=tuple(pl.program_id(i) for i in range(3))
+    )
+  _staged_local_backward_kernel(
+      step,
       chunk_seg_ids_ref,
-      batch_idx,
-      chunk_id,
-      NT,
+      q_ref,
+      k_ref,
+      v_ref,
+      v_new_ref,
+      qg_ref,
+      kg_ref,
+      w_ref,
+      g_ref,
+      beta_ref,
+      A_ref,
+      h_ref,
+      do_ref,
+      dv0_ref,
+      dAqk_ref,
+      dht_ref,
+      rstd_q_ref,
+      rstd_k_ref,
+      dq_ref,
+      dk_ref,
+      dv_ref,
+      db_ref,
+      dg_ref,
+      dh0_ref,
+      dh_tmp_ref,
+      BT=BT,
+      K=K,
+      V=V,
+      NT=NT,
+      scale=scale,
+      MB=MB,
   )
-  # Match the upstream staged backward even when the caller sets a global
-  # matmul precision. In CUDA interpretation None would inherit "highest",
-  # while the staged kernel explicitly selects DEFAULT for BF16 tokens.
-  precision = (
-      jax.lax.Precision.DEFAULT
-      if q_ref.dtype == jnp.bfloat16
-      else jax.lax.Precision.HIGHEST
-  )
-
-  @pl.when(is_last_chunk)
-  def _():
-    if dht_ref is None:
-      dh_tmp_ref[:] = jnp.zeros(dh_tmp_ref.shape, dh_tmp_ref.dtype)
-    else:
-      dh_tmp_ref[:] = dht_ref[:, 0, 0, :].astype(dh_tmp_ref.dtype)
-
-  dh = dh_tmp_ref[:].astype(jnp.float32)
-  bq = q_ref[:, 0, 0].astype(jnp.float32)
-  bk = k_ref[:, 0, 0].astype(jnp.float32)
-  bv = v_ref[:, 0, 0].astype(jnp.float32)
-  bvn = v_new_ref[:, 0, 0].astype(jnp.float32)
-  bqg = qg_ref[:, 0, 0].astype(jnp.float32)
-  bkg = kg_ref[:, 0, 0]
-  bw = w_ref[:, 0, 0].astype(jnp.float32)
-  bg = g_ref[:, 0, 0].astype(jnp.float32)
-  g_exp_last = jnp.exp2(bg[:, BT - 1, :])
-  # Keep the trailing tiled dimension while loading from VMEM. Squeezing it
-  # on the ref produces an unsupported tpu.memref_squeeze with nested tiles.
-  bb = beta_ref[:, 0, 0].astype(jnp.float32).reshape(MB, BT)
-  bA = A_ref[:, 0, 0].astype(jnp.float32)
-  bh = h_ref[:, 0, 0].astype(jnp.float32)
-  bdo = do_ref[:, 0, 0].astype(jnp.float32)
-  bdv0 = dv0_ref[:, 0, 0].astype(jnp.float32)
-  bdAqk = dAqk_ref[:, 0, 0].astype(jnp.float32)
-
-  # --- dhu reverse recurrence ---
-  bdv, dh_new = compute_dhu_recurrence(
-      bkg,
-      dh,
-      bdv0,
-      dh_tmp_ref[:],
-      g_exp_last,
-      bqg,
-      bw,
-      bdo,
-      scale,
-      precision,
-  )
-  dh_tmp_ref[:] = dh_new
-
-  # --- WY backward ---
-  dq_acc, dk_acc, b_dvb, db_acc, dg_acc, dAkk_local = compute_wy_backward(
-      bdo, bdv, bvn, bv, bh, dh, bq, bk, bg, bb, bA, scale, precision
-  )
-
-  # --- Intra backward + reverse cumsum ---
-  dq_total, dk_total, db_total, dg_total = compute_intra_backward(
-      bq,
-      bk,
-      bg,
-      bb,
-      bdAqk,
-      dAkk_local,
-      dq_acc,
-      dk_acc,
-      db_acc,
-      dg_acc,
-      precision=precision,
-  )
-  dg_reverse_cumsum = compute_reverse_cumsum_dg(dg_total)
-
-  dq_ref[:, 0, 0] = dq_total.astype(dq_ref.dtype)
-  dk_ref[:, 0, 0] = dk_total.astype(dk_ref.dtype)
-  dv_ref[:, 0, 0] = (b_dvb * bb[:, :, None]).astype(dv_ref.dtype)
-  db_ref[:, 0, 0] = db_total.astype(db_ref.dtype)[..., None]
-  dg_ref[:, 0, 0] = dg_reverse_cumsum.astype(dg_ref.dtype)
-
-  @pl.when(is_first_chunk)
-  def _():
-    if dh0_ref is not None:
-      dh0_ref[:, 0, 0, :] = dh_tmp_ref[:].astype(dh0_ref.dtype)
 
 
 def _saved_state_backward_kernel(
@@ -476,6 +367,8 @@ def _saved_state_backward_kernel(
     do_ref,
     dht_ref,
     rematerialized_v_new_ref,
+    rstd_q_ref,
+    rstd_k_ref,
     dq_ref,
     dk_ref,
     dv_ref,
@@ -496,6 +389,7 @@ def _saved_state_backward_kernel(
     NT,
     scale,
     MB,
+    step=None,
 ):
   """Fuses saved-state recomputation and all local backward stages.
 
@@ -508,7 +402,7 @@ def _saved_state_backward_kernel(
     # Only WY weights and gated Q/K are needed in this reverse pass.
     q = q_ref[:, 0, 0].astype(jnp.float32)
     k = k_ref[:, 0, 0].astype(jnp.float32)
-    beta = beta_ref[:, 0, 0].astype(jnp.float32)
+    beta = beta_ref[:, 0, 0].astype(jnp.float32).reshape(MB, BT, 1)
     g = g_ref[:, 0, 0]
     gate_exp = jnp.exp2(g)
     precision = (
@@ -579,6 +473,8 @@ def _saved_state_backward_kernel(
       dv0_ref,
       dAqk_ref,
       dht_ref,
+      rstd_q_ref,
+      rstd_k_ref,
       dq_ref,
       dk_ref,
       dv_ref,
@@ -592,23 +488,28 @@ def _saved_state_backward_kernel(
       NT=NT,
       scale=scale,
       MB=MB,
+      step=step,
   )
 
 
 def _packed_saved_state_backward_kernel(
-    segments_ref, windows_ref, *refs, **kwargs
+    segments_ref, windows_ref, *refs, packed_indices, **kwargs
 ):
-  """Stage original packed Q/K/V/beta for the reverse chunk traversal."""
-  batch = pl.program_id(1)
-  chunk = kwargs["NT"] - 1 - pl.program_id(2)
+  """Stage selected original Q/K/V; normalized Q/K and beta stay aligned."""
+  step = kwargs.get("step")
+  batch = pl.program_id(1) if step is None else step.index[1]
+  reverse_chunk = pl.program_id(2) if step is None else step.index[2]
+  chunk = kwargs["NT"] - 1 - reverse_chunk
   offset_index = 2 * (batch * kwargs["NT"] + chunk)
   start, end = windows_ref[offset_index], windows_ref[offset_index + 1]
   offset = start % 8
   branches = tuple(
       (lambda x, i=i: x[:, :, i : i + kwargs["BT"], :]) for i in range(8)
   )
-  args = list(refs[:-4])
-  for index, tile in zip((0, 1, 2, 4), refs[-4:], strict=True):
+  args = list(refs[: -len(packed_indices)])
+  for index, tile in zip(
+      packed_indices, refs[-len(packed_indices) :], strict=True
+  ):
     values = jax.lax.switch(offset, branches, refs[index][...])
     token = jax.lax.broadcasted_iota(jnp.int32, values.shape, dimension=2)
     values = jnp.where(start + token < end, values, 0)
@@ -656,9 +557,11 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     max_num_segments: int | None = None,
     fuse_recompute: bool = False,
     forward_aqk: Float[Array, "H B T BT"] | None = None,
-    packed_inputs: tuple[jax.Array, ...] | None = None,
+    packed_inputs: tuple[jax.Array | None, ...] | None = None,
     original_cu_seqlens: jax.Array | None = None,
     aligned_cu_seqlens: jax.Array | None = None,
+    rstd_q: jax.Array | None = None,
+    rstd_k: jax.Array | None = None,
 ) -> tuple[
     Float[Array, "H B T K"],
     Float[Array, "H B T K"],
@@ -717,7 +620,7 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
     hw = get_tpu_limits()
     vmem_budget = hw.vmem_limit_bytes
     MB = max(1, vmem_budget // per_head)
-    MB = min(MB, H, 16)
+    MB = min(MB, H, get_max_mini_batch())
     while H % MB != 0 and MB > 1:
       MB -= 1
   else:
@@ -740,7 +643,7 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
   kg_r = kg.reshape(H, B, NT, BT, K) if kg is not None else None
   w_r = w.reshape(H, B, NT, BT, K) if w is not None else None
   g_r = g.reshape(H, B, NT, BT, K)
-  beta_r = beta.reshape(H, B, NT, BT, 1)
+  beta_r = beta.reshape(H, B, NT, 1, BT)
   A_r = A.reshape(H, B, NT, BT, BT)
   h_r = h  # already [H, B, NT, K, V]
   do_r = do.reshape(H, B, NT, BT, V)
@@ -763,7 +666,7 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
 
   qk_spec = pl.BlockSpec((MB, 1, 1, BT, K), index_map=idx_chunk)
   v_spec = pl.BlockSpec((MB, 1, 1, BT, V), index_map=idx_chunk)
-  b_spec = pl.BlockSpec((MB, 1, 1, BT, 1), index_map=idx_chunk)
+  b_spec = pl.BlockSpec((MB, 1, 1, 1, BT), index_map=idx_chunk)
   A_spec = pl.BlockSpec((MB, 1, 1, BT, BT), index_map=idx_chunk)
   h_spec = pl.BlockSpec((MB, 1, 1, K, V), index_map=idx_chunk)
   state_spec = pl.BlockSpec((MB, 1, 1, K, V), index_map=idx_state)
@@ -779,10 +682,10 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
   )
   dh_tmp = pltpu.VMEM((MB, K, V), jnp.float32)
   out_shape = [
-      jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
-      jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
-      jax.ShapeDtypeStruct((H, B, NT, BT, V), jnp.float32),
-      jax.ShapeDtypeStruct((H, B, NT, BT, 1), jnp.float32),
+      jax.ShapeDtypeStruct((H, B, NT, BT, K), q.dtype),
+      jax.ShapeDtypeStruct((H, B, NT, BT, K), q.dtype),
+      jax.ShapeDtypeStruct((H, B, NT, BT, V), v.dtype),
+      jax.ShapeDtypeStruct((H, B, NT, 1, BT), jnp.float32),
       jax.ShapeDtypeStruct((H, B, NT, BT, K), jnp.float32),
       jax.ShapeDtypeStruct((H, B, N, K, V), jnp.float32)
       if return_dh0
@@ -863,6 +766,16 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
         pltpu.VMEM((MB, 1, 1, BT, V), jnp.float32),
     ]
 
+  rstd_spec = pl.BlockSpec((MB, 1, 1, 1, BT), index_map=idx_chunk)
+  in_specs += [
+      rstd_spec if rstd_q is not None else None,
+      rstd_spec if rstd_k is not None else None,
+  ]
+  kernel_inputs += [
+      rstd_q.reshape(H, B, NT, 1, BT) if rstd_q is not None else None,
+      rstd_k.reshape(H, B, NT, 1, BT) if rstd_k is not None else None,
+  ]
+
   scalar_inputs = [chunk_seg_ids]
   if packed_inputs is not None:
     if (
@@ -892,8 +805,12 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
       start = windows[2 * (b * NT + NT - 1 - c)]
       return h * MB, b, pl.multiple_of(start - start % 8, 8), 0
 
-    pq, pk, pv, pb = packed_inputs
-    for index, x in zip((0, 1, 2, 4), (pq, pk, pv, pb[..., None]), strict=True):
+    pq, pk, pv, _ = packed_inputs
+    packed_indices = []
+    for index, x in zip((0, 1, 2), (pq, pk, pv), strict=True):
+      if x is None:
+        continue
+      packed_indices.append(index)
       kernel_inputs[index] = jnp.pad(
           x, ((0, 0), (0, 0), (0, (-x.shape[2]) % 8 + BT + 8), (0, 0))
       )
@@ -902,8 +819,10 @@ def _fused_dhu_wy_intra_cumsum_pallas_jit(
           packed_index,
       )
       scratch_shapes.append(pltpu.VMEM((MB, 1, 1, BT, x.shape[-1]), x.dtype))
+
     kernel = partial(
         _packed_saved_state_backward_kernel,
+        packed_indices=tuple(packed_indices),
         BT=BT,
         K=K,
         V=V,
@@ -1164,7 +1083,7 @@ def chunk_kda_bwd_custom(
     fuse_backward: bool = True,
     fuse_rematerialization: bool = False,
     packed_gradients: bool = False,
-    packed_inputs: tuple[jax.Array, ...] | None = None,
+    packed_inputs: tuple[jax.Array | None, ...] | None = None,
 ) -> tuple[
     Float[Array, "H B T_ORIG K"],
     Float[Array, "H B T_ORIG K"],
@@ -1178,8 +1097,8 @@ def chunk_kda_bwd_custom(
 ]:
   """Runs the full KDA backward pipeline from forward residuals."""
   do, dht = grad_outputs
-  # JAX cotangents match the bf16 output dtype; backward accumulates in fp32.
-  do = do.astype(jnp.float32)
+  # Keep cotangents in the activation dtype in HBM, matching staged backward.
+  # Each kernel promotes its loaded tile for FP32 accumulation.
   q = residuals.q
   k = residuals.k
   v = residuals.v
@@ -1367,7 +1286,17 @@ def chunk_kda_bwd_custom(
 
     if fuse_remat:
       h, v_new = _rematerialize_states_pallas(
-          q, k, v, beta, Akk, g, initial_state, segment_ids, chunk_size=BT
+          q,
+          k,
+          v,
+          beta,
+          Akk,
+          g,
+          initial_state,
+          segment_ids,
+          chunk_size=BT,
+          cu_seqlens=cu_seqlens,
+          chunk_indices=chunk_indices,
       )
       w = u = qg = kg = None
     else:
@@ -1524,6 +1453,8 @@ def chunk_kda_bwd_custom(
       packed_inputs=packed_inputs if fuse_local_backward else None,
       original_cu_seqlens=original_cu_seqlens,
       aligned_cu_seqlens=aligned_cu,
+      rstd_q=rstd_q if use_qk_l2norm else None,
+      rstd_k=rstd_k if use_qk_l2norm else None,
   )
 
   # Padding chunks need not write their backward output buffers. Clear those
@@ -1531,11 +1462,7 @@ def chunk_kda_bwd_custom(
   # values or multiplying a raw-gate -inf sentinel by a zero cotangent.
   if segment_ids is not None:
     valid = segment_ids[None, :, :] != 0
-    dq = jnp.where(valid[..., None], dq, 0)
-    dk = jnp.where(valid[..., None], dk, 0)
-    dv = jnp.where(valid[..., None], dv, 0)
     dg = jnp.where(valid[..., None], dg, 0)
-    db = jnp.where(valid, db, 0)
     if g_org is not None:
       g_org = jnp.where(valid[..., None], g_org, 0)
 
@@ -1563,11 +1490,6 @@ def chunk_kda_bwd_custom(
     dh0 = dh0[:, 0]
 
   cu_seqlens = original_cu_seqlens
-  if use_qk_l2norm:
-    assert rstd_q is not None and rstd_k is not None
-    dq = l2norm_bwd(q, rstd_q, dq)
-    dk = l2norm_bwd(k, rstd_k, dk)
-
   if cu_seqlens is not None:
     if packed_gradients and not _cp_active:
       # Gate reductions and normalization are complete. Casting commutes with

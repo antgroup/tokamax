@@ -23,6 +23,7 @@ import pytest
 from tokamax._src.ops.kda import api
 from tokamax._src.ops.kda import pallas_mosaic_tpu as mosaic
 from tokamax._src.ops.kda import pallas_mosaic_tpu_bwd_optimized as kernels
+from tokamax._src.ops.kda import pallas_mosaic_tpu_bwd_kernel as staged_kernels
 from tokamax._src.ops.kda import pallas_mosaic_tpu_fwd_fused_test as forward_tests
 
 interpret_on_cpu = forward_tests.interpret_on_cpu
@@ -236,3 +237,45 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
   forward_tests._assert_close(
       results[1], results[0], tolerance=0.002, bf16_internal=True
   )
+
+
+@pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])
+def test_local_backward_clears_unwritten_chunks(dtype):
+  args, kwargs = forward_tests._inputs(dtype, True, heads=2)
+  op = mosaic.PallasMosaicTpuKimiDeltaAttention(config=mosaic.Config())
+  _, r = forward_tests._call(op, dict(kwargs, return_residuals=True), *args)
+  live_chunks = r.aligned_segment_ids[:, ::64] != 0
+  h = jnp.where(live_chunks[None, :, :, None, None], r.h, jnp.nan)
+  do = jnp.where(
+      (r.aligned_segment_ids != 0)[None, :, :, None], jnp.ones_like(r.v), 0
+  )
+  dAqk, dv0 = staged_kernels.chunk_kda_bwd_dAv_kernel(
+      q=r.q, k=r.k, v=r.v_new, do=do, A=r.aqk, scale=128**-0.5, chunk_size=64
+  )
+  grads = staged_kernels._fused_dhu_wy_intra_cumsum_pallas_jit(
+      q=r.q,
+      k=r.k,
+      v=r.v,
+      v_new=r.v_new,
+      qg=None,
+      kg=None,
+      w=None,
+      g=r.g_cumsum,
+      beta=r.beta,
+      A=r.akk,
+      h=h,
+      do=do,
+      dv0=dv0,
+      dAqk=dAqk,
+      dht=None,
+      scale=128**-0.5,
+      segment_ids=r.aligned_segment_ids,
+      return_dh0=False,
+      max_num_segments=3,
+  )
+  live = jnp.repeat(live_chunks, 64, axis=1)[None]
+  for grad in grads[:5]:
+    values = np.asarray(grad)
+    assert np.isfinite(values).all()
+    mask = live[..., None] if grad.ndim == 4 else live
+    np.testing.assert_array_equal(np.asarray(jnp.where(mask, 0, grad)), 0)
