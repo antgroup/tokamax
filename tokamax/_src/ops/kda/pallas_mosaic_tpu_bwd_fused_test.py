@@ -116,11 +116,16 @@ def test_unbounded_raw_gate_is_rejected(fuse_backward):
 @pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])
 @pytest.mark.parametrize("packed", [False, True])
 @pytest.mark.parametrize("fuse_forward", [False, True])
-def test_saved_state_backward(dtype, packed, fuse_forward):
+@pytest.mark.parametrize("has_initial_state", [False, True])
+def test_saved_state_backward(dtype, packed, fuse_forward, has_initial_state):
   args, kwargs = forward_tests._inputs(dtype, packed)
   # Cover pre-activated gates separately from the raw-gate regression above.
   args = (*args[:3], -jnp.ones_like(args[3]) * 0.01, *args[4:6], None, None)
   kwargs.update(use_gate_in_kernel=False, lower_bound=None)
+  if not has_initial_state:
+    if packed:
+      kwargs["max_num_segments"] = args[5].shape[1]
+    args = (*args[:5], None, *args[6:])
   results = []
   for fuse_backward in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(

@@ -28,7 +28,8 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("rematerialize", [False, True])
-def test_full_gradient_compaction(dtype, rematerialize):
+@pytest.mark.parametrize("has_initial_state", [False, True])
+def test_full_gradient_compaction(dtype, rematerialize, has_initial_state):
   args, kwargs = forward_tests._inputs(dtype, True)
   args = (
       *[jnp.repeat(x, 8, axis=0) for x in args[:5]],
@@ -36,6 +37,9 @@ def test_full_gradient_compaction(dtype, rematerialize):
       jnp.repeat(args[6], 8),
       jnp.tile(args[7], 8),
   )
+  if not has_initial_state:
+    kwargs["max_num_segments"] = args[5].shape[1]
+    args = (*args[:5], None, *args[6:])
   results = []
   for compact in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
@@ -116,7 +120,9 @@ def test_preactivated_gate_without_normalization_or_state(key_dim):
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("width", [128, 256])
 @pytest.mark.parametrize("rows", [64, 128, 1024, 8192])
-def test_normalization_storage_boundary_against_one_hot_jacobian(dtype, width, rows):
+def test_normalization_storage_boundary_against_one_hot_jacobian(
+    dtype, width, rows
+):
   # For a unit coordinate vector, normalization removes only the gradient
   # parallel to that coordinate. All values below are exact binary fractions.
   row = jnp.arange(rows)
