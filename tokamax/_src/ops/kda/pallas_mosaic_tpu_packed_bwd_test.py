@@ -28,8 +28,12 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("rematerialize", [False, True])
-def test_packed_backward(dtype, rematerialize):
+@pytest.mark.parametrize("has_initial_state", [False, True])
+def test_packed_backward(dtype, rematerialize, has_initial_state):
   args, kwargs = forward_tests._inputs(dtype, True)
+  if not has_initial_state:
+    kwargs["max_num_segments"] = args[5].shape[1]
+    args = (*args[:5], None, *args[6:])
   results = []
   for packed in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
