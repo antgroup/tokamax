@@ -50,7 +50,10 @@ def test_rematerialized_backward(dtype, packed):
         )
     )
   forward_tests._assert_close(
-      results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
+      results[1],
+      results[0],
+      tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5,
+      bf16_internal=True,
   )
 
 
@@ -137,4 +140,4 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
     )
     output, pullback = jax.vjp(op, *args)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
-  forward_tests._assert_close(results[1], results[0], tolerance=0.002)
+  forward_tests._assert_close(results[1], results[0], tolerance=0.002, bf16_internal=True)

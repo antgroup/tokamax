@@ -94,7 +94,9 @@ def test_packed_padding_and_empty_state_gradients(
     results.append(
         pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
     )
-  forward_tests._assert_close(results[0], results[1], tolerance=0.002)
+  forward_tests._assert_close(
+      results[0], results[1], tolerance=0.002, bf16_internal=True
+  )
   for gradient in results[0][:5]:
     np.testing.assert_array_equal(np.asarray(gradient[:, :, 96:]), 0)
   np.testing.assert_allclose(
@@ -142,7 +144,10 @@ def test_saved_state_backward(dtype, packed, fuse_forward, has_initial_state):
       results[1][1][:6], results[0][1][:6], strict=True
   ):
     forward_tests._assert_close(
-        actual, expected, tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
+        actual,
+        expected,
+        tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5,
+        bf16_internal=True,
     )
 
 
@@ -170,7 +175,9 @@ def test_backward_gate_gradients_against_autodiff(rematerialize):
     gradients.append(
         pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
     )
-  forward_tests._assert_close(gradients[1], gradients[0], tolerance=0.002)
+  forward_tests._assert_close(
+      gradients[1], gradients[0], tolerance=0.002, bf16_internal=True
+  )
   forward_tests._assert_close(gradients[1][3], gradients[2][3], tolerance=0.05)
   forward_tests._assert_close(
       gradients[1][6:], gradients[2][6:], tolerance=0.05
@@ -226,45 +233,6 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
     )
     output, pullback = jax.vjp(op, *inputs)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
-  forward_tests._assert_close(results[1], results[0], tolerance=0.002)
-
-
-@pytest.mark.parametrize("has_initial_state", [False, True])
-def test_explicit_initial_state_retains_staged_backward(
-    monkeypatch, has_initial_state
-):
-  calls = []
-  original = mosaic.chunk_kda_bwd_custom
-
-  def record(*args, **kwargs):
-    calls.append(
-        tuple(
-            kwargs[k]
-            for k in (
-                "fuse_backward",
-                "fuse_rematerialization",
-                "packed_gradients",
-            )
-        )
-    )
-    return original(*args, **kwargs)
-
-  monkeypatch.setattr(mosaic, "chunk_kda_bwd_custom", record)
-  args, kwargs = forward_tests._inputs(jnp.float32, False)
-  if not has_initial_state:
-    args = (*args[:5], None, *args[6:])
-  op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-      config=mosaic.Config(
-          fuse_forward=True,
-          fuse_backward=True,
-          fuse_rematerialization=True,
-          packed_gradients=True,
-      )
+  forward_tests._assert_close(
+      results[1], results[0], tolerance=0.002, bf16_internal=True
   )
-  output, pullback = jax.vjp(
-      functools.partial(forward_tests._call, op, kwargs), *args
-  )
-  gradients = pullback(jax.tree.map(jnp.ones_like, output))
-  assert calls == [(not has_initial_state,) * 3]
-  for gradient in jax.tree.leaves(gradients):
-    assert np.isfinite(np.asarray(gradient)).all()

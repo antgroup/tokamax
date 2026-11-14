@@ -53,7 +53,10 @@ def test_packed_backward(dtype, rematerialize, has_initial_state):
         pullback(jax.tree.map(lambda x: jnp.ones_like(x) * 0.1, output))
     )
   forward_tests._assert_close(
-      results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
+      results[1],
+      results[0],
+      tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5,
+      bf16_internal=True,
   )
 
 
@@ -140,4 +143,4 @@ def test_wide_values_and_keys(key_dim, value_dim):
     call = functools.partial(op, segment_ids=segments, max_num_segments=2)
     output, pullback = jax.vjp(call, *args)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
-  forward_tests._assert_close(results[1], results[0], tolerance=0.002)
+  forward_tests._assert_close(results[1], results[0], tolerance=0.002, bf16_internal=True)

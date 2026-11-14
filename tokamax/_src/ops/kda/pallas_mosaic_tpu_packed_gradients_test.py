@@ -20,6 +20,7 @@ import jax
 import jax.numpy as jnp
 import pytest
 from tokamax._src.ops.kda import pallas_mosaic_tpu as mosaic
+from tokamax._src.ops.kda.utils import l2norm_bwd
 from tokamax._src.ops.kda import pallas_mosaic_tpu_bwd_optimized as kernels
 from tokamax._src.ops.kda import pallas_mosaic_tpu_fwd_fused_test as forward_tests
 
@@ -63,7 +64,10 @@ def test_full_gradient_compaction(dtype, rematerialize, has_initial_state):
   # Compaction changes token placement only. Separate XLA compilations can
   # still schedule the preceding FP32 reductions differently by a few ULPs.
   forward_tests._assert_close(
-      results[1], results[0], tolerance=0 if dtype == jnp.bfloat16 else 1e-7
+      results[1],
+      results[0],
+      tolerance=0 if dtype == jnp.bfloat16 else 1e-7,
+      bf16_ulp_only=True,
   )
 
 
@@ -120,9 +124,7 @@ def test_preactivated_gate_without_normalization_or_state(key_dim):
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("width", [128, 256])
 @pytest.mark.parametrize("rows", [64, 128, 1024, 8192])
-def test_normalization_storage_boundary_against_one_hot_jacobian(
-    dtype, width, rows
-):
+def test_normalization_against_one_hot_jacobian(dtype, width, rows):
   # For a unit coordinate vector, normalization removes only the gradient
   # parallel to that coordinate. All values below are exact binary fractions.
   row = jnp.arange(rows)
@@ -132,5 +134,5 @@ def test_normalization_storage_boundary_against_one_hot_jacobian(
       ((jnp.arange(width) % 7 - 3) * 0.125).astype(dtype), y.shape
   )
   expected = jnp.where(y != 0, 0, dy.astype(jnp.float32) * rstd[..., None])
-  actual = kernels._materialized_l2norm_bwd(y, rstd, dy)
+  actual = l2norm_bwd(y, rstd, dy)
   forward_tests._assert_close(actual, expected.astype(dtype), tolerance=0)

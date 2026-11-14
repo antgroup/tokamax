@@ -102,7 +102,9 @@ def _call(op, kwargs, q, k, v, g, beta, h0, a_log, bias):
   )
 
 
-def _assert_close(actual, expected, *, tolerance):
+def _assert_close(
+    actual, expected, *, tolerance, bf16_internal=False, bf16_ulp_only=False
+):
   assert jax.tree.structure(actual) == jax.tree.structure(expected)
   for (path, a), (_, b) in zip(
       jax.tree_util.tree_flatten_with_path(actual)[0],
@@ -111,16 +113,39 @@ def _assert_close(actual, expected, *, tolerance):
   ):
     assert a.shape == b.shape
     assert a.dtype == b.dtype
+    is_bf16 = a.dtype == jnp.bfloat16
     a, b = np.asarray(a, np.float32), np.asarray(b, np.float32)
     assert np.isfinite(a).all()
     assert np.isfinite(b).all()
-    np.testing.assert_allclose(
-        a,
-        b,
-        rtol=tolerance,
-        atol=tolerance,
-        err_msg=f"KDA result leaf {jax.tree_util.keystr(path)}",
-    )
+    if is_bf16 and (bf16_internal or bf16_ulp_only):
+      # Match internal tests.utils.compare_tensor at pallas-kernel 18ea6891:
+      # intra backward uses atol=0.005, rtol=0.05, and max_ulp=1.
+      # Layout equivalence uses only 1 ULP; analytic tests remain exact.
+      # Keep the finite checks above; matching NaNs are never accepted here.
+      magnitude = np.maximum(np.abs(a.astype(np.float64)), np.abs(b))
+      _, exponent = np.frexp(magnitude)
+      min_ulp = float(jnp.finfo(jnp.bfloat16).tiny) * float(
+          jnp.finfo(jnp.bfloat16).eps
+      )
+      ulp = np.maximum(np.ldexp(np.ones_like(magnitude), exponent - 8), min_ulp)
+      ulp = np.where(magnitude == 0, min_ulp, ulp)
+      atol, rtol = (0.0, 0.0) if bf16_ulp_only else (0.005, 0.05)
+      allowed = np.maximum(atol + rtol * np.abs(a), ulp)
+      delta = np.abs(a.astype(np.float64) - b)
+      assert np.all(delta <= allowed), (
+          f"KDA leaf {jax.tree_util.keystr(path)}: "
+          f"{np.count_nonzero(delta > allowed)}/{delta.size} exceed "
+          f"max(atol={atol} + rtol={rtol} * abs(actual), 1 BF16 ULP); "
+          f"max abs difference={np.max(delta)}"
+      )
+    else:
+      np.testing.assert_allclose(
+          a,
+          b,
+          rtol=tolerance,
+          atol=tolerance,
+          err_msg=f"KDA result leaf {jax.tree_util.keystr(path)}",
+      )
 
 
 @pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])

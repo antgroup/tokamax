@@ -51,6 +51,7 @@ from tokamax._src.ops.kda.utils import (
     _unalign_output,
     exp2,
     get_interpret,
+    l2norm_bwd,
     segment_ids_to_seqlens,
 )
 
@@ -68,45 +69,6 @@ from tokamax._src.ops.kda.pallas_mosaic_tpu_bwd_kernel import (
 )
 
 RCP_LN2 = 1.0 / math.log(2)
-
-
-def _l2norm_backward_kernel(y_ref, rstd_ref, dy_ref, dx_ref):
-  y = y_ref[...].astype(jnp.float32)
-  dy = dy_ref[...].astype(jnp.float32)
-  rstd = rstd_ref[...].astype(jnp.float32)
-  dot = jnp.sum(dy * y, axis=-1, keepdims=True)
-  dx_ref[...] = (dy * rstd - dot * y * rstd).astype(dx_ref.dtype)
-
-
-def _materialized_l2norm_bwd(y, rstd, dy):
-  """Normalize gradients in a fixed VMEM tile before either token consumer.
-
-  A Pallas output ref fixes the final BF16 storage boundary. Both gather
-  and compaction receive the same normalized buffer, rather than relying
-  on XLA optimization barriers to preserve intermediate fusion boundaries.
-  """
-  width = y.shape[-1]
-  rows = y.size // width
-  # Amortize per-program overhead for large token buffers while retaining
-  # the fixed BF16 output storage boundary. Each row reduces independently.
-  tile = 8
-  if rows % 128 == 0:
-    tile = 128
-  if rows >= 8192 and rows % 1024 == 0:
-    tile = 1024
-  assert rows % tile == 0
-  spec = pl.BlockSpec((tile, width), lambda i: (i, 0))
-  scalar_spec = pl.BlockSpec((tile, 1), lambda i: (i, 0))
-  result = pl.pallas_call(
-      _l2norm_backward_kernel,
-      out_shape=jax.ShapeDtypeStruct((rows, width), y.dtype),
-      grid=(rows // tile,),
-      in_specs=(spec, scalar_spec, spec),
-      out_specs=spec,
-      compiler_params=pltpu.CompilerParams(dimension_semantics=("parallel",)),
-      interpret=get_interpret(),
-  )(y.reshape(rows, width), rstd.reshape(rows, 1), dy.reshape(rows, width))
-  return result.reshape(y.shape)
 
 
 def _storage_boundary(value, dtype):
@@ -1603,8 +1565,8 @@ def chunk_kda_bwd_custom(
   cu_seqlens = original_cu_seqlens
   if use_qk_l2norm:
     assert rstd_q is not None and rstd_k is not None
-    dq = _materialized_l2norm_bwd(q, rstd_q, dq)
-    dk = _materialized_l2norm_bwd(k, rstd_k, dk)
+    dq = l2norm_bwd(q, rstd_q, dq)
+    dk = l2norm_bwd(k, rstd_k, dk)
 
   if cu_seqlens is not None:
     if packed_gradients and not _cp_active:
