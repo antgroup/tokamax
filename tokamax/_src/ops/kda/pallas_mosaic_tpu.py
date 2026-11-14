@@ -735,19 +735,11 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
     # state means backward can use the saved-state path; otherwise it must
     # rematerialize the forward state recurrence.
     use_saved_state = residuals.h is not None
-    # Explicit initial states retain the upstream staged arithmetic. The
-    # migrated fused saved-state recomputation has different BF16 storage
-    # boundaries and is not yet validated for this contract on every backend.
-    fuse_backward = config.fuse_backward and initial_state is None
-    fuse_rematerialization = (
-        config.fuse_rematerialization and initial_state is None
-    )
-    packed_gradients = config.packed_gradients and initial_state is None
 
     packed_inputs = None
     if (
         config.packed_backward
-        and fuse_backward
+        and config.fuse_backward
         and (use_saved_state or config.fuse_rematerialization)
         and residuals.cu_seqlens is not None
         and not (
@@ -789,10 +781,10 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         initial_state is not None,
         residuals,
         dout,
-        fuse_backward=fuse_backward,
-        fuse_rematerialization=fuse_rematerialization,
+        fuse_backward=config.fuse_backward,
+        fuse_rematerialization=config.fuse_rematerialization,
         packed_inputs=packed_inputs,
-        packed_gradients=packed_gradients,
+        packed_gradients=config.packed_gradients,
         fuse_cp_backward=config.fuse_cp_backward,
         cp_megakernel=config.cp_megakernel,
         per_channel_gate=per_channel_gate,
