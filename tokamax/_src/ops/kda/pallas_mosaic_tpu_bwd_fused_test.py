@@ -35,9 +35,25 @@ def test_absent_state_has_no_capacity_sized_zero_buffer():
 
   def run(q, matrix, h):
     return kernels._fused_dhu_wy_intra_cumsum_pallas_jit(
-        q, q, q, q, q, q, q, q, q[..., 0], matrix, h, q, q,
-        matrix, None, 128**-0.5, segment_ids=jnp.ones((2, 64), jnp.int32),
-        max_num_segments=8192, return_dh0=False,
+        q,
+        q,
+        q,
+        q,
+        q,
+        q,
+        q,
+        q,
+        q[..., 0],
+        matrix,
+        h,
+        q,
+        q,
+        matrix,
+        None,
+        128**-0.5,
+        segment_ids=jnp.ones((2, 64), jnp.int32),
+        max_num_segments=8192,
+        return_dh0=False,
     )
 
   traced = jax.make_jaxpr(run)(q, matrix, h)
@@ -206,3 +222,30 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
     output, pullback = jax.vjp(op, *inputs)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
   forward_tests._assert_close(results[1], results[0], tolerance=0.002)
+
+
+@pytest.mark.parametrize("has_initial_state", [False, True])
+def test_explicit_initial_state_retains_staged_backward(
+    monkeypatch, has_initial_state
+):
+  calls = []
+  original = mosaic.chunk_kda_bwd_custom
+
+  def record(*args, **kwargs):
+    calls.append(kwargs["fuse_backward"])
+    return original(*args, **kwargs)
+
+  monkeypatch.setattr(mosaic, "chunk_kda_bwd_custom", record)
+  args, kwargs = forward_tests._inputs(jnp.float32, False)
+  if not has_initial_state:
+    args = (*args[:5], None, *args[6:])
+  op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+      config=mosaic.Config(fuse_forward=True, fuse_backward=True)
+  )
+  output, pullback = jax.vjp(
+      functools.partial(forward_tests._call, op, kwargs), *args
+  )
+  gradients = pullback(jax.tree.map(jnp.ones_like, output))
+  assert calls == [not has_initial_state]
+  for gradient in jax.tree.leaves(gradients):
+    assert np.isfinite(np.asarray(gradient)).all()
