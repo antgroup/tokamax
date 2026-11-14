@@ -115,10 +115,11 @@ def test_preactivated_gate_without_normalization_or_state(key_dim):
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("width", [128, 256])
-def test_normalization_storage_boundary_against_one_hot_jacobian(dtype, width):
+@pytest.mark.parametrize("rows", [64, 128, 1024, 8192])
+def test_normalization_storage_boundary_against_one_hot_jacobian(dtype, width, rows):
   # For a unit coordinate vector, normalization removes only the gradient
   # parallel to that coordinate. All values below are exact binary fractions.
-  row = jnp.arange(64)
+  row = jnp.arange(rows)
   y = jax.nn.one_hot((row * 17) % width, width, dtype=dtype)[None, None]
   rstd = jnp.where(row % 2, 2.0, 0.5)[None, None]
   dy = jnp.broadcast_to(
