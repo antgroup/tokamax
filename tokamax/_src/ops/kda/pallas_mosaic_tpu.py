@@ -75,8 +75,8 @@ class Config:
   retaining aligned outputs and backward residuals. It requires fused forward.
   `packed_output=True` uses Pallas output compaction when its full head-group
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
-  `packed_backward=True` reads original packed Q/K/V/beta in the non-CP
-  fused reverse pass; aligned gradient outputs and residuals are retained.
+  `packed_backward=True` reads original packed V and unnormalized Q/K.
+  Normalized Q/K and scalar beta reuse aligned residuals.
   `packed_gradients=True` compacts feature gradients after gate and
   normalization backward; beta retains its existing gather.
   `fuse_backward=True` also fuses the non-CP saved-state backward. Manual
@@ -568,6 +568,22 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         ),
     )
 
+    inline_qk_norm = (
+        config.fuse_forward
+        and config.packed_forward
+        and use_qk_l2norm
+        and not use_conv1d_in_kernel
+        and per_channel_gate
+        and config.mini_batch is None
+        and chunk_size == 64
+        and segment_ids is not None
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+        and not (
+            context_parallel_metadata is not None
+            and context_parallel_metadata.is_cp_enabled
+        )
+    )
     prepared = self._preprocess_inputs(
         query,
         key,
@@ -576,7 +592,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         beta,
         initial_state=initial_state,
         output_final_state=output_final_state,
-        use_qk_l2norm=use_qk_l2norm,
+        use_qk_l2norm=use_qk_l2norm and not inline_qk_norm,
         use_gate_in_kernel=use_gate_in_kernel,
         segment_ids=segment_ids,
         context_parallel_metadata=context_parallel_metadata,
@@ -598,8 +614,12 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         and query.shape[-1] % 128 == 0
         and value.shape[-1] % 128 == 0
     ):
-      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
-      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      packed_q = (
+          query if inline_qk_norm or not use_qk_l2norm else l2norm_fwd(query)[0]
+      )
+      packed_k = (
+          key if inline_qk_norm or not use_qk_l2norm else l2norm_fwd(key)[0]
+      )
       packed_inputs = (packed_q, packed_k, value, gate, beta)
 
     output, residuals = chunk_kda_fwd_custom(
@@ -621,6 +641,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         disable_recompute=save_intermediates_for_backward,
         fuse_forward=config.fuse_forward,
         packed_inputs=packed_inputs,
+        normalize_packed_qk=inline_qk_norm,
         packed_output=config.packed_output,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
@@ -716,8 +737,8 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
-    # Packed loading normalizes the replayed original Q/K explicitly. The
-    # aligned residuals still supply gate prefixes and normalization backward.
+    # Normalized Q/K reuse the aligned residuals; other feature inputs may
+    # still use original packed windows.
     del out, gate, output_final_state, return_residuals
     del use_conv1d_in_kernel
     chunk_size = config.chunk_size
@@ -749,8 +770,9 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
         and query.shape[-1] % 128 == 0
         and value.shape[-1] % 128 == 0
     ):
-      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
-      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+      # Unit Q/K already exist in aligned residuals; avoid normalization replay.
+      packed_q = None if use_qk_l2norm else query
+      packed_k = None if use_qk_l2norm else key
       packed_inputs = (packed_q, packed_k, value, beta)
 
     (

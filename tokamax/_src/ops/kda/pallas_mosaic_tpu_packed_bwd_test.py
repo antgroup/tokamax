@@ -60,7 +60,10 @@ def test_packed_backward(dtype, rematerialize, has_initial_state):
   )
 
 
-def test_every_offset_multiple_groups_and_empty_batch(monkeypatch):
+@pytest.mark.parametrize("use_qk_l2norm", [False, True])
+def test_every_offset_multiple_groups_and_empty_batch(
+    monkeypatch, use_qk_l2norm
+):
   original_launcher = kernels._fused_dhu_wy_intra_cumsum_pallas_jit
   monkeypatch.setattr(
       kernels,
@@ -73,6 +76,7 @@ def test_every_offset_multiple_groups_and_empty_batch(monkeypatch):
       segment_ids=jnp.array([labels, [0] * 115], jnp.int32),
       max_num_segments=10,
       output_final_state=False,
+      use_qk_l2norm=use_qk_l2norm,
   )
   expanded = []
   for x in args[:5]:
@@ -143,4 +147,6 @@ def test_wide_values_and_keys(key_dim, value_dim):
     call = functools.partial(op, segment_ids=segments, max_num_segments=2)
     output, pullback = jax.vjp(call, *args)
     results.append(pullback(jax.tree.map(jnp.ones_like, output)))
-  forward_tests._assert_close(results[1], results[0], tolerance=0.002, bf16_internal=True)
+  forward_tests._assert_close(
+      results[1], results[0], tolerance=0.002, bf16_internal=True
+  )

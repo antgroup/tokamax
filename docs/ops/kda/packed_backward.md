@@ -2,8 +2,8 @@
 
 This increment adapts packed input loading from
 [`primatrix/pallas-kernel` c82625a2bdadd5881b12f1ab37ec3fa2004c9780](https://github.com/primatrix/pallas-kernel/blob/c82625a2bdadd5881b12f1ab37ec3fa2004c9780/tops/ops/kda/chunk_bwd_mega.py)
-to Tokamax's existing fused reverse traversal. It changes its Q/K/V/beta
-input boundary while preserving aligned gates, matrix/state residuals,
+to Tokamax's existing fused reverse traversal. It changes selected feature
+input boundaries while preserving aligned gates, matrix/state residuals,
 normalization statistics and gradient outputs.
 
 ## Dispatch and data flow
@@ -15,14 +15,18 @@ also requires `fuse_rematerialization=True`; its reconstruction pass stays
 aligned. Fixed-length, CP, disabled backward fusion and staged state
 rematerialization retain their existing paths. The new option defaults false.
 
-The Op VJP explicitly normalizes replayed original Q/K when normalization
-is enabled. Original V and beta are reused directly. Per-chunk original
-start/end metadata is derived from aligned segment IDs and both boundary
-arrays. Invalid chunks receive an empty window. The reverse traversal uses
-that metadata to read 72 rows at an eight-row-aligned packed origin, select
-the 64-token chunk, and zero its sequence tail in VMEM. Guard rows protect
-allocation-end loads. The existing local backward compute body receives
-aligned VMEM tiles and keeps its established rounding behavior.
+When normalization is enabled, backward reads the aligned unit Q/K already
+retained in the residuals instead of replaying normalization and shifting
+original Q/K windows. V still uses its original packed window. Without
+normalization, original Q/K/V windows are supported. Scalar beta uses aligned
+token-minor storage in either case.
+
+Per-chunk start/end metadata is derived from aligned labels and both boundary
+arrays. Invalid chunks receive an empty window. Selected feature inputs read
+72 rows at an eight-row-aligned origin, select 64 tokens, and mask sequence
+tails in VMEM. Guard rows protect allocation-end loads. Tests visit every
+window offset in both normalized and unnormalized modes, multiple head groups
+and an empty batch.
 
 Head-group estimates include the extra window and staging buffers. The
 implementation uses Pallas BlockSpec pipelining and element indices on all
@@ -35,8 +39,10 @@ The aligned residual tree is unchanged. Gate prefix recomputation, state
 rematerialization, Q/K normalization backward and gradient unalignment still
 use aligned data. Thus this is native packed input loading for the reverse
 pass, not a complete native packed backward or removal of all aligned
-training buffers. Original-input guards and repeated Q/K normalization also
-have costs; only device measurement can establish the net benefit.
+training buffers. Original-input guards and window shifts have costs; only device measurement
+can establish the net benefit. Packed forward can normalize raw Q/K in its
+VMEM staging tiles and populate the existing unit-Q/K and RSTD residual slots.
+The public residual schema is unchanged.
 
 Output gradients, including padding and empty-state semantics, continue
 through the existing postprocessing. FP32 v_new from rematerialized states
@@ -64,3 +70,7 @@ pending. No speedup or memory reduction is claimed from CPU interpretation;
 keep draft and keep the new option disabled until device validation completes.
 
 Direct packed gradient stores and CP backward fusion remain separate work.
+
+[Current full-call and VJP measurements](backward_performance_followup_20261115.md)
+include same-head default and forward-only controls; earlier unfavorable rows
+remain archived.
