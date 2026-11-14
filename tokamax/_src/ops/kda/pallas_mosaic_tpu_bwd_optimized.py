@@ -412,7 +412,14 @@ def _fused_dhu_wy_intra_cumsum_kernel(
       chunk_id,
       NT,
   )
-  precision = None if q_ref.dtype == jnp.bfloat16 else jax.lax.Precision.HIGHEST
+  # Match the upstream staged backward even when the caller sets a global
+  # matmul precision. In CUDA interpretation None would inherit "highest",
+  # while the staged kernel explicitly selects DEFAULT for BF16 tokens.
+  precision = (
+      jax.lax.Precision.DEFAULT
+      if q_ref.dtype == jnp.bfloat16
+      else jax.lax.Precision.HIGHEST
+  )
 
   @pl.when(is_last_chunk)
   def _():
