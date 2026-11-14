@@ -232,7 +232,16 @@ def test_explicit_initial_state_retains_staged_backward(
   original = mosaic.chunk_kda_bwd_custom
 
   def record(*args, **kwargs):
-    calls.append(kwargs["fuse_backward"])
+    calls.append(
+        tuple(
+            kwargs[k]
+            for k in (
+                "fuse_backward",
+                "fuse_rematerialization",
+                "packed_gradients",
+            )
+        )
+    )
     return original(*args, **kwargs)
 
   monkeypatch.setattr(mosaic, "chunk_kda_bwd_custom", record)
@@ -240,12 +249,17 @@ def test_explicit_initial_state_retains_staged_backward(
   if not has_initial_state:
     args = (*args[:5], None, *args[6:])
   op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-      config=mosaic.Config(fuse_forward=True, fuse_backward=True)
+      config=mosaic.Config(
+          fuse_forward=True,
+          fuse_backward=True,
+          fuse_rematerialization=True,
+          packed_gradients=True,
+      )
   )
   output, pullback = jax.vjp(
       functools.partial(forward_tests._call, op, kwargs), *args
   )
   gradients = pullback(jax.tree.map(jnp.ones_like, output))
-  assert calls == [not has_initial_state]
+  assert calls == [(not has_initial_state,) * 3]
   for gradient in jax.tree.leaves(gradients):
     assert np.isfinite(np.asarray(gradient)).all()
