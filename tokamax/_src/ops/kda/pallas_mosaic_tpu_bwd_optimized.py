@@ -87,7 +87,13 @@ def _materialized_l2norm_bwd(y, rstd, dy):
   """
   width = y.shape[-1]
   rows = y.size // width
+  # Amortize per-program overhead for large token buffers while retaining
+  # the fixed BF16 output storage boundary. Each row reduces independently.
   tile = 8
+  if rows % 128 == 0:
+    tile = 128
+  if rows >= 8192 and rows % 1024 == 0:
+    tile = 1024
   assert rows % tile == 0
   spec = pl.BlockSpec((tile, width), lambda i: (i, 0))
   scalar_spec = pl.BlockSpec((tile, 1), lambda i: (i, 0))
