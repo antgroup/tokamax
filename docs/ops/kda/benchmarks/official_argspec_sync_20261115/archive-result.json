@@ -1,0 +1,12 @@
+{
+  "uri": "gs://data_ant/diagnostics/kda-full-sync-20261115/a447cbfd-6fa3-4092-979f-6e46172d9825/evidence-f2001317-main0d3e82b4.tgz#1794753076907365",
+  "bucket": "data_ant",
+  "object": "diagnostics/kda-full-sync-20261115/a447cbfd-6fa3-4092-979f-6e46172d9825/evidence-f2001317-main0d3e82b4.tgz",
+  "generation": "1794753076907365",
+  "bytes": 4102941674,
+  "sha256": "911c350331d50c34576d6590450798b25bc8b8470cf80e42ffa458323cf0368b",
+  "crc32c": "3oB8kQ==",
+  "verified_size": true,
+  "verified_crc32c": true,
+  "metadata_sha256_verified": true
+}

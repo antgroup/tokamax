@@ -1,0 +1,2378 @@
+[
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1448.482593,
+      1464.950855,
+      1448.366147,
+      1449.012229,
+      1461.998799
+    ],
+    "module_events": [
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_14_03_37/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1460.335984,
+      1457.835384,
+      1453.094838,
+      1464.16199,
+      1453.938776
+    ],
+    "module_events": [
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_14_03_35/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      395.714135,
+      395.366146,
+      394.673469,
+      394.840487,
+      395.801921
+    ],
+    "module_events": [
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_14_03_31/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      395.584634,
+      395.572479,
+      395.649685,
+      395.388955,
+      394.482593
+    ],
+    "module_events": [
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_14_03_29/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1350.604967,
+      1351.871549,
+      1350.424895,
+      1351.704682,
+      1352.435775
+    ],
+    "module_events": [
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_14_03_24/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1351.782563,
+      1351.598965,
+      1350.451381,
+      1351.875375,
+      1352.781512
+    ],
+    "module_events": [
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_14_03_22/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      376.115171,
+      376.528136,
+      377.827281,
+      376.705733,
+      377.127326
+    ],
+    "module_events": [
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_14_03_19/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      376.741746,
+      377.082833,
+      379.256902,
+      377.102041,
+      375.498124
+    ],
+    "module_events": [
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_14_03_17/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      44.810324,
+      44.877626,
+      45.149985,
+      45.298845,
+      44.96166
+    ],
+    "module_events": [
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_14_03_13/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      45.277311,
+      44.959184,
+      45.332533,
+      44.895483,
+      44.974865
+    ],
+    "module_events": [
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_14_03_11/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      27.146534,
+      27.032488,
+      26.938776,
+      27.031363,
+      27.070828
+    ],
+    "module_events": [
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_14_03_08/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      27.092512,
+      27.385354,
+      26.891957,
+      27.132278,
+      26.934048
+    ],
+    "module_events": [
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_14_03_06/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.243622,
+      185.902687,
+      185.33726,
+      185.635054,
+      185.2485
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_14_03_03/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.356692,
+      185.159814,
+      185.465786,
+      185.703407,
+      185.469388
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_14_03_01/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.855867,
+      69.72404,
+      69.843787,
+      69.685699,
+      69.54982
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_14_02_58/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.516282,
+      69.690276,
+      69.921818,
+      69.481543,
+      69.609994
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_14_02_57/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      227.040816,
+      227.333734,
+      227.211134,
+      226.87515,
+      226.869298
+    ],
+    "module_events": [
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_14_02_54/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      226.554472,
+      226.650735,
+      226.646983,
+      226.558373,
+      226.66139
+    ],
+    "module_events": [
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_14_02_52/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.259379,
+      55.966236,
+      55.62545,
+      55.548544,
+      55.655462
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_14_02_48/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.301396,
+      55.340936,
+      56.044493,
+      55.218637,
+      55.382878
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_14_02_47/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.770858,
+      34.250975,
+      34.314751,
+      34.427521,
+      34.643457
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_14_02_44/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.67467,
+      34.140531,
+      34.688925,
+      34.07698,
+      34.733493
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_14_02_42/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.795993,
+      17.621924,
+      17.492197,
+      17.416642,
+      17.585909
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_14_02_40/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.751501,
+      17.579607,
+      17.459859,
+      17.42482,
+      17.51148
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_14_02_38/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3092.32413,
+      3095.143908,
+      3092.537815,
+      3090.474189,
+      3094.254652
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_02_36/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3093.354291,
+      3091.644658,
+      3090.166717,
+      3091.591911,
+      3093.28564
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_02_34/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1517.960459,
+      1521.03729,
+      1518.836885,
+      1519.342137,
+      1520.129577
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_14_02_30/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1520.030087,
+      1519.873875,
+      1519.158389,
+      1518.46211,
+      1518.621849
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_14_02_28/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7296.661315,
+      7293.446654,
+      7294.969913,
+      7302.814,
+      7298.073004
+    ],
+    "module_events": [
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_02_25/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7302.822404,
+      7306.771984,
+      7301.231843,
+      7303.243548,
+      7291.762305
+    ],
+    "module_events": [
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_02_23/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      2588.379352,
+      2582.247298,
+      2583.369748,
+      2586.721489,
+      2581.418967
+    ],
+    "module_events": [
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_14_02_13/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      2580.841386,
+      2581.833208,
+      2585.264106,
+      2586.22434,
+      2583.243622
+    ],
+    "module_events": [
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_14_02_11/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3441.169117,
+      3441.84874,
+      3442.414316,
+      3442.510204,
+      3440.728767
+    ],
+    "module_events": [
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_02_05/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3440.925645,
+      3443.260504,
+      3441.702281,
+      3444.966537,
+      3443.967512
+    ],
+    "module_events": [
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_02_03/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1465.015606,
+      1463.170393,
+      1463.435774,
+      1463.726291,
+      1462.067302
+    ],
+    "module_events": [
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_14_01_58/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1462.869223,
+      1462.001201,
+      1462.37455,
+      1462.036014,
+      1461.319178
+    ],
+    "module_events": [
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_14_01_56/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1482.376951,
+      1483.38528,
+      1483.292767,
+      1481.38888,
+      1486.103391
+    ],
+    "module_events": [
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_14_01_39/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1481.967512,
+      1483.139481,
+      1482.292842,
+      1483.957983,
+      1484.767107
+    ],
+    "module_events": [
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)",
+      "jit_invoke(7681147744836488911)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_14_01_37/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      405.042092,
+      404.685474,
+      404.797119,
+      404.502026,
+      404.453781
+    ],
+    "module_events": [
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_14_01_33/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      405.894358,
+      404.42497,
+      404.994073,
+      404.122449,
+      406.117647
+    ],
+    "module_events": [
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)",
+      "jit_invoke(15912647408486152284)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_14_01_31/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1322.577356,
+      1322.869223,
+      1325.105492,
+      1323.02401,
+      1325.817527
+    ],
+    "module_events": [
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_14_01_27/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1321.719088,
+      1325.841462,
+      1320.830732,
+      1321.935099,
+      1321.932623
+    ],
+    "module_events": [
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)",
+      "jit_invoke(10462105273813888229)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_14_01_25/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      377.630252,
+      377.77551,
+      377.387905,
+      378.33981,
+      377.402236
+    ],
+    "module_events": [
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_14_01_21/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      377.847464,
+      377.125975,
+      378.248649,
+      377.86307,
+      377.366372
+    ],
+    "module_events": [
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)",
+      "jit_invoke(8990285485468747785)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_14_01_19/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      42.929097,
+      43.438175,
+      42.972389,
+      42.781663,
+      42.77566
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_14_01_15/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      42.972314,
+      42.943578,
+      43.096263,
+      42.750225,
+      42.945003
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_14_01_13/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      26.657788,
+      26.97464,
+      26.547344,
+      26.305897,
+      26.684349
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_14_01_10/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      26.69853,
+      26.528286,
+      26.523559,
+      26.454832,
+      26.309724
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_14_01_09/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.478916,
+      185.765006,
+      185.59919,
+      186.037215,
+      185.72509
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_14_01_06/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.646984,
+      185.589436,
+      185.747824,
+      185.199205,
+      185.654187
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_14_01_04/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.83906,
+      69.893082,
+      69.923319,
+      69.894358,
+      69.514856
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_14_01_01/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.630327,
+      69.945828,
+      69.801996,
+      70.102041,
+      69.70003
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_14_00_59/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      225.141507,
+      224.716686,
+      224.469388,
+      225.476666,
+      224.304922
+    ],
+    "module_events": [
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_14_00_56/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      224.935174,
+      224.661465,
+      225.70003,
+      224.822254,
+      224.918517
+    ],
+    "module_events": [
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)",
+      "jit_invoke(14762058067607659429)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_14_00_55/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.224414,
+      55.112846,
+      55.522208,
+      55.249699,
+      55.55102
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_14_00_51/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.399834,
+      55.35039,
+      55.136855,
+      55.194402,
+      55.02311
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_14_00_49/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.278436,
+      34.115246,
+      34.224265,
+      34.513956,
+      34.588535
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_14_00_47/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.651636,
+      34.640982,
+      34.489721,
+      34.59934,
+      34.402236
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_14_00_45/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.870423,
+      17.534214,
+      18.219688,
+      17.839361,
+      17.948455
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_14_00_43/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.565126,
+      17.678271,
+      17.42407,
+      17.541492,
+      17.668518
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_14_00_41/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3093.522209,
+      3092.338536,
+      3091.145408,
+      3090.533163,
+      3092.638656
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_00_38/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3093.720438,
+      3092.133254,
+      3091.232893,
+      3094.859619,
+      3093.318127
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_00_37/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1520.199205,
+      1520.714361,
+      1520.692452,
+      1521.021534,
+      1521.318202
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_14_00_33/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1520.943502,
+      1520.379502,
+      1521.47674,
+      1521.553646,
+      1521.459934
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_14_00_31/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7814.140531,
+      7795.80072,
+      7798.109168,
+      7786.577506,
+      7785.334784
+    ],
+    "module_events": [
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_00_27/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7793.958208,
+      7808.010804,
+      7793.708209,
+      7788.272584,
+      7800.735895
+    ],
+    "module_events": [
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)",
+      "jit_invoke(7876087061118378505)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_00_25/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3602.078106,
+      3592.271309,
+      3617.645858,
+      3609.678271,
+      3595.76223
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_14_00_16/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3614.35039,
+      3588.600315,
+      3599.288115,
+      3604.184949,
+      3613.583584
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_14_00_14/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3727.656662,
+      3725.282263,
+      3724.833283,
+      3725.840336,
+      3730.13798
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_14_00_08/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3725.018007,
+      3723.688025,
+      3726.247224,
+      3724.330132,
+      3724.614721
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_14_00_06/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1506.792167,
+      1506.447779,
+      1507.426095,
+      1506.097239,
+      1507.201831
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_14_00_01/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1506.798394,
+      1507.308523,
+      1507.241521,
+      1507.140456,
+      1508.435849
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_13_59_59/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1409.692677,
+      1405.416492,
+      1404.801845,
+      1403.679472,
+      1409.86082
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_13_59_44/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1412.854667,
+      1402.928122,
+      1406.043218,
+      1415.085159,
+      1404.165666
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_13_59_42/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      399.33606,
+      396.806797,
+      396.612395,
+      396.636329,
+      398.760054
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_13_59_39/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      396.955582,
+      396.359019,
+      398.910039,
+      396.986795,
+      396.77656
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_13_59_37/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1313.493397,
+      1306.22449,
+      1316.004877,
+      1314.196804,
+      1305.206408
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_13_59_34/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1308.06355,
+      1315.789841,
+      1303.402011,
+      1304.266357,
+      1303.662665
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_13_59_32/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      382.123649,
+      381.64826,
+      381.877551,
+      382.008328,
+      381.803046
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_13_59_29/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      381.621924,
+      381.680522,
+      382.181273,
+      381.070754,
+      381.782863
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_13_59_27/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      43.535414,
+      42.854667,
+      43.215937,
+      43.314601,
+      43.303872
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_13_59_24/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      42.935249,
+      42.805522,
+      42.991521,
+      43.20033,
+      43.060099
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_13_59_22/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      29.264031,
+      29.558149,
+      29.419117,
+      29.295318,
+      29.23657
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_13_59_20/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      29.603842,
+      29.46346,
+      29.380402,
+      29.22464,
+      29.29892
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_13_59_18/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.654337,
+      185.743097,
+      185.307323,
+      185.957983,
+      185.633928
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_13_59_15/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.608643,
+      185.675795,
+      185.502926,
+      185.32518,
+      185.945978
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_13_59_14/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.567827,
+      69.603767,
+      69.885804,
+      70.240246,
+      69.94958
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_13_59_11/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.641057,
+      69.483943,
+      69.573754,
+      69.982068,
+      69.42377
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_13_59_09/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      220.110594,
+      220.159664,
+      219.723965,
+      220.601441,
+      219.889631
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_13_59_06/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      219.991672,
+      219.045693,
+      220.203032,
+      220.660264,
+      219.959108
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_13_59_04/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.045618,
+      55.473064,
+      55.126051,
+      55.342212,
+      55.232893
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_13_59_02/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.392632,
+      55.355342,
+      55.506527,
+      55.193353,
+      56.100841
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_13_59_00/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.378302,
+      34.483793,
+      34.657939,
+      35.350615,
+      34.593112
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_13_58_57/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.344538,
+      34.218488,
+      34.357668,
+      34.393757,
+      34.608493
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_13_58_56/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.557098,
+      17.61232,
+      17.718038,
+      17.822254,
+      17.973664
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_13_58_53/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.711884,
+      17.935174,
+      17.797119,
+      17.98792,
+      17.561975
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_13_58_52/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3092.686525,
+      3094.570228,
+      3092.187425,
+      3094.761029,
+      3090.226815
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_13_58_49/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3094.210159,
+      3089.842738,
+      3094.186,
+      3093.272509,
+      3092.920919
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_13_58_47/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1521.4393,
+      1520.460984,
+      1519.816402,
+      1521.17662,
+      1520.315576
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_13_58_43/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1521.760054,
+      1520.875301,
+      1520.828256,
+      1520.884829,
+      1520.445453
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_13_58_42/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7209.118923,
+      7225.009529,
+      7225.483793,
+      7213.146459,
+      7217.823605
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_13_58_38/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7215.660339,
+      7225.915966,
+      7207.457308,
+      7234.518457,
+      7225.060174
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_13_58_36/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3836.247298,
+      3824.35159,
+      3822.291717,
+      3826.029937,
+      3832.445303
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_13_58_27/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3830.624174,
+      3826.446579,
+      3834.644658,
+      3837.106842,
+      3817.531737
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_13_58_25/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3729.63633,
+      3728.359018,
+      3724.942452,
+      3725.373349,
+      3726.782563
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_13_58_21/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3726.811449,
+      3725.768308,
+      3728.747825,
+      3726.080433,
+      3726.565501
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_13_58_19/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1507.264031,
+      1508.303797,
+      1507.170544,
+      1506.64946,
+      1507.0625
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_13_58_13/kda-fullsync-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1507.453781,
+      1507.361269,
+      1506.59904,
+      1507.115246,
+      1506.838011
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/official-sync/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_13_58_11/kda-fullsync-1115-worker-0-0.xplane.pb"
+  }
+]

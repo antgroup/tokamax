@@ -1,0 +1,11 @@
+{
+  "main": "0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18",
+  "head": "f20013174fb54b7e7dd7d7093b6d383b2e457f33",
+  "merge": "d155f97ae8cc25d9470f46dc4b6ebe5739680948",
+  "migrated_mosaic_files_identical_head_vs_merge": true,
+  "main_integration_changes": [
+    "tokamax/_src/ops/kda/arg_specs.py",
+    "tokamax/_src/ops/kda/base_test.py",
+    "tokamax/_src/ops/kda/reference.py"
+  ]
+}
