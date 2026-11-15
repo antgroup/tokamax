@@ -653,7 +653,12 @@ def inner_kernel(
       rhs_qbs = cfgs.tiles.tile_k
 
     valid_k = cfgs.dims.size_k % cfgs.tiles.tile_k
+    tile_k_end = cfgs.tiles.tile_k
     if is_last_k_step and valid_k != 0:
+      # Bound the K matmul loops to valid_k on partial tail tiles: trailing
+      # rhs_scale rows in VMEM are leftover data and can be NaN, so even
+      # masking invalid lhs/rhs to 0 would still produce 0 * NaN = NaN.
+      tile_k_end = valid_k
       # `lhs` needs to be masked over k-axis iff `lhs` contains `jnp.nan`s
       # Otherwise, only masking `rhs` to zeros is sufficient.
       mask_lhs = lax.broadcasted_iota(jnp.int32, tiled_lhs.shape, 1) < valid_k
@@ -666,18 +671,22 @@ def inner_kernel(
     acc_list = []
     if not cfgs.lhs_cfgs.should_quantize:
       # Unquantized matmul path.
+      is_int_dot = jnp.issubdtype(tiled_lhs.dtype, jnp.integer) and (
+          jnp.issubdtype(tiled_rhs.dtype, jnp.integer)
+      )
+      pref_dtype = jnp.int32 if is_int_dot else jnp.float32
       for start_n in range(0, rhs_tile_n, mxu_size):
         end_n = min(rhs_tile_n, start_n + mxu_size)
         col_size = end_n - start_n
 
         acc_n = jnp.zeros((bucket_m, col_size), dtype=acc_ref.dtype)
-        for start_k in range(0, cfgs.tiles.tile_k, rhs_qbs):  # pyrefly: ignore[bad-argument-type]
+        for start_k in range(0, tile_k_end, rhs_qbs):  # pyrefly: ignore[bad-argument-type]
           end_k = min(cfgs.tiles.tile_k, start_k + rhs_qbs)  # pyrefly: ignore[unsupported-operation]
 
           block_acc = jnp.matmul(
               tiled_lhs[:, start_k:end_k],
               tiled_rhs[start_k:end_k, start_n:end_n],
-              preferred_element_type=jnp.float32,
+              preferred_element_type=pref_dtype,
           ).astype(acc_ref.dtype)
 
           if cfgs.rhs_cfgs.should_dequantize_after_matmul:
@@ -737,7 +746,7 @@ def inner_kernel(
         col_size = end_n - start_n
 
         acc_n = jnp.zeros((bucket_m, col_size), dtype=acc_ref.dtype)
-        for start_k in range(0, cfgs.tiles.tile_k, q_block_size):  # pyrefly: ignore[bad-argument-type]
+        for start_k in range(0, tile_k_end, q_block_size):  # pyrefly: ignore[bad-argument-type]
           end_k = min(cfgs.tiles.tile_k, start_k + q_block_size)  # pyrefly: ignore[unsupported-operation]
 
           block_lhs = tiled_lhs[:, start_k:end_k]
@@ -771,10 +780,11 @@ def inner_kernel(
             block_rhs = block_rhs.astype(lhs_q_dtype)
 
           block_len = end_k - start_k
+          sub_limit = min(block_len, tile_k_end - start_k)
           # Initialize to None rather than jnp.zeros to avoid emitting an extra
           # VPU add instruction on the first sub-block in Pallas/Mosaic lowering
           block_acc = acc_n if ext_lhs_scale_const_k else None
-          for sub_k in range(0, block_len, step_k):  # pyrefly: ignore[bad-argument-type]
+          for sub_k in range(0, sub_limit, step_k):  # pyrefly: ignore[bad-argument-type]
             sub_end_k = min(block_len, sub_k + step_k)  # pyrefly: ignore[unsupported-operation]
             sub_acc = jnp.matmul(
                 block_lhs_q[:, sub_k:sub_end_k],
@@ -816,6 +826,8 @@ def inner_kernel(
     acc_m = acc.shape[0]
 
     if is_last_k_step:
+      if cfgs.lhs_cfgs.has_scale and not cfgs.lhs_cfgs.should_quantize:
+        acc *= tiled_lhs_ref.get_scale().astype(acc.dtype)
       if cfgs.rhs_cfgs.has_bias:
         tiled_rhs_bias = tiled_rhs_ref.get_bias()
         acc += tiled_rhs_bias.astype(acc.dtype)
@@ -1509,7 +1521,6 @@ def validate_inputs(
     assert size_k % num_quant_blocks == 0
 
   if lhs_scale is not None:
-    assert maybe_quantize_lhs, "lhs_scale requires maybe_quantize_lhs=True."
     # Only per-tensor scales are supported for now. The current implementation
     # generalizes to per-channel [M, 1] and
     # sub-channel [M, num_k_blocks]; extend the validation and the block spec /
@@ -1657,6 +1668,17 @@ def make_gmm_configs(
       is_transposed=transpose_rhs,
   )
 
+  if rhs_cfgs.should_dequantize_before_matmul and jnp.issubdtype(
+      lhs.dtype, jnp.integer
+  ):
+    raise ValueError(
+        "Pre-matmul rhs dequantization"
+        f" (quant_block_size={rhs_cfgs.quant_block_size} <"
+        f" mxu_column_size={pltpu.get_tpu_info().mxu_column_size}) casts rhs"
+        f" scales to lhs.dtype ({lhs.dtype}), which is not supported for"
+        " integer lhs dtypes."
+    )
+
   lhs_q_dtype = None
   if maybe_quantize_lhs and rhs_cfgs.should_dequantize_after_matmul:
     if lhs_quant_dtype is not None:
@@ -1680,13 +1702,13 @@ def make_gmm_configs(
         if not is_rhs_float:
           lhs_q_dtype = jnp.int8.dtype
 
-  if lhs_scale is not None:
+  if lhs_scale is not None and maybe_quantize_lhs:
     assert lhs_q_dtype is not None, (
         "lhs_scale requires lhs quantization to engage, but no lhs quant "
         "dtype was selected. Ensure rhs is quantized and the hardware supports "
         "fp8/int8 matmul."
     )
-  has_lhs_scale = lhs_scale is not None and lhs_q_dtype is not None
+  has_lhs_scale = lhs_scale is not None
 
   lhs_cfgs = InputConfigs(
       quant_dtype=lhs_q_dtype,
@@ -1803,11 +1825,10 @@ def gmm_v2(
     rhs_scale: The rhs scale of shape [size_group, num_blocks, 1, out_size].
     rhs_bias: The rhs bias of shape [size_group, 1, out_size].
     group_offset: Optional. The group offset of shape [1,].
-    lhs_scale: Optional scale used to quantize the (unquantized) lhs inside the
-      kernel and the result is multiplied back by `scale`. The shape encodes
-      granularity; currently only per-tensor `[1, 1]` is supported. When None, a
-      quantized lhs uses the default dynamic per-block absmax calibration. Only
-      takes effect when maybe_quantize_lhs is True and rhs is quantized.
+    lhs_scale: Optional per-tensor `[1, 1]` scale. When `maybe_quantize_lhs`
+      quantizes an unquantized `lhs`, `lhs_scale` calibrates `lhs` and scales
+      the matmul output back. When `maybe_quantize_lhs=False`, `lhs_scale` is
+      applied directly to the matmul output before `rhs_bias` / `partial_sum`.
     partial_sum: Optional. Partial sums of shape [size_m, size_n], added to the
       matmul result inside the kernel (after rhs_bias). This avoids a separate
       HBM round-trip when a GMM is accumulated in chunks, e.g. along k. Must

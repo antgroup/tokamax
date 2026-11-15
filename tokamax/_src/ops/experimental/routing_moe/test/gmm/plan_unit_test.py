@@ -47,17 +47,22 @@ def _make_spec(
     quantized: bool = True,
     with_down: bool = False,
     size_n: int = 1280,
+    size_k2: int = 768,
+    size_k: int = 2560,
+    num_experts: int = 512,
+    ep_size: int = 4,
+    top_k: int = 10,
     w_dtype: jnp.dtype | None = None,
     row_group: bool = True,
     with_scatter: bool = True,
+    remote_scatter: bool = False,
     has_bias: bool = False,
     num_w_q_blocks: int = 1,
+    w_q_block_size: int | None = None,
 ) -> gmm_spec_lib.RoutingGmmSpec:
-  """Builds a RoutingGmmSpec for a 512-expert, top-10 MoE layer."""
-  num_experts, ep_size, top_k, size_k = 512, 4, 10, 2560
+  """Builds a RoutingGmmSpec, by default for a 512-expert, top-10 MoE layer."""
   if with_down:
-    # The fused kernel needs the intermediate size to be a multiple of 256.
-    size_n = 1536
+    size_n = 2 * size_k2
   x = spec.ActivationSpec(
       row_size=num_tokens,
       col_size=size_k,
@@ -73,14 +78,17 @@ def _make_spec(
   def weight_spec(
       in_size: int, out_size: int, *, fused_gate_up: bool = False
   ) -> spec.WeightSpec:
+    quant = None
+    if quantized:
+      quant = spec.SubchannelQuantSpec(
+          block_size=w_q_block_size or in_size // num_w_q_blocks
+      )
     return spec.WeightSpec(
         group_size=num_experts // ep_size,
         in_size=in_size,
         out_size=out_size,
         dtype=w_dtype,
-        quant=spec.SubchannelQuantSpec(block_size=in_size // num_w_q_blocks)
-        if quantized
-        else None,
+        quant=quant,
         has_bias=has_bias,
         fused_gate_up=fused_gate_up,
     )
@@ -90,11 +98,12 @@ def _make_spec(
   w = weight_spec(size_k, size_n, fused_gate_up=with_down)
   w2 = weight_spec(size_n // 2, size_k) if with_down else None
   routed_rows = num_tokens * top_k
-  scatter_spec = (
-      spec.RoutingSpec(num_indices=routed_rows, remote_axis=None)
-      if with_scatter
-      else None
-  )
+  scatter_spec = None
+  if with_scatter:
+    scatter_spec = spec.RoutingSpec(
+        num_indices=routed_rows,
+        remote_axis="ep" if remote_scatter else None,
+    )
   return gmm_spec_lib.RoutingGmmSpec(
       x=x,
       w=w,
@@ -103,7 +112,7 @@ def _make_spec(
       scatter=scatter_spec,
       num_global_groups=num_experts,
       fuse_act="silu" if with_down else None,
-      size_ep=1,
+      size_ep=ep_size if remote_scatter else 1,
       size_row_group=routed_rows if row_group else 0,
   )
 
@@ -119,7 +128,9 @@ def _resolve(
     tpu_info: pltpu.TpuInfo | None = None,
     w_dtype: jnp.dtype | None = None,
     row_group: bool = True,
+    **spec_kwargs: Any,
 ) -> gmm_plan.ResolvedGmmPlan:
+  """Resolves the plan of `_make_spec(num_tokens, ...)`."""
   gmm_spec = _make_spec(
       num_tokens,
       quantized=quantized,
@@ -127,6 +138,7 @@ def _resolve(
       size_n=size_n,
       w_dtype=w_dtype,
       row_group=row_group,
+      **spec_kwargs,
   )
   resolved_out_format = out_format_lib.ResolvedActivationFormat.create(
       out_format,
@@ -212,6 +224,51 @@ class TileMTest(parameterized.TestCase):
     self.assertEqual(_resolve(8, custom_plan).tile_m, 128)
 
 
+class FusedK2SlicingTest(parameterized.TestCase):
+  """Checks when the fused kernel slices the intermediate (k2) dim."""
+
+  def test_fits_whole_k2_when_vmem_allows(self):
+    # A layer that fits fused with the whole k2 dim is never sliced.
+    resolved = _resolve(8, with_down=True)
+    self.assertTrue(resolved.fuse_up_and_down)
+    # `_resolve(with_down=True)` uses an intermediate size of 1536 // 2.
+    self.assertEqual(resolved.tile_k2, 768)
+
+  def test_remote_scatter_selects_split_k2_plan(self):
+    # With a remote unpermute the planner keeps tile_m=256 and slices k2.
+    resolved = _resolve(
+        256,
+        with_down=True,
+        size_k=7168,
+        size_k2=3072,
+        num_experts=384,
+        ep_size=8,
+        top_k=6,
+        w_q_block_size=512,
+        remote_scatter=True,
+    )
+    self.assertTrue(resolved.fuse_up_and_down)
+    self.assertEqual(resolved.tile_m, 256)
+    self.assertEqual(resolved.tile_k2, 512)
+    self.assertEqual(resolved.tile_n, 7168)
+    self.assertEqual(resolved.num_w_buffers, 2)
+
+  def test_local_scatter_falls_back_to_unfused(self):
+    # Without a remote unpermute, slicing k2 is not worth it: run unfused.
+    resolved = _resolve(
+        256,
+        with_down=True,
+        size_k=7168,
+        size_k2=3072,
+        num_experts=384,
+        ep_size=8,
+        top_k=6,
+        w_q_block_size=512,
+        remote_scatter=False,
+    )
+    self.assertFalse(resolved.fuse_up_and_down)
+
+
 class MatmulDtypeTest(parameterized.TestCase):
   """Checks the matmul dtype the planner picks."""
 
@@ -223,6 +280,20 @@ class MatmulDtypeTest(parameterized.TestCase):
         NotImplementedError, "No supported fp8 activation dtype"
     ):
       _resolve(8, tpu_info=tpu_info, w_dtype=jnp.dtype(jnp.float8_e4m3fn))
+
+  def test_small_w_blocks_keep_x_unquantized(self):
+    # size_k=2560 in 20 blocks gives 128-wide blocks, below the MXU width so we
+    # dequant weight before the matmul for better mxu utilization.
+    # In this case, we don't quantize the activations. Otherwise, fp8 @ bf16
+    # costs precision and buys no speed.
+    resolved = _resolve(8, num_w_q_blocks=20)
+    self.assertEqual(resolved.matmul_dtype, jnp.bfloat16)
+    self.assertIsNone(resolved.x_quant_block_size)
+
+  def test_small_w_blocks_keep_explicit_matmul_dtype(self):
+    custom_plan = gmm_plan.RoutingGmmPlan(matmul_dtype=jnp.float8_e4m3fn)
+    resolved = _resolve(8, custom_plan, num_w_q_blocks=20)
+    self.assertEqual(resolved.matmul_dtype, jnp.float8_e4m3fn)
 
 
 class NumWBuffersTest(parameterized.TestCase):
@@ -743,6 +814,36 @@ class VmemEstimateTest(parameterized.TestCase):
     self.assertEqual(
         estimate(2) - estimate(1),
         num_w_buffers * scale_cols * bytes_per_f32,
+    )
+
+  def test_vmem_estimate_dequantized_w(self):
+    num_w_buffers = 3
+
+    def estimate(num_w_q_blocks: int) -> int:
+      gmm_spec = _make_spec(8, num_w_q_blocks=num_w_q_blocks)
+      return gmm_plan._vmem_estimate(
+          x=gmm_spec.x,
+          w=gmm_spec.w,
+          matmul_dtype=gmm_spec.x.dtype,
+          acc_dtype=jnp.dtype(jnp.bfloat16),
+          out_dtype=gmm_spec.x.dtype,
+          tile_m=128,
+          tile_k=gmm_spec.size_k,
+          tile_n=gmm_spec.size_out_n,
+          num_xo_buffers=2,
+          num_w_buffers=num_w_buffers,
+          tpu_info=_tpu_info(),
+      )
+
+    # 128-wide blocks are below the MXU width, so the estimate adds a bf16
+    # copy of the dequantized w tile on top of the extra scale rows.
+    gmm_spec = _make_spec(8)
+    size_k, size_n = gmm_spec.size_k, gmm_spec.size_out_n
+    bytes_per_f32, bytes_per_bf16 = 4, 2
+    self.assertEqual(
+        estimate(20) - estimate(1),
+        num_w_buffers * 19 * size_n * bytes_per_f32
+        + size_k * size_n * bytes_per_bf16,
     )
 
 
