@@ -45,3 +45,16 @@ def test_default_cp_preserves_logical_capacity():
   actual = jax.jit(jax.vmap(run,axis_name="context"))(
       jnp.full((1,1,4),500,jnp.int32))
   np.testing.assert_array_equal(np.asarray(actual),512)
+
+
+def test_short_convolution_ignores_nonexistent_history():
+  for tokens in (1,2):
+    x=jnp.ones((1,1,tokens,2),jnp.float32)
+    weight=jnp.arange(8,dtype=jnp.float32).reshape(1,4,2)/8
+    bias=jnp.full((1,2),0.125,jnp.float32)
+    ids=jnp.ones((1,tokens),jnp.int32)
+    expected=x*weight[:,None,-1:,:]+bias[:,None,None,:]
+    if tokens==2:
+      expected=expected+jnp.pad(x[:,:,:-1],((0,0),(0,0),(1,0),(0,0)))*weight[:,None,-2:-1,:]
+    expected=jax.nn.silu(expected)
+    np.testing.assert_array_equal(packing._conv(x,weight,bias,ids),expected)

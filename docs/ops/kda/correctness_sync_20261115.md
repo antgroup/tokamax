@@ -43,3 +43,8 @@ to a dtype-matched cotangent. Pure formatting changes have identical Python ASTs
 The prior official ArgSpec sweep at head `35c7c850` is historical only. A fresh
 15-ArgSpec comparison against main `0d3e82b4` is required after this sync. Keep Draft
 until final performance review and upstream CI are complete.
+
+The padding wrapper also bounds convolution history by the actual token count,
+matching the physical-history semantics of latest main for one/two-token decode.
+Exact analytic CPU checks for both lengths pass; the full `packing_test.py`
+now has 2 passing tests (1.08 s), with no tolerance changes.
