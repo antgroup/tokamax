@@ -112,8 +112,10 @@ def test_cp_local_fusion(dtype, split, state_policy, monkeypatch, normalize):
   ]
   if state_policy != "saved":
     assert all(dtype == jnp.float32 for _, dtype in dispatch)
+  # Internal test_chunk_kda_cp.py at 18ea6891 uses BF16 atol=rtol=0.05.
+  # This pointwise allclose is sufficient for its optional 1-ULP fallback.
   f._assert_close(
-      results[1], results[0], tolerance=0.002 if dtype == jnp.bfloat16 else 1e-5
+      results[1], results[0], tolerance=0.05 if dtype == jnp.bfloat16 else 1e-5
   )
 
 
