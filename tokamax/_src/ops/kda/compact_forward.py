@@ -66,7 +66,6 @@ def _build_chunk_metadata(segment_ids, chunk_size):
   block_tokens = int(chunk_size)
   num_blocks = tokens // block_tokens
   seg = segment_ids.astype(jnp.int32).reshape(batch, num_blocks, block_tokens)
-  seg_first = seg[:, :, 0]
   valid_mask = seg > 0
   pos = jnp.arange(block_tokens, dtype=jnp.int32)
   last_valid_idx = jnp.where(valid_mask, pos[None, None, :], -1).max(axis=2)
@@ -77,6 +76,13 @@ def _build_chunk_metadata(segment_ids, chunk_size):
       jnp.take_along_axis(seg, safe_idx[:, :, None], axis=2)[:, :, 0],
       0,
   )
+  first_valid_idx = jnp.where(valid_mask, pos[None, None, :], block_tokens).min(axis=2)
+  seg_first = jnp.where(
+      has_any,
+      jnp.take_along_axis(seg, jnp.minimum(first_valid_idx, block_tokens - 1)[:, :, None], axis=2)[:, :, 0],
+      0,
+  )
+  pad_before_valid = jnp.any(valid_mask[:, :, 1:] & ~valid_mask[:, :, :-1], axis=2)
   seg_prev = jnp.concatenate(
       [
           jnp.zeros((batch, num_blocks, 1), dtype=jnp.int32),
@@ -101,7 +107,7 @@ def _build_chunk_metadata(segment_ids, chunk_size):
       ),
   )
   chunk_kind = chunk_kind | jnp.where(
-      distinct > 2,
+      (distinct > 2) | (pad_before_valid & (distinct >= 2)),
       CHUNK_FLAG_GENERAL_BOUNDARY,
       jnp.int32(0),
   )
@@ -1080,6 +1086,9 @@ def _fwd_mega_kernel_native_segids(
       else:
         g_f32 = lower_bound * jax.nn.sigmoid(A_scale[:, None, None] * g_f32)
 
+    # ID-zero rows never decay recurrent state, including interior gaps.
+    g_f32 = g_f32 * valid_mask.astype(jnp.float32)[None, :, None]
+
     if general_segments:
       # Same-segment masks below preserve segment independence. Keeping
       # a continuous decay coordinate avoids a positive reset jump and
@@ -1806,6 +1815,15 @@ def _chunk_kda_fwd_native_segids_impl(
   else:
     db_in = jnp.zeros((H, 1, 1, K_PAD), dtype=jnp.float32)
 
+  # Expose the complete MB head tile as physical minor dimensions. This
+  # permits both 8x128 and 16x128 layouts when other consumers share inputs.
+  grouped_batch_first_input = batch_first and MB < H and not direct_input_dma
+  if grouped_batch_first_input:
+    q_t, k_t, v_t, g_t = (
+        x.reshape(x.shape[0], x.shape[1], H // MB, MB, x.shape[-1])
+        for x in (q_t, k_t, v_t, g_t)
+    )
+
   # Block specs -- index maps must accept all prefetch refs as args
   # Note: index map returns block offset (in units of block size), not array element offset
   def _seg_map(h, b, c, *refs):
@@ -1815,6 +1833,8 @@ def _chunk_kda_fwd_native_segids_impl(
     return (0, block_128)
 
   def _in_map(h, b, c, *refs):
+    if grouped_batch_first_input:
+      return (b, c, h, 0, 0)
     return (b, c, h, 0) if batch_first else (h, b, c, 0)
 
   def _h0_map(h, b, c, *refs):
@@ -1842,6 +1862,8 @@ def _chunk_kda_fwd_native_segids_impl(
 
     def _in_map(h, b, s, c, *refs):
       gc = _global_chunk(b, s, c, refs)
+      if grouped_batch_first_input:
+        return (b, gc, h, 0, 0)
       return (b, gc, h, 0) if batch_first else (h, b, gc, 0)
 
     def _h0_map(h, b, s, c, *refs):
@@ -1865,22 +1887,15 @@ def _chunk_kda_fwd_native_segids_impl(
     q_spec = k_spec = v_spec = g_spec = pl.BlockSpec(memory_space=pl.ANY)
     beta_spec = pl.BlockSpec(memory_space=pl.ANY)
   else:
-    q_spec = pl.BlockSpec(
-        [1, BT, MB, K_PAD] if batch_first else [MB, 1, BT, K_PAD],
-        index_map=_in_map,
-    )
-    k_spec = pl.BlockSpec(
-        [1, BT, MB, K_PAD] if batch_first else [MB, 1, BT, K_PAD],
-        index_map=_in_map,
-    )
-    v_spec = pl.BlockSpec(
-        [1, BT, MB, V_ALIGNED] if batch_first else [MB, 1, BT, V_ALIGNED],
-        index_map=_in_map,
-    )
-    g_spec = pl.BlockSpec(
-        [1, BT, MB, K_PAD] if batch_first else [MB, 1, BT, K_PAD],
-        index_map=_in_map,
-    )
+    def _input_block(width):
+      if grouped_batch_first_input:
+        return [1, BT, None, MB, width]
+      return [1, BT, MB, width] if batch_first else [MB, 1, BT, width]
+
+    q_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
+    k_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
+    v_spec = pl.BlockSpec(_input_block(V_ALIGNED), index_map=_in_map)
+    g_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
     beta_spec = (
         pl.BlockSpec([1, 1, BT, MB], index_map=_beta_map)
         if beta_batch_first
