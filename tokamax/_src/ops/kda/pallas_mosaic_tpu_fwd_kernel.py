@@ -2510,6 +2510,7 @@ def chunk_kda_fwd_custom(
     packed_output: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
     normalize_packed_qk: bool = False,
+    token_unpermute: jax.Array | None = None,
 ) -> tuple[
     tuple[
         Float[Array, "H B T V"],
@@ -2776,12 +2777,18 @@ def chunk_kda_fwd_custom(
     unalign = (
         compact_output if packed_output and not _cp_active else _unalign_output
     )
-    output = unalign(
-        output,
-        cu_seqlens,
-        aligned_cu_seqlens,
-        segment_ids.shape[1],
-    )
+    if token_unpermute is not None:
+      output = _unalign_output(
+          output,
+          cu_seqlens,
+          aligned_cu_seqlens,
+          segment_ids.shape[1],
+          token_order=token_unpermute,
+      )
+    else:
+      output = unalign(
+          output, cu_seqlens, aligned_cu_seqlens, segment_ids.shape[1]
+      )
 
   output = (output.astype(q.dtype), final_state)
   if not return_residuals:
