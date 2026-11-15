@@ -1,3 +1,10 @@
+> Input-placement clarification (2026-11-15): the historical table below
+> intentionally includes per-call input reshards. It must not be interpreted
+> as resident-input kernel/schedule latency. The new workspace benchmark
+> prepares each compiled input Format once before warmup and timing; see
+> [the input-placement investigation](cp_workspace_input_placement_20261115.md).
+> Historical values and their original scope are retained.
+
 > Compatibility update (2026-11-11): this branch now includes upstream main
 > `9827bb1860e7feab372bb553bcd3f9f6273cc4c9`. The measurements below remain
 > pinned to the October 27 revisions. They are not timings or native TPU
