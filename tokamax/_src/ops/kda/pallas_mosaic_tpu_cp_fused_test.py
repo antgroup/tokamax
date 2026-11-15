@@ -31,7 +31,8 @@ interpret_on_cpu = f.interpret_on_cpu
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("split", [False, True])
 @pytest.mark.parametrize("state_policy", ["saved", "remat", "remat_staged"])
-def test_cp_local_fusion(dtype, split, state_policy, monkeypatch):
+@pytest.mark.parametrize("normalize", [False, True])
+def test_cp_local_fusion(dtype, split, state_policy, monkeypatch, normalize):
   if jax.device_count() < 2:
     pytest.skip(
         "Requires two devices; CPU interpret uses XLA host device count=2"
@@ -82,6 +83,7 @@ def test_cp_local_fusion(dtype, split, state_policy, monkeypatch):
             v,
             g,
             beta,
+            use_qk_l2norm=normalize,
             segment_ids=segments,
             max_num_segments=2,
             context_parallel_metadata=meta,

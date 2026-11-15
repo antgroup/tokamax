@@ -35,7 +35,8 @@ interpret_on_cpu = f.interpret_on_cpu
 @pytest.mark.parametrize("split", [False, True])
 @pytest.mark.parametrize("state_policy", ["saved", "remat"])
 @pytest.mark.parametrize("cp_size", [2, 4])
-def test_cp_megakernel(dtype, split, state_policy, cp_size):
+@pytest.mark.parametrize("normalize", [False, True])
+def test_cp_megakernel(dtype, split, state_policy, cp_size, normalize):
   if jax.device_count() < cp_size:
     pytest.skip(
         "Requires two devices; CPU interpret uses XLA host device count=2"
@@ -83,6 +84,7 @@ def test_cp_megakernel(dtype, split, state_policy, cp_size):
             v,
             g,
             beta,
+            use_qk_l2norm=normalize,
             segment_ids=segments,
             max_num_segments=2,
             context_parallel_metadata=meta,
