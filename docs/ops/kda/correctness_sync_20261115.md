@@ -1,37 +1,36 @@
-# Correctness sync validation (2026-11-15)
+# Forward correctness synchronization (2026-11-15)
 
-Pinned internal main: `18ea6891f0e8d9affe9e81815267f5251bdb0b3b`.
-See `internal_main_migration_20261115.md` for scope, semantic adaptations and
-separate compact-CP feature ownership.
+Internal main is pinned at `18ea6891`; see the complete migration ledger and source manifest.
 
-## #1688 forward
+Native TPU7x, four chips/eight logical devices; JAX/jaxlib 0.12.0, libtpu 0.0.50.1,
+large second-minor layout enabled, no interpretation.
 
-Native TPU7x, four chips / eight logical devices; Python 3.12, JAX/jaxlib 0.12.0,
-libtpu 0.0.50.1. Large second-minor layout enabled. No interpreter.
+- Default/fused/packed/padding/compact-forward suite: 66 passed (213.62 s).
+- Final original-position native followup: 24 forward cases plus one deterministic
+  scratch-poison case passed within the shared 58-case native suite (230.02 s).
+  The companion backward cases in that suite belong to #1689 and are not a forward
+  performance claim. New leading/interior padding cases retain the existing
+  2% relative-RMS and elementwise bounds; invalid outputs remain exactly zero.
+- Common padding compatibility: 16 CPU Pallas cases passed on JAX 0.11.1.
+- Exact capacity and short-convolution contract checks: 2 CPU tests passed.
 
+Reproduce the forward followup with:
 ```
-python -m pytest -q -x \
-  tokamax/_src/ops/kda/pallas_mosaic_tpu_padding_test.py \
-  tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_fused_test.py \
-  tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_test.py \
-  tokamax/_src/ops/kda/pallas_mosaic_tpu_compact_forward_test.py
+python -m pytest -q -x tokamax/_src/ops/kda/pallas_mosaic_tpu_compact_forward_test.py tokamax/_src/ops/kda/native_padding_carry_test.py tokamax/_src/ops/kda/packing_test.py
 ```
 
-Result: 66 passed in 213.62 s. Original tolerances remain unchanged. New padding
-cases use the existing fused-forward/XLA numerical bounds; invalid rows are
-checked against exact zero. The unused BF16-state derivative is checked with
-exact equality to a dtype-matched cotangent (stronger than the former allclose).
+Grouped native records retain token positions; resumed/interleaved labels use the
+stable grouping fallback. The first all-padding chunk now initializes recurrent
+carry, all-padding saved h is defined, and nonexistent segment 0 is not saved as a
+final state. The scratch-poison control reproduces an existing issue in immutable
+internal main (16,384 nonfinite outputs) while the corrected core has zero.
+This is a scratch-safety control, not a production-failure reproduction claim.
 
-The first experimental run and its failures are retained separately. No benchmark
-from the preceding head establishes performance of this new correctness patch.
-The PR remains Draft; full upstream GPU/TPU CI and final performance review are
-separate acceptance steps.
+No reference arithmetic or numerical tolerances were weakened. The BF16 unused-state
+analytic check is exact equality to its dtype-matched cotangent. Public CP logical
+capacity is preserved; only the workspace adapter narrows physical capacity.
+One/two-token convolution uses only existing history. Formatting has unchanged ASTs.
 
-The 16 added padding cases also passed CPU Pallas interpretation on JAX 0.11.1
-(124.12 s). A subsequent formatting pass changes no Python AST; the validated
-operations, numerical bounds and assertions are identical.
-
-A separate exact CPU/JAX regression ensures the default CP adapter preserves
-logical capacity 512 for global label 500 and T_local=4. Capacity narrowing stays
-in the explicit workspace adapter; the default padding correction cannot inherit
-that optimization. Test: `pytest tokamax/_src/ops/kda/packing_test.py -q` (1 passed).
+Compact backward, CP and standalone inference remain in their corresponding PRs.
+Historical performance tables predate these correctness commits. Keep Draft pending
+complete upstream CI and the final performance review.

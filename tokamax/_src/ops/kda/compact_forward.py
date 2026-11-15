@@ -76,13 +76,21 @@ def _build_chunk_metadata(segment_ids, chunk_size):
       jnp.take_along_axis(seg, safe_idx[:, :, None], axis=2)[:, :, 0],
       0,
   )
-  first_valid_idx = jnp.where(valid_mask, pos[None, None, :], block_tokens).min(axis=2)
+  first_valid_idx = jnp.where(valid_mask, pos[None, None, :], block_tokens).min(
+      axis=2
+  )
   seg_first = jnp.where(
       has_any,
-      jnp.take_along_axis(seg, jnp.minimum(first_valid_idx, block_tokens - 1)[:, :, None], axis=2)[:, :, 0],
+      jnp.take_along_axis(
+          seg,
+          jnp.minimum(first_valid_idx, block_tokens - 1)[:, :, None],
+          axis=2,
+      )[:, :, 0],
       0,
   )
-  pad_before_valid = jnp.any(valid_mask[:, :, 1:] & ~valid_mask[:, :, :-1], axis=2)
+  pad_before_valid = jnp.any(
+      valid_mask[:, :, 1:] & ~valid_mask[:, :, :-1], axis=2
+  )
   seg_prev = jnp.concatenate(
       [
           jnp.zeros((batch, num_blocks, 1), dtype=jnp.int32),
@@ -219,6 +227,14 @@ def _fwd_mega_kernel_native_segids(
   else:
     i_c = pl.program_id(2)
     chain_start = i_c == 0
+
+  # A shard may begin with all-padding chunks, which do not enter a state
+  # branch. Initialize the carry before reading any later real chunk.
+  @pl.when(chain_start)
+  def _reset_chain():
+    scratch_ref[...] = jnp.zeros([MB, K_PAD, V_PAD], jnp.float32)
+    prev_seg_ref[...] = jnp.zeros((128,), jnp.int32)
+
   t0 = i_c * BT
 
   def _load_token_segment_ids():
@@ -354,6 +370,10 @@ def _fwd_mega_kernel_native_segids(
         g_cumsum_out_ref[:, 0] = jnp.zeros(
             [MB, BT, K_PAD], dtype=g_cumsum_out_ref.dtype
         )
+        if STORE_H:
+          chunk_h_out_ref[:, 0, 0] = jnp.zeros(
+              [MB, K_PAD, V_PAD], chunk_h_out_ref.dtype
+          )
 
   # FULL_IN_SEGMENT fast path ---------------------------------------
   @pl.when(kind == CHUNK_KIND_FULL_IN_SEGMENT)
@@ -363,7 +383,7 @@ def _fwd_mega_kernel_native_segids(
 
     if STORE_FINAL_STATE:
 
-      @pl.when(seg_changed & (~chain_start))
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
       def _save_prev():
         if MANUAL_HT_DMA:
           _dma_state_to_ht(scratch_ref, prev_seg)
@@ -676,7 +696,7 @@ def _fwd_mega_kernel_native_segids(
 
     if STORE_FINAL_STATE:
 
-      @pl.when(seg_changed & (~chain_start))
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
       def _save_prev():
         if MANUAL_HT_DMA:
           _dma_state_to_ht(scratch_ref, prev_seg)
@@ -984,7 +1004,7 @@ def _fwd_mega_kernel_native_segids(
 
     if STORE_FINAL_STATE:
 
-      @pl.when(seg_changed & (~chain_start))
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
       def _save_prev():
         if MANUAL_HT_DMA:
           _dma_state_to_ht(scratch_ref, prev_seg)
@@ -1887,6 +1907,7 @@ def _chunk_kda_fwd_native_segids_impl(
     q_spec = k_spec = v_spec = g_spec = pl.BlockSpec(memory_space=pl.ANY)
     beta_spec = pl.BlockSpec(memory_space=pl.ANY)
   else:
+
     def _input_block(width):
       if grouped_batch_first_input:
         return [1, BT, None, MB, width]

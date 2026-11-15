@@ -18,6 +18,8 @@ interpret_on_cpu = shared.interpret_on_cpu
 def operands(case, *, heads=2, batch=1, key_dim=128, value_dim=128):
   tokens = 128
   patterns = {
+      "interior_ordered": [1] * 17 + [0] * 20 + [2] * 27 + [3] * 31 + [0] * 33,
+      "leading": [0] * 65 + [2] * 31 + [0] * 32,
       "full": [1] * 128,
       "two": [1] * 17 + [2] * 111,
       "many": list(range(1, 129)),
@@ -59,7 +61,17 @@ def assert_reference(actual, reference, *, relative_rms_limit=0.02):
     "case,sorted_segments",
     [
         (c, False)
-        for c in ["full", "two", "many", "reused", "holes", "padding", "empty"]
+        for c in [
+            "full",
+            "two",
+            "many",
+            "reused",
+            "holes",
+            "padding",
+            "empty",
+            "interior_ordered",
+            "leading",
+        ]
     ]
     + [(c, True) for c in ["full", "two", "many", "padding", "empty"]],
 )

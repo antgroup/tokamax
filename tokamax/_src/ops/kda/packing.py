@@ -66,7 +66,7 @@ def _conv(x, weight, bias, ids):
   width = weight.shape[1]
   x_f, w_f = x.astype(jnp.float32), weight.astype(jnp.float32)
   acc = x_f * w_f[:, None, width - 1 : width, :]
-  for lag in range(1, width):
+  for lag in range(1, min(width, x.shape[2])):
     shifted = jnp.pad(x_f[:, :, :-lag], ((0, 0), (0, 0), (lag, 0), (0, 0)))
     same = (ids[:, lag:] == ids[:, :-lag]) & (ids[:, lag:] > 0)
     same = jnp.pad(same, ((0, 0), (lag, 0)))
