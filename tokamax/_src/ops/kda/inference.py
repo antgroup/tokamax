@@ -21,6 +21,7 @@ mega-kernel so inference optimization cannot change the training path.
 
 from __future__ import annotations
 
+import jax
 import jax.numpy as jnp
 from jaxtyping import Array, Float, Int
 from tokamax._src import jaxtyping
@@ -156,30 +157,104 @@ def kimi_delta_attention_inference(
   a_log = jnp.minimum(a_log, jnp.asarray(80.0, dtype=a_log.dtype))
 
   actual_scale = q.shape[-1] ** -0.5 if scale is None else scale
-  output, final_state, *_ = _chunk_kda_fwd_native_segids(
-      q=q,
-      k=k,
-      v=v,
-      g=g,
-      beta=beta,
-      segment_ids=segment_ids,
-      initial_state=initial_state,
-      output_final_state=output_final_state,
-      scale=actual_scale,
-      chunk_size=64,
-      store_h=False,
-      store_v_new=False,
-      disable_recompute=False,
-      only_fwd=True,
-      safe_gate=safe_gate,
-      use_qk_l2norm_in_kernel=use_qk_l2norm_in_kernel,
-      use_gate_in_kernel=use_gate_in_kernel,
-      A_log=a_log,
-      dt_bias=delta_time_bias,
-      lower_bound=lower_bound,
-      mini_batch=None,
-      N_max=max_num_segments,
-      residual_chunk_layout=False,
-      batch_first=True,
+
+  def run(xs, ids_i, state_i, capacity):
+    q_i, k_i, v_i, g_i, beta_i = xs
+    output, final_state, *_ = _chunk_kda_fwd_native_segids(
+        q=q_i,
+        k=k_i,
+        v=v_i,
+        g=g_i,
+        beta=beta_i,
+        segment_ids=ids_i,
+        initial_state=state_i,
+        output_final_state=output_final_state,
+        scale=actual_scale,
+        chunk_size=64,
+        store_h=False,
+        store_v_new=False,
+        disable_recompute=False,
+        only_fwd=True,
+        safe_gate=safe_gate,
+        use_qk_l2norm_in_kernel=use_qk_l2norm_in_kernel,
+        use_gate_in_kernel=use_gate_in_kernel,
+        A_log=a_log,
+        dt_bias=delta_time_bias,
+        lower_bound=lower_bound,
+        mini_batch=None,
+        N_max=capacity,
+        residual_chunk_layout=False,
+        batch_first=True,
+    )
+    return output, final_state
+
+  valid = (segment_ids > 0) & (segment_ids <= max_num_segments)
+  ids = jnp.where(valid, segment_ids, 0)
+  keys = jnp.where(
+      valid,
+      ids.astype(jnp.uint32),
+      jnp.asarray(jnp.iinfo(jnp.uint32).max, jnp.uint32),
   )
-  return output, final_state
+  previous = jax.lax.associative_scan(jnp.maximum, ids, axis=1)
+  needs = jnp.any(valid & (ids < previous)) | jnp.any(ids != segment_ids)
+  state = initial_state
+  if state is not None and state.ndim == 4:
+    state = jnp.broadcast_to(state[None], (q.shape[0],) + state.shape)
+
+  def corrected(xs):
+    batch, tokens = ids.shape
+    order = jnp.argsort(keys, axis=1, stable=True).astype(jnp.int32)
+    inverse = (
+        jnp.zeros_like(order)
+        .at[jnp.arange(batch)[:, None], order]
+        .set(jnp.arange(tokens)[None])
+    )
+    packed = jnp.take_along_axis(ids, order, axis=1)
+    positive = packed > 0
+    starts = positive & (packed != jnp.pad(packed[:, :-1], ((0, 0), (1, 0))))
+    canonical = jnp.where(positive, jnp.cumsum(starts, axis=1), 0)
+    capacity = min(max_num_segments, tokens)
+    positions = jax.vmap(
+        lambda row: jnp.nonzero(row, size=capacity, fill_value=tokens)[0]
+    )(starts)
+    labels = jnp.where(
+        positions < tokens,
+        jnp.take_along_axis(packed, jnp.minimum(positions, tokens - 1), axis=1),
+        0,
+    )
+    compact_state = None
+    if state is not None:
+      compact_state = jnp.take_along_axis(
+          state, jnp.maximum(labels - 1, 0)[..., None, None, None], axis=1
+      )
+      compact_state = jnp.where(
+          (labels > 0)[..., None, None, None], compact_state, 0
+      )
+
+    def take(x, index):
+      return jnp.take_along_axis(
+          x, index.reshape(index.shape + (1,) * (x.ndim - 2)), axis=1
+      )
+
+    output, final = run(
+        tuple(take(x, order) for x in xs), canonical, compact_state, capacity
+    )
+    output = jnp.where(valid[..., None, None], take(output, inverse), 0)
+    if final is not None:
+      logical = (
+          jnp.zeros((batch, max_num_segments) + final.shape[2:], final.dtype)
+          if state is None
+          else state
+      )
+      destination = jnp.where(labels > 0, labels - 1, max_num_segments)
+      final = logical.at[jnp.arange(batch)[:, None], destination].set(
+          final, mode="drop"
+      )
+    return output, final
+
+  return jax.lax.cond(
+      needs,
+      corrected,
+      lambda xs: run(xs, segment_ids, state, max_num_segments),
+      (q, k, v, g, beta),
+  )

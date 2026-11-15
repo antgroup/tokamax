@@ -182,3 +182,55 @@ def test_inference_shared_segment_map(batch):
   f._assert_close(
       (actual[0].transpose(2, 0, 1, 3), actual[1]), expected, tolerance=0.05
   )
+
+
+@pytest.mark.parametrize("states", [False, True])
+@pytest.mark.parametrize("pattern", ["holes", "many", "leading"])
+def test_inference_padding_and_many_fragments(states, pattern):
+  h, b, t, d = (64 if pattern == "leading" else 16), 1, 128, 128
+  rng = np.random.default_rng(619)
+  q, k, v, g = [
+      jnp.asarray(rng.normal(size=(b, t, h, d)) * 0.1, jnp.bfloat16)
+      for _ in range(4)
+  ]
+  beta = jnp.full((b, t, h), 0.5, jnp.bfloat16)
+  patterns = {
+      "holes": [2] * 17 + [0] * 20 + [1] * 27 + [2] * 31 + [0] * 33,
+      "many": list(range(1, 129)),
+      "leading": [0] * 65 + [2] * 31 + [0] * 32,
+  }
+  ids = jnp.asarray([patterns[pattern]], jnp.int32)
+  n = 129 if pattern == "many" else 3
+  h0 = (
+      jnp.asarray(rng.normal(size=(b, n, h, d, d)) * 0.01, jnp.float32)
+      if states
+      else None
+  )
+  options = dict(
+      segment_ids=ids,
+      a_log=jnp.zeros((h,), jnp.float32),
+      delta_time_bias=jnp.full((h * d,), -2.0, jnp.float32),
+      initial_state=h0,
+      output_final_state=states,
+      use_gate_in_kernel=True,
+      lower_bound=-5.0,
+      max_num_segments=n,
+  )
+  actual = inference.kimi_delta_attention_inference(
+      q, k, v, g, beta, use_qk_l2norm_in_kernel=True, **options
+  )
+  jax.block_until_ready(actual)
+  expected = api.kimi_delta_attention(
+      *[x.transpose(2, 0, 1, 3) for x in (q, k, v, g)],
+      beta.transpose(2, 0, 1),
+      use_qk_l2norm=True,
+      implementation="xla",
+      **options,
+  )
+  actual = (actual[0].transpose(2, 0, 1, 3), actual[1])
+  f._assert_close(actual, expected, tolerance=0.05)
+  for a, e in zip(
+      jax.tree.leaves(actual), jax.tree.leaves(expected), strict=True
+  ):
+    a, e = np.asarray(a, np.float32), np.asarray(e, np.float32)
+    assert np.linalg.norm(a - e) <= 0.02 * np.linalg.norm(e) + 1e-6

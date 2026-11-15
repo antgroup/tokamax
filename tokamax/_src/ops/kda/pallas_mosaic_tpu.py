@@ -25,6 +25,7 @@ import pydantic
 from tokamax._src import jaxtyping
 from tokamax._src.ops import op
 from tokamax._src.ops.kda import base
+from tokamax._src.ops.kda import packing
 from tokamax._src.ops.kda.cp_utils import (
     ContextParallelMetadata,
     ContextParallelMetadataArg,
@@ -77,6 +78,8 @@ class Config:
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
   """
 
+  # Internal recursion guard; ordinary public calls must keep this enabled.
+  canonicalize_packed_inputs: bool = True
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
   mini_batch: Annotated[int, pydantic.Field(gt=0)] | None = None
   safe_gate: bool | None = None
@@ -486,6 +489,10 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[base.Output, base.Residuals]:
+    if config.canonicalize_packed_inputs and segment_ids is not None:
+      arguments = locals().copy()
+      arguments.pop("self")
+      arguments.pop("config")
     if chunk_size is not None:
       # `config.chunk_size` is pinned to 64 for per-channel gates (see
       # `_requested_chunk_size`), so the requested value is checked as well.
@@ -521,6 +528,9 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
             else ()
         ),
     )
+
+    if config.canonicalize_packed_inputs and segment_ids is not None:
+      return packing.invoke(self, config, arguments)
 
     prepared = self._preprocess_inputs(
         query,
@@ -637,7 +647,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
 
   def _fwd(
       self,
-      residuals: KdaResiduals,
+      residuals: KdaResiduals | packing.PackingResiduals,
       out: base.Output,
       dout: base.Output,
       query: jax.Array,
@@ -672,6 +682,13 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
     # Tokamax's VJP contract replays the original inputs here, but the backward
     # kernel consumes the aligned and optionally L2-normalized copies retained
     # in `residuals`. Reusing these arguments would skip that preprocessing.
+    if isinstance(residuals, packing.PackingResiduals):
+      return packing.backward(residuals, dout, segment_ids)
+    primal_dtypes = {
+        name: value.dtype
+        for name, value in locals().items()
+        if name in packing.ARRAY_NAMES and value is not None
+    }
     del out, query, key, value, gate, beta
     del output_final_state, return_residuals, use_conv1d_in_kernel
     chunk_size = config.chunk_size
@@ -769,4 +786,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
           if dsegment_ids is not None
           else jnp.zeros_like(segment_ids)
       )
+    for name in packing.ARRAY_NAMES:
+      if name in grads:
+        grads[name] = grads[name].astype(primal_dtypes[name])
     return grads, None
