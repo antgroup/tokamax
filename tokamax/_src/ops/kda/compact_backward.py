@@ -2342,10 +2342,11 @@ def _bwd_mega_kernel(
 
           with jax.named_scope("mega_compute_intra"):
             db_chunk_ref[:] = jnp.zeros_like(db_chunk_ref[:])
-            # Only native all-gather CP preserves the FP32 intra cotangent.
-            # External all-to-all callers have CP_ACTIVE=False and retain
-            # the original ref-store/reload rounding.
-            direct_fp32_dg = CP_ACTIVE and dg_chunk_ref.dtype != jnp.float32
+            # Parameter reductions consume FP32 intra cotangents. Keep the
+            # existing local token-gradient rounding as a separate path.
+            direct_fp32_dg = (
+                CP_ACTIVE or FUSE_GATE_BWD
+            ) and dg_chunk_ref.dtype != jnp.float32
             dg_total = compute_intra_backward_sequential_to_chunk_refs(
                 bq,
                 bk,
@@ -2371,13 +2372,26 @@ def _bwd_mega_kernel(
           with jax.named_scope("mega_compute_cumsum"):
             if not direct_fp32_dg:
               dg_total = dg_chunk_ref[:].astype(jnp.float32)
-            dg_reverse_cumsum = (
-                segmented_reverse_sum(
-                    dg_total,
-                    jnp.broadcast_to(segment_tile[None, :], dg_total.shape[:2]),
+            if FUSE_GATE_BWD and direct_fp32_dg and not CP_ACTIVE:
+              # Match the former BF16 store/reload for the public dg output.
+              dg_chunk_ref[:] = dg_total.astype(dg_chunk_ref.dtype)
+              public_dg_total = dg_chunk_ref[:].astype(jnp.float32)
+            else:
+              public_dg_total = dg_total
+
+            def reverse_cumsum(values):
+              if segment_math:
+                return segmented_reverse_sum(
+                    values,
+                    jnp.broadcast_to(segment_tile[None, :], values.shape[:2]),
                 )
-                if segment_math
-                else compute_reverse_cumsum_dg_scan(dg_total)
+              return compute_reverse_cumsum_dg_scan(values)
+
+            dg_reverse_cumsum = reverse_cumsum(public_dg_total)
+            parameter_dg = (
+                reverse_cumsum(dg_total)
+                if FUSE_GATE_BWD and direct_fp32_dg and not CP_ACTIVE
+                else dg_reverse_cumsum
             )
           with jax.named_scope("mega_compute_output"):
             if FUSE_GATE_BWD:
@@ -2392,10 +2406,15 @@ def _bwd_mega_kernel(
                   * (-5.0 * gate_sigmoid * (1.0 - gate_sigmoid))
                   * gate_A
               )
-              gate_dA_acc[:] += jnp.sum(dg_final * biased_gate, axis=(1, 2))[
-                  :, None
-              ]
-              gate_dbias_acc[:] += jnp.sum(dg_final, axis=1)
+              parameter_dg_final = (
+                  parameter_dg
+                  * (-5.0 * gate_sigmoid * (1.0 - gate_sigmoid))
+                  * gate_A
+              )
+              gate_dA_acc[:] += jnp.sum(
+                  parameter_dg_final * biased_gate, axis=(1, 2)
+              )[:, None]
+              gate_dbias_acc[:] += jnp.sum(parameter_dg_final, axis=1)
               dg_chunk_ref[:] = dg_final.astype(dg_chunk_ref.dtype)
             else:
               dg_chunk_ref[:] = dg_reverse_cumsum.astype(dg_chunk_ref.dtype)

@@ -77,7 +77,236 @@ def _conv(x, weight, bias, ids):
   return jax.nn.silu(acc).astype(x.dtype)
 
 
+def _needs_packing(ids, clean, valid):
+  previous = jnp.pad(clean[:, :-1], ((0, 0), (1, 0)))
+  changed = valid & (clean != previous)
+  return (
+      jnp.any(changed & (clean != previous + 1))
+      | jnp.any(valid[:, 1:] & ~valid[:, :-1])
+      | jnp.any(ids != clean)
+  )
+
+
 def invoke(op, config, arguments):
+  """Pack operands, call KDA once, then restore the public token/state ABI."""
+  context = arguments["context_parallel_metadata"]
+  # Cross-rank branch coordination and explicitly fused convolution retain
+  # their existing implementations. The default local adapter is compositional.
+  if context is not None and context.is_cp_enabled:
+    return _legacy_invoke(op, config, arguments)
+  convolution = arguments["use_conv1d_in_kernel"]
+  capacity_hint = (
+      arguments["initial_state"].shape[1]
+      if arguments["initial_state"] is not None
+      else arguments["max_num_segments"]
+  )
+  short_decode = (
+      arguments["query"].shape[2] <= config.chunk_size
+      and capacity_hint is not None
+      and capacity_hint > 1
+  )
+  optimized = any(
+      getattr(config, name)
+      for name in (
+          "fuse_forward",
+          "fuse_backward",
+          "fuse_rematerialization",
+          "packed_forward",
+          "packed_backward",
+          "packed_gradients",
+          "packed_output",
+      )
+  )
+  if (
+      optimized
+      or (convolution and not short_decode)
+      or (not convolution and not arguments["return_residuals"])
+  ):
+    return _legacy_invoke(op, config, arguments)
+
+  original = dict(arguments)
+  save = original.pop("return_residuals")
+  ids = original["segment_ids"]
+  batch, tokens = original["query"].shape[1:3]
+  if ids.ndim == 1:
+    ids = jnp.broadcast_to(ids[None], (batch, tokens))
+  if ids.shape != (batch, tokens):
+    raise ValueError("segment_ids must have shape [B,T] or [T]")
+  h0 = original["initial_state"]
+  capacity = h0.shape[1] if h0 is not None else original["max_num_segments"]
+  if capacity is None or capacity <= 0:
+    raise ValueError("max_num_segments must be positive")
+  if h0 is not None and original["max_num_segments"] not in (None, capacity):
+    raise ValueError("initial_state state count must match max_num_segments")
+  physical = min(capacity, tokens)
+  valid = (ids > 0) & (ids <= capacity)
+  clean = jnp.where(valid, ids, 0)
+  keys = jnp.where(
+      valid,
+      ids.astype(jnp.uint32),
+      jnp.asarray(jnp.iinfo(jnp.uint32).max, jnp.uint32),
+  )
+  needs = _needs_packing(ids, clean, valid)
+  force = physical != capacity
+  rows = jnp.arange(batch)[:, None]
+  iota = jnp.broadcast_to(jnp.arange(tokens, dtype=jnp.int32), (batch, tokens))
+  inner = type(op)(
+      config=dataclasses.replace(config, canonicalize_packed_inputs=False),
+      bypass_device_check=op.bypass_device_check,
+  )
+  static = {k: v for k, v in original.items() if k not in ARRAY_NAMES}
+
+  def composed(*values):
+    params = dict(zip(ARRAY_NAMES, values, strict=True))
+    q, k, v = (params[n] for n in ("query", "key", "value"))
+    options = {**static, **params}
+    if options["use_conv1d_in_kernel"]:
+      # Evaluate only the original T-token domain, before any row movement.
+      # This keeps physical-lag semantics and avoids convolution on aligned pads.
+      q, k, v = (
+          _conv(x, params["conv_weight_" + n], params["conv_bias_" + n], ids)
+          for n, x in zip(("q", "k", "v"), (q, k, v), strict=True)
+      )
+      options["use_conv1d_in_kernel"] = False
+      for n in ("q", "k", "v"):
+        options["conv_weight_" + n] = options["conv_bias_" + n] = None
+    operands = (
+        q,
+        k,
+        v,
+        params["gate"],
+        params["beta"],
+        params["initial_state"],
+    )
+
+    def maps(_):
+      order = jnp.argsort(keys, axis=1, stable=True).astype(jnp.int32)
+      inverse = jnp.zeros_like(order).at[rows, order].set(iota)
+      labels_per_token = jnp.take_along_axis(clean, order, axis=1)
+      positive = labels_per_token > 0
+      starts = positive & (
+          labels_per_token
+          != jnp.pad(labels_per_token[:, :-1], ((0, 0), (1, 0)))
+      )
+      canonical = jnp.where(positive, jnp.cumsum(starts, axis=1), 0)
+      positions = jax.vmap(
+          lambda row: jnp.nonzero(row, size=physical, fill_value=tokens)[0]
+      )(starts)
+      labels = jnp.where(
+          positions < tokens,
+          jnp.take_along_axis(
+              labels_per_token, jnp.minimum(positions, tokens - 1), axis=1
+          ),
+          0,
+      )
+      return order, canonical, labels, inverse
+
+    def identity(_):
+      labels = jnp.broadcast_to(
+          jnp.arange(1, physical + 1, dtype=ids.dtype), (batch, physical)
+      )
+      return iota, ids, labels, iota
+
+    order, canonical, labels, inverse = (
+        maps(None) if force else jax.lax.cond(needs, maps, identity, None)
+    )
+    state = operands[5]
+    if state is not None:
+
+      def gather_state(x):
+        gathered = jnp.take_along_axis(
+            x, jnp.maximum(labels - 1, 0)[..., None, None, None], axis=1
+        )
+        return jnp.where((labels > 0)[..., None, None, None], gathered, 0)
+
+      state = (
+          gather_state(state)
+          if force
+          else jax.lax.cond(needs, gather_state, lambda x: x, state)
+      )
+    prepared = (*operands[:5], state)
+    options["_packing_order"] = jnp.stack((order, inverse))
+    options.update(
+        zip(
+            ("query", "key", "value", "gate", "beta", "initial_state"),
+            prepared,
+            strict=True,
+        )
+    )
+    options.update(segment_ids=canonical, max_num_segments=physical)
+    # One core custom VJP, without a second Op-level batching/format boundary.
+    core_static = {
+        k: v
+        for k, v in options.items()
+        if k not in ARRAY_NAMES and k not in ("segment_ids", "_packing_order")
+    }
+
+    def run(meta, xs, save):
+      kwargs = {
+          **core_static,
+          **dict(zip(ARRAY_NAMES, xs, strict=True)),
+          "segment_ids": meta[0],
+          "_packing_order": meta[1],
+      }
+      return inner._fwd(**kwargs, return_residuals=save, config=inner.config)
+
+    @jax.custom_vjp
+    def core(meta, *xs):
+      return run(meta, xs, False)[0]
+
+    def fwd(meta, *xs):
+      out, tape = run(meta, xs, True)
+      return out, (meta, xs, out, tape)
+
+    def bwd(res, cot):
+      meta, xs, out, tape = res
+      kwargs = {
+          **core_static,
+          **dict(zip(ARRAY_NAMES, xs, strict=True)),
+          "segment_ids": meta[0],
+          "_packing_order": meta[1],
+      }
+      grads, _ = inner.vjp._fwd(
+          tape, out, cot, **kwargs, return_residuals=False, config=inner.config
+      )
+      return (
+          None,
+          *(
+              None if x is None else grads.get(name, jnp.zeros_like(x))
+              for name, x in zip(ARRAY_NAMES, xs, strict=True)
+          ),
+      )
+
+    core.defvjp(fwd, bwd, optimize_remat=True)
+    core_values = tuple(options[n] for n in ARRAY_NAMES)
+    y, state = core((canonical, options.get("_packing_order")), *core_values)
+    # Varlen unalignment already emits exact zeros for all invalid rows.
+    if state is not None:
+
+      def restore(updated):
+        logical = (
+            jnp.zeros((batch, capacity) + updated.shape[2:], updated.dtype)
+            if params["initial_state"] is None
+            else params["initial_state"].astype(updated.dtype)
+        )
+        dest = jnp.where(labels > 0, labels - 1, capacity)
+        return logical.at[rows, dest].set(updated, mode="drop")
+
+      state = (
+          restore(state)
+          if force
+          else jax.lax.cond(needs, restore, lambda x: x, state)
+      )
+    return y, state
+
+  values = tuple(original[n] for n in ARRAY_NAMES)
+  if save:
+    output, pullback = jax.vjp(composed, *values)
+    return output, PackingResiduals(pullback)
+  return composed(*values), None
+
+
+def _legacy_invoke(op, config, arguments):
   """Return corrected output and a compositional, shape-safe pullback tape."""
   original = dict(arguments)
   return_residuals = original.pop("return_residuals")
