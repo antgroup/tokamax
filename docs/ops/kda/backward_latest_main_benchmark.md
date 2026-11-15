@@ -1,3 +1,7 @@
+> Acceptance clarification (2026-11-15): the historical 2%/5% RMS screens
+> below are retained diagnostics. Current BF16 readiness follows the internal
+> pointwise contracts in the [follow-up](backward_performance_followup_20261115.md).
+
 > Current follow-up: [November 15 corrected schedule and benchmark](backward_performance_followup_20261115.md). The tables below remain pinned historical evidence.
 
 > Compatibility update (2026-11-11): this branch now includes upstream main

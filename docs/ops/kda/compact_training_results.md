@@ -1,3 +1,7 @@
+> Acceptance clarification (2026-11-15): the historical 2%/5% RMS screens
+> below are retained diagnostics. Current BF16 readiness follows the internal
+> pointwise contracts in the [follow-up](backward_performance_followup_20261115.md).
+
 # Compact M5 backward: migration validation
 
 This record covers the backward increment in #1689. It consumes the compact

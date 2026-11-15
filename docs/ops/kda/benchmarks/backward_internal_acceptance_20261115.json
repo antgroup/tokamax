@@ -1,0 +1,324 @@
+{
+  "internal_main": "18ea6891f0e8d9affe9e81815267f5251bdb0b3b",
+  "internal_sources": {
+    "full_kda_bias": "tests/ops/kda/test_chunk_kda_tpu.py:417",
+    "full_kda_a_log_bf16": "tests/ops/kda/test_chunk_kda_tpu.py:412",
+    "native_packed_contract": "tests/ops/kda/test_native_segids_residual_contract.py:685",
+    "ulp_rule": "tests/utils/__init__.py:106"
+  },
+  "source_measurement_sha256": "d2a60e3a8f9c3ba2cf20c49fd1ba3b0604fda3a17721b7b6b7855ccd55d9041c",
+  "method": "Sufficient bound from previously measured complete max_abs; no new device run or element replay",
+  "rms_diagnostic_is_review_gate": false,
+  "original_finiteness_checks": "Reference and produced arrays were asserted finite before metrics were saved",
+  "all_certified": true,
+  "rows": [
+    {
+      "case": "arg_packed",
+      "name": "output",
+      "max_abs": 2.5638844817876816e-05,
+      "relative_rms_diagnostic": 0.004875601265405618,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.005127768963575363
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dq",
+      "max_abs": 2.2246502339839935e-05,
+      "relative_rms_diagnostic": 0.004270773588215264,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.004449300467967987
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dk",
+      "max_abs": 2.5830930098891258e-05,
+      "relative_rms_diagnostic": 0.004293529887783528,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.005166186019778252
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dv",
+      "max_abs": 2.0852778106927872e-05,
+      "relative_rms_diagnostic": 0.004395069719780228,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.004170555621385574
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dg",
+      "max_abs": 4.959978241458884e-07,
+      "relative_rms_diagnostic": 0.016416139932059617,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 9.919956482917769e-05
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dbeta",
+      "max_abs": 1.2275297194719315e-05,
+      "relative_rms_diagnostic": 0.004408421684157866,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.002455059438943863
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "dA_log",
+      "max_abs": 0.002195333130657673,
+      "relative_rms_diagnostic": 0.05158946688889945,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.4390666261315346
+        },
+        {
+          "policy": "full_kda_a_log_bf16",
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_bf16_ulp": 1,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.04390666261315346
+        }
+      ]
+    },
+    {
+      "case": "arg_packed",
+      "name": "ddt_bias",
+      "max_abs": 0.00010116161138284951,
+      "relative_rms_diagnostic": 0.05206253406855269,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.020232322276569903
+        },
+        {
+          "policy": "full_kda_bias",
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_bf16_ulp": 1,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.01264520142285619
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "output",
+      "max_abs": 2.5638844817876816e-05,
+      "relative_rms_diagnostic": 0.004875601265405618,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.005127768963575363
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dq",
+      "max_abs": 2.2246502339839935e-05,
+      "relative_rms_diagnostic": 0.004090428233071461,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.004449300467967987
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dk",
+      "max_abs": 2.5830930098891258e-05,
+      "relative_rms_diagnostic": 0.004116039503649324,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.005166186019778252
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dv",
+      "max_abs": 2.0852778106927872e-05,
+      "relative_rms_diagnostic": 0.004395069719780228,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.004170555621385574
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dg",
+      "max_abs": 4.959978241458884e-07,
+      "relative_rms_diagnostic": 0.01636163632230748,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 9.919956482917769e-05
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dbeta",
+      "max_abs": 1.2275297194719315e-05,
+      "relative_rms_diagnostic": 0.004408363654610659,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.002455059438943863
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "dA_log",
+      "max_abs": 0.0021724849939346313,
+      "relative_rms_diagnostic": 0.049822824803940416,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.43449699878692627
+        },
+        {
+          "policy": "full_kda_a_log_bf16",
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_bf16_ulp": 1,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.04344969987869263
+        }
+      ]
+    },
+    {
+      "case": "remat_packed",
+      "name": "ddt_bias",
+      "max_abs": 0.00010084662062581629,
+      "relative_rms_diagnostic": 0.05203610070772752,
+      "assessments": [
+        {
+          "policy": "native_packed_contract",
+          "atol": 0.005,
+          "rtol": 0.05,
+          "max_bf16_ulp": null,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.020169324125163257
+        },
+        {
+          "policy": "full_kda_bias",
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_bf16_ulp": 1,
+          "certified_all_elements_pass": true,
+          "status": "PASS_BY_COMPLETE_MAX_ABS",
+          "absolute_bound_utilization": 0.012605827578227036
+        }
+      ]
+    }
+  ]
+}
