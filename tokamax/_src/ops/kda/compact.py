@@ -69,9 +69,10 @@ def supported(
 
 
 def _canonical_segments(segment_ids):
-  """Renumber already grouped labels without allocating by label magnitude."""
-  previous = jnp.pad(segment_ids[:, :-1], ((0, 0), (1, 0)))
+  """Number grouped labels while preserving ID-zero gaps and continuation."""
   valid = segment_ids > 0
+  previous = jax.lax.associative_scan(jnp.maximum, segment_ids, axis=1)
+  previous = jnp.pad(previous[:, :-1], ((0, 0), (1, 0)))
   starts = valid & (segment_ids != previous)
   return jnp.where(valid, jnp.cumsum(starts, axis=1, dtype=jnp.int32), 0)
 
@@ -87,7 +88,17 @@ def _packing(segment_ids):
       segment_ids.astype(jnp.uint32),
       jnp.asarray(jnp.iinfo(jnp.uint32).max, dtype=jnp.uint32),
   )
-  ordered = jnp.all(keys[:, 1:] >= keys[:, :-1])
+  previous = jax.lax.associative_scan(
+      jnp.maximum, jnp.maximum(segment_ids, 0), axis=1
+  )
+  prior = jnp.pad(previous[:, :-1], ((0, 0), (1, 0)))
+  physical_prior = jnp.pad(segment_ids[:, :-1], ((0, 0), (1, 0)))
+  resumes_after_padding = (
+      (segment_ids > 0) & (physical_prior == 0) & (segment_ids == prior)
+  )
+  ordered = jnp.all((segment_ids == 0) | (segment_ids >= previous)) & ~jnp.any(
+      resumes_after_padding
+  )
   permutation = jax.lax.cond(
       ordered,
       lambda _: identity,

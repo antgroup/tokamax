@@ -24,7 +24,17 @@ def native_tpu():
     "case,sorted_segments",
     [
         (c, False)
-        for c in ["full", "two", "many", "reused", "holes", "padding", "empty"]
+        for c in [
+            "full",
+            "two",
+            "many",
+            "reused",
+            "holes",
+            "padding",
+            "empty",
+            "interior_ordered",
+            "leading",
+        ]
     ]
     + [(c, True) for c in ["full", "two", "many", "padding", "empty"]],
 )
@@ -58,7 +68,13 @@ def test_compact_gradients(case, sorted_segments, raw_gate):
       options["segment_ids"] = dynamic_ids
       if fn is reference:
         options["max_num_segments"] = (
-            128 if case == "many" else 8 if case == "reused" else 2
+            128
+            if case == "many"
+            else 8
+            if case == "reused"
+            else 3
+            if case == "interior_ordered"
+            else 2
         )
       return fn(q, k, v, g, beta, a_log=a_log, delta_time_bias=bias, **options)[
           0

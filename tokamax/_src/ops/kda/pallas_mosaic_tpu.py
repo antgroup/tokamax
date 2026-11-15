@@ -25,6 +25,7 @@ import pydantic
 from tokamax._src import jaxtyping
 from tokamax._src.ops import op
 from tokamax._src.ops.kda import base
+from tokamax._src.ops.kda import packing
 from tokamax._src.ops.kda import compact
 from tokamax._src.ops.kda.cp_utils import (
     ContextParallelMetadata,
@@ -89,6 +90,8 @@ class Config:
   omitting the general input permutation and its worst-case temporary buffers.
   """
 
+  # Internal recursion guard; ordinary public calls must keep this enabled.
+  canonicalize_packed_inputs: bool = True
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
   mini_batch: Annotated[int, pydantic.Field(gt=0)] | None = None
   safe_gate: bool | None = None
@@ -509,6 +512,10 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[base.Output, base.Residuals]:
+    if config.canonicalize_packed_inputs and segment_ids is not None:
+      arguments = locals().copy()
+      arguments.pop("self")
+      arguments.pop("config")
     if chunk_size is not None:
       # `config.chunk_size` is pinned to 64 for per-channel gates (see
       # `_requested_chunk_size`), so the requested value is checked as well.
@@ -576,6 +583,9 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
           sorted_segments=config.compact_sorted_segments,
           max_num_segments=max_num_segments,
       )
+
+    if config.canonicalize_packed_inputs and segment_ids is not None:
+      return packing.invoke(self, config, arguments)
 
     inline_qk_norm = (
         config.fuse_forward
@@ -713,7 +723,9 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
 
   def _fwd(
       self,
-      residuals: KdaResiduals | compact.CompactResiduals,
+      residuals: (
+          KdaResiduals | compact.CompactResiduals | packing.PackingResiduals
+      ),
       out: base.Output,
       dout: base.Output,
       query: jax.Array,
@@ -745,6 +757,13 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       use_conv1d_in_kernel: bool = False,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
+    if isinstance(residuals, packing.PackingResiduals):
+      return packing.backward(residuals, dout, segment_ids)
+    primal_dtypes = {
+        name: value.dtype
+        for name, value in locals().items()
+        if name in packing.ARRAY_NAMES and value is not None
+    }
     if isinstance(residuals, compact.CompactResiduals):
       gradients = compact.backward(
           residuals,
@@ -882,4 +901,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
           if dsegment_ids is not None
           else jnp.zeros_like(segment_ids)
       )
+    for name in packing.ARRAY_NAMES:
+      if name in grads:
+        grads[name] = grads[name].astype(primal_dtypes[name])
     return grads, None

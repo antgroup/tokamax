@@ -3035,10 +3035,16 @@ def chunk_kda_bwd_fusion(
       aligned_cu_seqlens = cu_seqlens
       compact_chunk_metadata = False
       segment_chunks = original_token_segment_ids.reshape(B, NT, BT)
-      chunk_seg_ids = segment_chunks[..., 0]
       valid = segment_chunks != 0
       valid_end = jnp.sum(valid, axis=-1, dtype=jnp.int32)
       token_idx = jnp.arange(BT, dtype=jnp.int32)
+      first = jnp.min(jnp.where(valid, token_idx, BT), axis=-1)
+      last = jnp.max(jnp.where(valid, token_idx, -1), axis=-1)
+      has_valid = last >= 0
+      chunk_seg_ids = jnp.take_along_axis(
+          segment_chunks, jnp.minimum(first, BT - 1)[..., None], axis=-1
+      )[..., 0]
+      chunk_seg_ids = jnp.where(has_valid, chunk_seg_ids, 0)
       starts_later_fragment = valid & (
           segment_chunks != chunk_seg_ids[..., None]
       )
@@ -3046,7 +3052,7 @@ def chunk_kda_bwd_fusion(
           jnp.where(starts_later_fragment, token_idx, jnp.int32(BT)), axis=-1
       )
       split = jnp.minimum(split, valid_end)
-      last_idx = jnp.maximum(valid_end - 1, 0)[..., None]
+      last_idx = jnp.maximum(last, 0)[..., None]
       last_segment_id = jnp.take_along_axis(segment_chunks, last_idx, axis=-1)[
           ..., 0
       ]
@@ -3061,6 +3067,11 @@ def chunk_kda_bwd_fusion(
           ),
           axis=-1,
           dtype=jnp.int32,
+      )
+      last_segment_id = jnp.where(has_valid, last_segment_id, 0)
+      pad_before_valid = jnp.any(valid[..., 1:] & ~valid[..., :-1], axis=-1)
+      fragment_counts = jnp.where(
+          pad_before_valid, jnp.maximum(fragment_counts, 3), fragment_counts
       )
       # Field-major (B, 4, NT): the scalar-prefetch SMEM tile then pads the
       # 4-wide field axis to 8 instead of padding the chunk axis 4 -> 128.

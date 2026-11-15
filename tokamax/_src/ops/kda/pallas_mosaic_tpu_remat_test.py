@@ -85,7 +85,11 @@ def test_dispatch_requires_rematerialization_and_backward_fusion(
 def test_fp32_value_correction_preserves_running_state(packed):
   args, kwargs = forward_tests._inputs(jnp.bfloat16, packed, heads=2)
   op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-      config=mosaic.Config(fuse_forward=True, fuse_backward=True)
+      config=mosaic.Config(
+          fuse_forward=True,
+          fuse_backward=True,
+          canonicalize_packed_inputs=False,
+      )
   )
   _, residuals = forward_tests._call(
       op, dict(kwargs, return_residuals=True), *args
