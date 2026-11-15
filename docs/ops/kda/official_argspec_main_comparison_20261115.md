@@ -1,6 +1,6 @@
 # Complete official ArgSpec comparison after correctness synchronization
 
-Status: keep #1690 Draft. Correctness endpoints are stable; two material default-path performance regressions remain.
+Status: Ready for Review authorized with the two measured Tokamax default-path regressions disclosed as follow-up work. Current MaxText KDA training uses TOPS; the benchmark results and numerical checks are unchanged.
 
 ## Revisions and scope
 
@@ -95,7 +95,7 @@ Default uses `Config=None`. Opt-in uses `fuse_forward`, `packed_forward`, `packe
 
 ## Default-path review
 
-The default path does not pass the no-regression readiness gate. The two largest material regressions are stable across reversed wall sweeps and are also present in full-module device time:
+The default path has unresolved performance regressions. The two largest material regressions are stable across reversed wall sweeps and are also present in full-module device time:
 
 | Workload | Wall main -> default ms | Device main -> default ms | Compiler temporary GiB main -> default |
 |---|---:|---:|---:|
@@ -106,7 +106,7 @@ Packed full forward/VJP wall medians are 7.604596/7.624214 ms for main and 8.219
 
 Smaller default movements remain in the full tables. Host changes for very short prefill kernels do not establish the same device-time change. Packed opt-in forward improves by 30.96% wall and 32.52% device, while its complete forward/VJP is +0.70% wall/+1.08% device versus main. No aggregate or universal speedup is claimed.
 
-The correctness wrapper/conditional tape and added temporary buffers are investigation leads. A causal attribution or a final default-path performance fix is not established here. Keep Draft until the regressions are resolved and the complete comparison is repeated.
+The correctness wrapper/conditional tape and added temporary buffers are investigation leads. A causal attribution or a final default-path performance fix is not established here. The author has authorized entering review while retaining this performance follow-up. Upstream maintainers can assess its merge impact; performance acceptance is not claimed.
 
 ## Numerical checks
 
@@ -114,6 +114,31 @@ The correctness wrapper/conditional tape and added temporary buffers are investi
 - Default is bitwise equal to main on 17/18 execution points. Packed complete forward/VJP has maximum leaf relative RMS `2.419694e-7` and maximum absolute difference `1.907349e-6`.
 - Opt-in is bitwise equal on 16/18 points. Packed forward/full-VJP differ with maximum leaf relative RMS `7.173140e-5` and maximum absolute difference `0.0001220703125`.
 - Per-leaf shapes/errors are retained in `output-comparison.json`. No reference or numerical tolerance changes were used to accept this sweep. These are operator-output/gradient checks, separate from model LM/MTP loss validation.
+
+## MaxText consumer scope and review decision
+
+The timing baseline is upstream OpenXLA/Tokamax main `0d3e82b4`, not internal
+pallas-kernel main. The workloads exercise Tokamax's public Mosaic default API.
+The packed full forward/VJP point is a training workload, so direct Tokamax
+training consumers can encounter this regression.
+
+Current MaxText main `fd1446d5a1b534f767e237be2a495b66d2411ae3` routes KDA training through
+`maxtext.kernels.kda.pallas.pallas_chunk_kda` into TOPS:
+
+- Ordinary/all-to-all route: `tops.ops.kda.chunk_kda`.
+- Explicit CP workspace route: `tops.ops.kda.chunk_kda_cp`.
+- Compact all-gather route: `tops.ops.kda.cp_compact.chunk_kda_cp_compact`.
+
+[Current pinned consumer routing](https://github.com/primatrix/maxtext/blob/fd1446d5a1b534f767e237be2a495b66d2411ae3/src/maxtext/kernels/kda/pallas.py)
+shows these branches. The training layer performs Q/K normalization outside the
+kernel and calls that wrapper. Installing Tokamax as another MaxText dependency
+does not route its KDA training through this upstream adapter.
+
+Consequently these two measurements do not establish a slowdown in current MaxText
+training and are not a current MaxText training-delivery blocker. At the author's
+request #1690 may enter review with the numbers retained and performance optimization
+deferred. This decision does not claim the generic Tokamax regression is fixed or
+that the PR has merge approval.
 
 ## Evidence and reproduction
 
