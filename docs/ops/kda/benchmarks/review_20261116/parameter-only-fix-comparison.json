@@ -1,0 +1,61 @@
+{
+  "input_sha256": "5b8f1fdf439b6d39eb90c819872a8f82b1dd9152ce12e5088f7a45cc8d5d3116",
+  "rows": [
+    {
+      "leaf": 0,
+      "relative_rms": 0.004460572307134887,
+      "max_abs": 7.62939453125e-06,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 1,
+      "relative_rms": 0.0036765217646077437,
+      "max_abs": 7.62939453125e-06,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 2,
+      "relative_rms": 0.0036797342690725312,
+      "max_abs": 7.62939453125e-06,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 3,
+      "relative_rms": 0.004432951811938891,
+      "max_abs": 2.574920654296875e-05,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 4,
+      "relative_rms": 0.00974291710501324,
+      "max_abs": 1.4528632164001465e-07,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 5,
+      "relative_rms": 0.00444780764734949,
+      "max_abs": 1.811981201171875e-05,
+      "bitwise_equal_to_old": true,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 6,
+      "relative_rms": 0.010854363908477695,
+      "max_abs": 0.0001739845611155033,
+      "bitwise_equal_to_old": false,
+      "passes_original_bounds": true
+    },
+    {
+      "leaf": 7,
+      "relative_rms": 0.008919466504033368,
+      "max_abs": 6.346017471514642e-06,
+      "bitwise_equal_to_old": false,
+      "passes_original_bounds": true
+    }
+  ]
+}

@@ -1,0 +1,738 @@
+[
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      175.490921,
+      175.59889,
+      175.89916,
+      174.997599,
+      175.260429
+    ],
+    "module_events": [
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-1/profile-fragmented-vjp/plugins/profile/2026_11_15_20_45_34/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      302.794718,
+      302.669868,
+      302.996324,
+      302.996249,
+      303.379576
+    ],
+    "module_events": [
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-1/profile-fragmented-full/plugins/profile/2026_11_15_20_45_25/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      1823.798244,
+      1822.218412,
+      1823.250825,
+      1823.330057,
+      1823.229291
+    ],
+    "module_events": [
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-1/profile-compact_packed-vjp/plugins/profile/2026_11_15_20_45_18/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      3206.657938,
+      3218.186074,
+      3208.279862,
+      3217.29892,
+      3207.608643
+    ],
+    "module_events": [
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-1/profile-compact_packed-full/plugins/profile/2026_11_15_20_45_06/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      175.914766,
+      175.735894,
+      174.76223,
+      175.472914,
+      175.931423
+    ],
+    "module_events": [
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)",
+      "jit_backward_compact_fragmented_vjp(18301050226221855564)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-0/profile-fragmented-vjp/plugins/profile/2026_11_15_20_44_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      303.043367,
+      302.833133,
+      302.949805,
+      302.799444,
+      303.3771
+    ],
+    "module_events": [
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)",
+      "jit_backward_compact_fragmented_full(8827625491053044582)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-0/profile-fragmented-full/plugins/profile/2026_11_15_20_44_33/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      1823.336134,
+      1823.148709,
+      1823.857217,
+      1823.162065,
+      1823.773109
+    ],
+    "module_events": [
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)",
+      "jit_backward_compact_compact_packed_vjp(7566703192272494250)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-0/profile-compact_packed-vjp/plugins/profile/2026_11_15_20_44_26/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "compact",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      3208.513806,
+      3217.984318,
+      3208.717887,
+      3218.440651,
+      3206.659139
+    ],
+    "module_events": [
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)",
+      "jit_backward_compact_compact_packed_full(16227582212163004843)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-compact-0/profile-compact_packed-full/plugins/profile/2026_11_15_20_43_59/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "remat_packed",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      5322.710684,
+      5338.027461,
+      5323.555972,
+      5319.47419,
+      5324.818727
+    ],
+    "module_events": [
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-remat_packed-vjp/plugins/profile/2026_11_15_19_51_13/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "remat_packed",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      8870.822404,
+      8879.517407,
+      8879.882203,
+      8875.088835,
+      8882.013206
+    ],
+    "module_events": [
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-remat_packed-full/plugins/profile/2026_11_15_19_51_04/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      8507.906513,
+      8500.457533,
+      8527.855867,
+      8496.846562,
+      8502.555822
+    ],
+    "module_events": [
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-fragmented-vjp/plugins/profile/2026_11_15_19_50_52/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      18572.470739,
+      18573.435699,
+      18580.21376,
+      18634.38648,
+      18649.502851
+    ],
+    "module_events": [
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-fragmented-full/plugins/profile/2026_11_15_19_50_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      3703.267632,
+      3704.009604,
+      3702.172794,
+      3700.419043,
+      3707.487094
+    ],
+    "module_events": [
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-compact_packed-vjp/plugins/profile/2026_11_15_19_50_37/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      6681.283313,
+      6686.715412,
+      6679.744372,
+      6650.750226,
+      6684.184874
+    ],
+    "module_events": [
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-1/profile-compact_packed-full/plugins/profile/2026_11_15_19_50_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "remat_packed",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      5286.878526,
+      5288.659064,
+      5286.166792,
+      5292.003676,
+      5286.283313
+    ],
+    "module_events": [
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-remat_packed-vjp/plugins/profile/2026_11_15_19_50_04/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "remat_packed",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      8465.529562,
+      8467.152386,
+      8453.436975,
+      8476.404487,
+      8462.216161
+    ],
+    "module_events": [
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-remat_packed-full/plugins/profile/2026_11_15_19_49_51/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      9344.457383,
+      9351.846414,
+      9347.115471,
+      9357.384229,
+      9369.180147
+    ],
+    "module_events": [
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-fragmented-vjp/plugins/profile/2026_11_15_19_49_39/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      22836.823605,
+      22851.101891,
+      22804.708433,
+      22848.420243,
+      22837.908763
+    ],
+    "module_events": [
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-fragmented-full/plugins/profile/2026_11_15_19_49_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 1,
+    "module_us": [
+      4208.321728,
+      4209.878826,
+      4209.684349,
+      4206.805522,
+      4206.708209
+    ],
+    "module_events": [
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-compact_packed-vjp/plugins/profile/2026_11_15_19_49_18/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 1,
+    "module_us": [
+      7903.757503,
+      7900.984394,
+      7911.845288,
+      7907.77551,
+      7907.771684
+    ],
+    "module_events": [
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-1/profile-compact_packed-full/plugins/profile/2026_11_15_19_49_06/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "remat_packed",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      5288.278362,
+      5282.983193,
+      5289.318127,
+      5283.581108,
+      5288.294043
+    ],
+    "module_events": [
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)",
+      "jit_backward_optimized_remat_packed_vjp(12082440948158613122)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-remat_packed-vjp/plugins/profile/2026_11_15_19_46_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "remat_packed",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      8469.817527,
+      8460.982068,
+      8466.565276,
+      8476.014481,
+      8465.002401
+    ],
+    "module_events": [
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)",
+      "jit_backward_optimized_remat_packed_full(10625679828799966142)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-remat_packed-full/plugins/profile/2026_11_15_19_45_59/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      9374.031362,
+      9364.013206,
+      9367.569928,
+      9350.595589,
+      9344.372074
+    ],
+    "module_events": [
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)",
+      "jit_backward_optimized_fragmented_vjp(12420749035497905400)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-fragmented-vjp/plugins/profile/2026_11_15_19_45_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      22887.484844,
+      22830.931573,
+      22842.82473,
+      22823.192002,
+      22828.438401
+    ],
+    "module_events": [
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)",
+      "jit_backward_optimized_fragmented_full(661193150642880160)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-fragmented-full/plugins/profile/2026_11_15_19_45_15/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      4216.055297,
+      4210.138206,
+      4210.726139,
+      4211.822253,
+      4209.360144
+    ],
+    "module_events": [
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)",
+      "jit_backward_optimized_compact_packed_vjp(1126256266428045498)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-compact_packed-vjp/plugins/profile/2026_11_15_19_45_05/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "optimized",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      7913.433299,
+      7899.422494,
+      7915.268682,
+      7903.451456,
+      7909.368398
+    ],
+    "module_events": [
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)",
+      "jit_backward_optimized_compact_packed_full(15077039034052943502)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-optimized-0/profile-compact_packed-full/plugins/profile/2026_11_15_19_44_38/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "remat_packed",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      5318.986795,
+      5331.775661,
+      5327.457383,
+      5322.255778,
+      5321.418967
+    ],
+    "module_events": [
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)",
+      "jit_backward_main_remat_packed_vjp(14965722731242425770)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-remat_packed-vjp/plugins/profile/2026_11_15_19_43_56/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "remat_packed",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      8881.110369,
+      8875.213836,
+      8874.425045,
+      8881.259003,
+      8871.809423
+    ],
+    "module_events": [
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)",
+      "jit_backward_main_remat_packed_full(18064280163532179733)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-remat_packed-full/plugins/profile/2026_11_15_19_43_31/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      8505.532038,
+      8487.213609,
+      8504.931498,
+      8501.504202,
+      8506.435774
+    ],
+    "module_events": [
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)",
+      "jit_backward_main_fragmented_vjp(12157533715593956298)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-fragmented-vjp/plugins/profile/2026_11_15_19_43_00/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      18638.93885,
+      18588.469387,
+      18653.361569,
+      18584.698679,
+      18623.179997
+    ],
+    "module_events": [
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)",
+      "jit_backward_main_fragmented_full(17980910557177920730)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-fragmented-full/plugins/profile/2026_11_15_19_42_50/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "compact_packed",
+    "mode": "vjp",
+    "capture": 0,
+    "module_us": [
+      3699.548545,
+      3704.16439,
+      3701.829382,
+      3702.097164,
+      3698.177671
+    ],
+    "module_events": [
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)",
+      "jit_backward_main_compact_packed_vjp(18100375713404086042)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-compact_packed-vjp/plugins/profile/2026_11_15_19_42_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "backward",
+    "variant": "main",
+    "case": "compact_packed",
+    "mode": "full",
+    "capture": 0,
+    "module_us": [
+      6666.731093,
+      6665.719237,
+      6675.680822,
+      6668.690276,
+      6669.826981
+    ],
+    "module_events": [
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)",
+      "jit_backward_main_compact_packed_full(18008658685858212919)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/backward-main-0/profile-compact_packed-full/plugins/profile/2026_11_15_19_42_20/kda-review-ready-1116-worker-0-0.xplane.pb"
+  }
+]

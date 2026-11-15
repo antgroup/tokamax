@@ -1,0 +1,84 @@
+{
+  "baseline": "0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18",
+  "formal_specs": 15,
+  "execution_points": 18,
+  "all_formal_specs_use_qk_l2norm": true,
+  "formal_config_compact_forward": false,
+  "changed_compact_kernel_requires_use_qk_l2norm_false": true,
+  "variants": {
+    "1689": {
+      "final_calculation_commit": "5adb7a493e918ba27e6180bb9d274a6f0ac3fcfb",
+      "changed_calculation_files": [
+        "tokamax/_src/ops/kda/compact_backward.py"
+      ],
+      "unchanged_dispatched_files": [
+        "tokamax/_src/ops/kda/__init__.py",
+        "tokamax/_src/ops/kda/api.py",
+        "tokamax/_src/ops/kda/arg_specs.py",
+        "tokamax/_src/ops/kda/base.py",
+        "tokamax/_src/ops/kda/common.py",
+        "tokamax/_src/ops/kda/compact.py",
+        "tokamax/_src/ops/kda/compact_backward_math.py",
+        "tokamax/_src/ops/kda/compact_cost.py",
+        "tokamax/_src/ops/kda/compact_forward.py",
+        "tokamax/_src/ops/kda/compact_gate.py",
+        "tokamax/_src/ops/kda/compact_hardware.py",
+        "tokamax/_src/ops/kda/compact_segments.py",
+        "tokamax/_src/ops/kda/compact_utils.py",
+        "tokamax/_src/ops/kda/cp_utils.py",
+        "tokamax/_src/ops/kda/packing.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_output.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_types.py",
+        "tokamax/_src/ops/kda/reference.py",
+        "tokamax/_src/ops/kda/utils.py",
+        "tokamax/_src/ops/kda/xla_chunked.py",
+        "tokamax/_src/ops/kda/xla_chunked_bwd_kernel.py",
+        "tokamax/_src/ops/kda/xla_chunked_fwd_kernel.py"
+      ]
+    },
+    "2009": {
+      "final_calculation_commit": "b2a3df47ff42f4f787a0e6e691efce2ad28db4ab",
+      "changed_calculation_files": [
+        "tokamax/_src/ops/kda/compact_backward.py"
+      ],
+      "unchanged_dispatched_files": [
+        "tokamax/_src/ops/kda/__init__.py",
+        "tokamax/_src/ops/kda/api.py",
+        "tokamax/_src/ops/kda/arg_specs.py",
+        "tokamax/_src/ops/kda/base.py",
+        "tokamax/_src/ops/kda/common.py",
+        "tokamax/_src/ops/kda/compact.py",
+        "tokamax/_src/ops/kda/compact_backward_math.py",
+        "tokamax/_src/ops/kda/compact_cost.py",
+        "tokamax/_src/ops/kda/compact_forward.py",
+        "tokamax/_src/ops/kda/compact_gate.py",
+        "tokamax/_src/ops/kda/compact_hardware.py",
+        "tokamax/_src/ops/kda/compact_segments.py",
+        "tokamax/_src/ops/kda/compact_utils.py",
+        "tokamax/_src/ops/kda/cp_compact.py",
+        "tokamax/_src/ops/kda/cp_utils.py",
+        "tokamax/_src/ops/kda/packing.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_cp_megakernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_kernel.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_output.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_resource_benchmark.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_types.py",
+        "tokamax/_src/ops/kda/pallas_mosaic_tpu_workspace.py",
+        "tokamax/_src/ops/kda/reference.py",
+        "tokamax/_src/ops/kda/utils.py",
+        "tokamax/_src/ops/kda/xla_chunked.py",
+        "tokamax/_src/ops/kda/xla_chunked_bwd_kernel.py",
+        "tokamax/_src/ops/kda/xla_chunked_fwd_kernel.py"
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "formal": {
+    "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/formal-stage1-raw.tgz#1794770854263763",
+    "bucket": "data_ant",
+    "object": "diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/formal-stage1-raw.tgz",
+    "generation": "1794770854263763",
+    "bytes": 9749844159,
+    "sha256": "12eac7ea4ee5aa0baf3c324f5bfc4642f38381c6b1dff9f416e75b32a8d91683",
+    "crc32c": "gbnuXg==",
+    "verified_size": true,
+    "verified_crc32c": true,
+    "metadata_sha256_verified": true
+  },
+  "backward_final": {
+    "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/gatefix-5adb7a493e91/backward-final-raw.tgz#1794776280747726",
+    "bucket": "data_ant",
+    "object": "diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/gatefix-5adb7a493e91/backward-final-raw.tgz",
+    "generation": "1794776280747726",
+    "bytes": 3781116664,
+    "sha256": "6dc5447fbcedb96c3730ba06a3e9927142f5254e0d09e4e4ebfafcba42de42ea",
+    "crc32c": "XuDtcg==",
+    "verified_size": true,
+    "verified_crc32c": true,
+    "metadata_sha256_verified": true
+  },
+  "note": "The final backward archive overlays feature results and contains the independent FP32 recurrence, parameter-only fix, failed old-kernel control and final unchanged-bound acceptance."
+}

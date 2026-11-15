@@ -1,0 +1,134 @@
+{
+  "backward-opt-0": {
+    "variant": "backward-opt",
+    "round": 0,
+    "source": "backward",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  },
+  "backward-default-0": {
+    "variant": "backward-default",
+    "round": 0,
+    "source": "backward",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  },
+  "main-default-1": {
+    "variant": "main-default",
+    "round": 1,
+    "source": "main",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  },
+  "backward-default-1": {
+    "variant": "backward-default",
+    "round": 1,
+    "source": "backward",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  },
+  "backward-opt-1": {
+    "variant": "backward-opt",
+    "round": 1,
+    "source": "backward",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  },
+  "main-default-0": {
+    "variant": "main-default",
+    "round": 0,
+    "source": "main",
+    "device": "TPU_0(process=0,(0,0,0,0))",
+    "device_kind": "TPU7x",
+    "versions": {
+      "jax": "0.12.0",
+      "jaxlib": "0.12.0",
+      "libtpu": "0.0.50.1",
+      "numpy": "2.5.4",
+      "flax": "0.12.12",
+      "qwix": "0.1.10",
+      "xprof": "2.24.2"
+    },
+    "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+    "flags": {
+      "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+      "XLA_FLAGS": null,
+      "PALLAS_INTERPRET": null
+    }
+  }
+}
