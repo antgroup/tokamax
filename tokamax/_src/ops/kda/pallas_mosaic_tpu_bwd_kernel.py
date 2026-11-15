@@ -2713,6 +2713,7 @@ def chunk_kda_bwd_custom(
         cu_seqlens,
         align=chunk_size,
         aligned_cu_seqlens=aligned_cu,
+        token_order=residuals.token_order,
     )
     cu_seqlens_bwd = aligned_cu
 
@@ -3106,11 +3107,41 @@ def chunk_kda_bwd_custom(
     )
 
   if cu_seqlens is not None:
-    dq = _unalign_output(dq, cu_seqlens, aligned_cu, T_orig)
-    dk = _unalign_output(dk, cu_seqlens, aligned_cu, T_orig)
-    dv = _unalign_output(dv, cu_seqlens, aligned_cu, T_orig)
-    dg = _unalign_output(dg, cu_seqlens, aligned_cu, T_orig)
-    db = _unalign_output(db, cu_seqlens, aligned_cu, T_orig)
+    dq = _unalign_output(
+        dq,
+        cu_seqlens,
+        aligned_cu,
+        T_orig,
+        token_order=residuals.token_unpermute,
+    )
+    dk = _unalign_output(
+        dk,
+        cu_seqlens,
+        aligned_cu,
+        T_orig,
+        token_order=residuals.token_unpermute,
+    )
+    dv = _unalign_output(
+        dv,
+        cu_seqlens,
+        aligned_cu,
+        T_orig,
+        token_order=residuals.token_unpermute,
+    )
+    dg = _unalign_output(
+        dg,
+        cu_seqlens,
+        aligned_cu,
+        T_orig,
+        token_order=residuals.token_unpermute,
+    )
+    db = _unalign_output(
+        db,
+        cu_seqlens,
+        aligned_cu,
+        T_orig,
+        token_order=residuals.token_unpermute,
+    )
 
   if dh0 is not None and dh0.ndim == 4 and has_initial_state:
     dh0 = dh0[:, None]

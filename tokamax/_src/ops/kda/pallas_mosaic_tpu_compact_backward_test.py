@@ -38,8 +38,8 @@ def native_tpu():
     ]
     + [(c, True) for c in ["full", "two", "many", "padding", "empty"]],
 )
-@pytest.mark.parametrize("raw_gate", [False, True])
-def test_compact_gradients(case, sorted_segments, raw_gate):
+@pytest.mark.parametrize("raw_gate,lower_bound", [(False, None), (True, -5.0), (True, -1.0)])
+def test_compact_gradients(case, sorted_segments, raw_gate, lower_bound):
   xs, ids = operands(case, heads=8)
   q, k, v, g, beta = xs
   if raw_gate:
@@ -53,7 +53,7 @@ def test_compact_gradients(case, sorted_segments, raw_gate):
       segment_ids=ids,
       max_num_segments=262144,
       use_gate_in_kernel=raw_gate,
-      lower_bound=-5.0 if raw_gate else None,
+      lower_bound=lower_bound,
   )
   op = mosaic.PallasMosaicTpuKimiDeltaAttention(
       config=mosaic.Config(

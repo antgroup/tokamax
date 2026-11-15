@@ -292,6 +292,14 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
           self, "vjp", PallasMosaicTpuKimiDeltaAttentionVjp(config=self.config)
       )
 
+  def bind(self, *args, _packing_order=None, **kwargs):
+    bound = super().bind(*args, **kwargs)
+    if _packing_order is None:
+      return bound
+    return op.BoundArguments(
+        self, {**bound.arguments, "_packing_order": _packing_order}
+    )
+
   @override
   def _get_heuristics_config(self, ba: op.BoundArguments) -> Config:
     return Config(chunk_size=_requested_chunk_size(ba))
@@ -339,6 +347,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       context_parallel_metadata: ContextParallelMetadata | None,
       chunk_size: int,
       max_num_segments: int | None,
+      token_order=None,
       use_conv1d_in_kernel: bool = False,
   ) -> _PreparedKdaInputs:
     """Canonicalizes inputs shared by the forward and backward kernels."""
@@ -372,6 +381,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
           [beta],
           cu_seqlens,
           align=chunk_size,
+          token_order=token_order,
       )
       _, _, aligned_seq_len, _ = q_aligned.shape
       chunk_indices = prepare_chunk_indices(
@@ -510,6 +520,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       conv_bias_k: Float[Array, "H_K K"] | None = None,
       conv_bias_v: Float[Array, "H V"] | None = None,
       use_conv1d_in_kernel: bool = False,
+      _packing_order: jax.Array | None = None,
       config: Config,
   ) -> tuple[base.Output, base.Residuals]:
     if config.canonicalize_packed_inputs and segment_ids is not None:
@@ -617,6 +628,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         context_parallel_metadata=context_parallel_metadata,
         chunk_size=chunk_size,
         max_num_segments=max_num_segments,
+        token_order=None if _packing_order is None else _packing_order[0],
         use_conv1d_in_kernel=use_conv1d_in_kernel,
     )
 
@@ -640,6 +652,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       )
       packed_inputs = (packed_q, packed_k, value, gate, beta)
 
+    inverse_order = None if _packing_order is None else _packing_order[1]
     output, residuals = chunk_kda_fwd_custom(
         prepared.q,
         prepared.k,
@@ -660,6 +673,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         fuse_forward=config.fuse_forward,
         packed_inputs=packed_inputs,
         normalize_packed_qk=inline_qk_norm,
+        token_unpermute=inverse_order,
         packed_output=config.packed_output,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,
@@ -680,6 +694,12 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         use_qk_l2norm=use_qk_l2norm,
         mini_batch=config.mini_batch,
     )
+    if residuals is not None and _packing_order is not None:
+      residuals = dataclasses.replace(
+          residuals,
+          token_order=_packing_order[0],
+          token_unpermute=inverse_order,
+      )
     value, final_state = output
     if final_state is not None and final_state.ndim == 4:
       final_state = final_state[:, None]
@@ -755,6 +775,7 @@ class PallasMosaicTpuKimiDeltaAttentionVjp(
       conv_bias_k: jax.Array | None = None,
       conv_bias_v: jax.Array | None = None,
       use_conv1d_in_kernel: bool = False,
+      _packing_order: jax.Array | None = None,
       config: Config,
   ) -> tuple[dict[str, jax.Array], None]:
     if isinstance(residuals, packing.PackingResiduals):
