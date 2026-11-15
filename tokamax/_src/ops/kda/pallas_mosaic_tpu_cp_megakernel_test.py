@@ -160,6 +160,7 @@ def test_cp_megakernel_initial_state_grad(state_policy, cp_size):
   for fused in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
+            canonicalize_packed_inputs=False,
             fuse_forward=True,
             fuse_backward=True,
             cp_megakernel=fused is True,

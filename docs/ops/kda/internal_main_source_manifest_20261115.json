@@ -1,0 +1,352 @@
+{
+  "revision": "18ea6891f0e8d9affe9e81815267f5251bdb0b3b",
+  "base": "dca6a09feec2659f2777a6db02f2ee55560f991e",
+  "files": [
+    {
+      "path": "tops/ops/kda/__init__.py",
+      "git_blob": "66e1c2aa0394a46b63c2e10f3bad48f92c13738e",
+      "sha256": "4385e0bc8c2c2966bfe2a6b2476fdb6fdf0fd15595da3deaa490e3098f3d7041",
+      "symbols": []
+    },
+    {
+      "path": "tops/ops/kda/chunk.py",
+      "git_blob": "6089ad02e67680d68f9da6f7625008bba23bf7da",
+      "sha256": "2c994bbedc8bf5bf049102063194dc79ac210dd66a5f552fd7f6a578a736bdc1",
+      "symbols": [
+        "_hf4",
+        "_hf3",
+        "_hf5",
+        "_bt4",
+        "_bt3",
+        "_pad_kv_inputs",
+        "_ensure_segment_ids_2d",
+        "_infer_n_max",
+        "_derive_cp_inputs_from_segment_ids",
+        "_uses_native_segment_id_training",
+        "_compact_interior_padding",
+        "chunk_kda",
+        "_chunk_kda_fwd_custom",
+        "_chunk_kda_bwd_custom"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_bwd.py",
+      "git_blob": "daa533afe7550bdf04073cc1107ba436e8456966",
+      "sha256": "149c147092bab2dfee24f4133c0949ca2175e26ee5e4ac0e9189502e9701fe34",
+      "symbols": [
+        "_chunk_kda_bwd_wy_dqkg_fused_kernel",
+        "chunk_kda_bwd_wy_dqkg_fused_kernel",
+        "_chunk_kda_bwd_dAv_kernel",
+        "chunk_kda_bwd_dAv_kernel",
+        "_chunk_gated_delta_rule_bwd_dhu_kernel",
+        "chunk_gated_delta_rule_bwd_dhu_kernel",
+        "chunk_kda_bwd"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_bwd_fusion.py",
+      "git_blob": "d1bda1272853f7aca4a5cd4d2bd39597a4cfe2ec",
+      "sha256": "0709bdff8b8926b4e9e114fe025e94876b651883318d319f4de06cdd3b67dd74",
+      "symbols": [
+        "_flatten_batch_segment_ids",
+        "_dense_segment_ids",
+        "_chunk_segment_metadata",
+        "_matmul_in_dtype",
+        "compute_m1_recompute",
+        "compute_dhu_recurrence",
+        "compute_wy_backward",
+        "_fused_recompute_w_u_vnew_from_h_kernel",
+        "fused_recompute_w_u_vnew_from_h_pallas",
+        "_chunk_window_has_valid",
+        "_fused_intra_bwd_cumsum_kernel",
+        "fused_intra_bwd_cumsum_pallas",
+        "_fused_dhu_wy_kernel",
+        "fused_dhu_wy_pallas",
+        "compute_intra_backward",
+        "compute_intra_backward_sequential_to_chunk_refs",
+        "compute_intra_backward_sequential_to_refs",
+        "compute_reverse_cumsum_dg",
+        "compute_reverse_cumsum_dg_scan",
+        "_fused_dhu_wy_intra_cumsum_kernel",
+        "_fused_dhu_wy_intra_cumsum_dma_kernel",
+        "_fused_dhu_wy_intra_cumsum_dma_pallas_jit",
+        "_fused_dhu_wy_intra_cumsum_pallas_jit",
+        "fused_dhu_wy_intra_cumsum_pallas"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_bwd_mega.py",
+      "git_blob": "5aec69d799c6d26ed13ff10267e06a1d3d98d253",
+      "sha256": "1863252f9277bdbcd86b3dba29e0e156bfc238c8bda51cf5727195f9eec21dc1",
+      "symbols": [
+        "_cp_streaming_merge",
+        "compute_dav",
+        "compute_dv0",
+        "_packed_sequence_indices",
+        "_compact_head_first_output_pallas",
+        "_bwd_mega_scratch_shapes",
+        "_bwd_mega_vmem_bytes",
+        "_select_bwd_mega_tiling",
+        "_bwd_mega_kernel",
+        "chunk_kda_bwd_fusion"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_fwd.py",
+      "git_blob": "78a669bc1c038a5b4aa21c3ef2c18492f5fd8de9",
+      "sha256": "6dc06f855d630b353a650e11a6c00b4b25f5a43e45c44a1f52f67b6a36d4922a",
+      "symbols": [
+        "_probe",
+        "chunk_kda_fwd"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_fwd_h_o.py",
+      "git_blob": "51288678bbaeb035122183a3e8936dab755d4872",
+      "sha256": "ed38c757f87e24ec89950e93b72ff71c8596272eaa78080b792168a390245f05",
+      "symbols": [
+        "_chunk_kda_fwd_h_o_varlen_kernel",
+        "chunk_kda_fwd_h_o_varlen"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_fwd_mega.py",
+      "git_blob": "0c16e60dcf2d63a6298cbdd2f14f6845c6bcee33",
+      "sha256": "1e20f536e322e235c99e1935dbbd2941b94b41dac6cc4d38cab23ec683d2abb2",
+      "symbols": [
+        "_unalign_token_major_output",
+        "_compact_token_major_output_pallas",
+        "_prepare_chunk_indices_one_repeat",
+        "_fwd_mega_compute_chunk",
+        "_fwd_mega_kernel_varlen_unified",
+        "_fwd_mega_kernel_varlen_loop",
+        "_call_fwd_mega_loop",
+        "_mb_from_budget",
+        "_compute_mega_mini_batch",
+        "_chunk_kda_fwd_varlen_mega_unified_impl",
+        "chunk_kda_fwd_varlen_mega"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_intra.py",
+      "git_blob": "67f2749cac983c61f09a32a93bd1769b6b28ef0a",
+      "sha256": "f1d57b027fe12a201de9cdf35ae2ab03435dfc781e707be3934e188b4783d780",
+      "symbols": [
+        "solve_unit_lower_triangular",
+        "kda_intra_chunk_kernel",
+        "kda_intra_chunk_fwd",
+        "_dot",
+        "_dot_batch",
+        "kda_intra_chunk_bwd_kernel_subchunk",
+        "_kda_intra_chunk_bwd_subchunk_pallas",
+        "chunk_kda_bwd_intra"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_intra_fwd.py",
+      "git_blob": "610f6ca515843540fd6a61415d38c5b17ee8c794",
+      "sha256": "ca43cd3af2239b4dc8961da13e9039ad3debf6cf583457087c5d3a266c013cf7",
+      "symbols": [
+        "_solve_unit_lower_triangular",
+        "_solve_unit_lower_triangular_batched",
+        "_kda_fwd_intra_kernel",
+        "kda_fwd_intra",
+        "_kda_fwd_intra_neumann_kernel",
+        "pallas_kda_fwd_intra_neumann",
+        "pallas_kda_fwd_intra"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/chunk_intra_fwd_fused.py",
+      "git_blob": "d07315bd74707fcc14033156ab8a9886a47f6a51",
+      "sha256": "a5b9b95b9e9423cdc0f051f7fe9feeab09b0cca77b3d1e36e88d7521bc94bb29",
+      "symbols": [
+        "_fused_gate_intra_kernel",
+        "_fused_gate_intra_packed_kernel",
+        "_compute_intra_fused_mini_batch",
+        "_pack_gate_params",
+        "_run_fused_intra_pallas",
+        "_run_fused_intra_packed_pallas",
+        "pallas_kda_fwd_intra_fused",
+        "kda_fwd_intra_fused"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/cp_compact.py",
+      "git_blob": "d335e25aa95fcfa4d16daf7071d6ff7e72f6a5de",
+      "sha256": "0a9b3102fb9c111b5f22951dfcfbe24211f9b04d98b58879479ad7c0c0189cd5",
+      "symbols": [
+        "_normalize_segment_ids",
+        "run_token_masks",
+        "chunk_kda_cp_compact"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/forward_inference.py",
+      "git_blob": "a6da6112617db5cbb8892133bd4c36271de04642",
+      "sha256": "f029b7821b9a63cbacac0f59ca7aae6d43256299c1d9ad6b77b99786a72c2ef9",
+      "symbols": [
+        "kda_forward_inference"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/forward_inference_kernel.py",
+      "git_blob": "fd8dc58c052fdd50d45e0bc89e4413dc32d77901",
+      "sha256": "9b6bdc5cfb0755699b219eaba54772750ce1288c6aaa0a5c3cdac7f4b7709216",
+      "symbols": [
+        "_build_chunk_metadata",
+        "_fwd_mega_kernel_native_segids",
+        "_fwd_mega_kernel_native_segids_packed",
+        "_native_compact_residual_shapes",
+        "_chunk_kda_fwd_native_segids_impl",
+        "_native_residual_layout_jit_for_sharding",
+        "_get_native_residual_layout_jit"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/fused_recurrent.py",
+      "git_blob": "04a001c6efa6d8a0f1b9ecfeb3fa12fb50c067c4",
+      "sha256": "a297f7cc64687bb2413c10975b1d30923b61b67db29b46376909d1a1df976d88",
+      "symbols": [
+        "fused_recurrent_kda",
+        "fused_recurrent_kda_segmented",
+        "_fused_recurrent_kda_segmented_bwd_reference"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/gate.py",
+      "git_blob": "adcd33759ba68e06c8642cc94f800af084c4df45",
+      "sha256": "bc96a8791b157021a7f2b900160b4713709c65afe71a1c5245274f0d0fd47e29",
+      "symbols": [
+        "mask_gate_padding_for_activation",
+        "kda_gate_chunk_cumsum",
+        "kda_gate_cumsum",
+        "kda_gate_bwd"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/head_groups.py",
+      "git_blob": "a6d1a6a4196beb5fb7a3f016b8c63a3045e32504",
+      "sha256": "f7f481039c3419edaca7e261dec85815526f2593238faac8451481330b484a06",
+      "symbols": [
+        "chunk_kda_head_groups"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/naive.py",
+      "git_blob": "8a30ec8ea36f07794295fc8b1ab653777229acd2",
+      "sha256": "dbe1eee0c215de12002c1c3e847a3426b5a8bb3d531b4c06611e159207cd743a",
+      "symbols": []
+    },
+    {
+      "path": "tops/ops/kda/packed_chunk_plan.py",
+      "git_blob": "4fd39b955726b33e11e3613de12f17f7e136eaa1",
+      "sha256": "dcd8296049b76d9f5730b607a8e803946af9b3a15b6c16b79a5fbc06b3a7d1fd",
+      "symbols": [
+        "PackedChunkFragment",
+        "PackedChunkPlan",
+        "build_packed_chunk_plan"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/packed_segmented.py",
+      "git_blob": "37008242ca0ff3c37c40a6dc76c27a7bdaa6ad6e",
+      "sha256": "f23714c2e1b81168288f43a7e21781cb861001ee9b794ff214c77a1d9d4da493",
+      "symbols": [
+        "CompactChunkMetadata",
+        "mask_reverse_chunk_carry",
+        "compact_chunk_segment_ids",
+        "_expand_token_mask",
+        "fixed_width_prefix_sum",
+        "segmented_prefix_sum",
+        "segmented_reverse_sum",
+        "segmented_suffix_last",
+        "same_segment_causal_mask",
+        "compact_chunk_fragment_counts",
+        "compact_chunk_dispatch_kinds",
+        "compact_chunk_boundary_metadata",
+        "compact_chunk_metadata",
+        "segmented_compute_dav",
+        "segmented_compute_dav_pallas"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/short_conv.py",
+      "git_blob": "fa69b2fab43586a8f730a91dca3ccfea7f91f303",
+      "sha256": "c10620256a52d3aa0d542373ca331d5c1700d868a5aedfa029435dadaf99ec64",
+      "symbols": [
+        "_target_is_tpu",
+        "_array_nbytes",
+        "_short_conv3_fwd_cost_estimate",
+        "_short_conv3_bwd_cost_estimate",
+        "_load_conv_tile",
+        "_load_packed_conv3_tile",
+        "_short_conv3_fwd_kernel",
+        "_short_conv3_pallas",
+        "_silu_grad",
+        "_load_dz_tile",
+        "_load_input_grad_tile",
+        "_short_conv3_dx_kernel",
+        "_load_weight_grad_from_dz",
+        "_short_conv3_bwd_pallas",
+        "_short_conv3_no_pad",
+        "_short_conv3_pallas_supported",
+        "_short_conv3_quantized_reference",
+        "_short_conv3_dispatch",
+        "_kda_short_conv3_custom",
+        "_kda_short_conv3_fwd",
+        "_kda_short_conv3_bwd",
+        "kda_short_conv3",
+        "_gated_rmsnorm_fwd_kernel",
+        "_gated_rmsnorm_pallas",
+        "_gated_rmsnorm_dx_kernel",
+        "_gated_rmsnorm_dscale_kernel",
+        "_gated_rmsnorm_bwd_pallas",
+        "_gated_rmsnorm_dispatch",
+        "_kda_gated_rmsnorm_custom",
+        "_kda_gated_rmsnorm_fwd",
+        "_kda_gated_rmsnorm_bwd",
+        "kda_gated_rmsnorm"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/varlen.py",
+      "git_blob": "f180480651abf4d1985a51ca4c69a557e51f3220",
+      "sha256": "3d8396c5227a481fa448f1c1a023916ff9cf1ce2eafa835abe27325bda24c7b5",
+      "symbols": [
+        "segment_ids_to_cu_seqlens",
+        "align_seqs",
+        "unalign_output",
+        "unalign_output_batch_first",
+        "has_interior_padding",
+        "relabel_padding_split_runs",
+        "padding_compaction_permutation",
+        "take_rows",
+        "gather_rows_if",
+        "compact_padding_rows"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/workspace.py",
+      "git_blob": "8693e43f1077be7134a5e57ea596dddd47818e8b",
+      "sha256": "443f10ec36bc4d6e3a8cf55b317a24705d805c0601610fa22793125e75db9e51",
+      "symbols": [
+        "_uniform_segment_count",
+        "_rematerialized_cond",
+        "_run_capacity_bucket",
+        "chunk_kda_cp"
+      ]
+    },
+    {
+      "path": "tops/ops/kda/wy_fast.py",
+      "git_blob": "abfa09cb17a09b0d683713793ad29d5f80e80419",
+      "sha256": "400f00fe6ce60a8bc3c0d0c3e616350ac46e91759be58c58858dc8430620446f",
+      "symbols": [
+        "_recompute_w_u_fwd_kernel",
+        "recompute_w_u_fwd_pallas",
+        "_compute_v_new_from_h_kernel",
+        "compute_v_new_from_h_pallas"
+      ]
+    }
+  ]
+}

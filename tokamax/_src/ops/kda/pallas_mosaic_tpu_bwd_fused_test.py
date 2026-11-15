@@ -242,7 +242,10 @@ def test_multiple_heads_batches_without_state(key_dim, value_dim):
 @pytest.mark.parametrize("dtype", [jnp.bfloat16, jnp.float32])
 def test_local_backward_clears_unwritten_chunks(dtype):
   args, kwargs = forward_tests._inputs(dtype, True, heads=2)
-  op = mosaic.PallasMosaicTpuKimiDeltaAttention(config=mosaic.Config())
+  # This fault-injection test consumes the underlying aligned kernel tape.
+  op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+      config=mosaic.Config(canonicalize_packed_inputs=False)
+  )
   _, r = forward_tests._call(op, dict(kwargs, return_residuals=True), *args)
   live_chunks = r.aligned_segment_ids[:, ::64] != 0
   h = jnp.where(live_chunks[None, :, :, None, None], r.h, jnp.nan)
