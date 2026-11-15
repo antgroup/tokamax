@@ -70,3 +70,24 @@ well. No tolerance widening. The earlier 15-official-ArgSpec sweep on #1690 head
 `35c7c850` versus main `0d3e82b4` is historical evidence: it predates these correctness
 changes and cannot establish final migrated-version default-path performance.
 A final official ArgSpec comparison remains required before Ready for Review.
+
+## Additional safety finding during final migration validation
+
+Preserving original token positions exposed a leading-full-padding-chunk carry
+initialization gap in the native source. The pinned internal main and the former
+upstream core leave recurrent scratch/previous-segment state undefined when the
+first chunk is entirely padding. The upstream fix initializes the chain before any
+chunk, zeros saved h for all-padding chunks, and never saves a nonexistent segment
+ID 0 as a final state. A native scratch-poison regression retains the existing
+reference bounds. With identical H2/B1/T128/K=V128 leading-padding input and the
+same NaN/ID-1 scratch poison, internal main produced 16,384 nonfinite outputs;
+the corrected Tokamax core produced zero. This is a deterministic scratch-safety
+control, not a claim to reproduce a production training failure. Internal main was
+kept immutable as the comparison baseline; this additional fix is in the upstream
+branches and recorded separately from its three recent commits.
+
+Grouped native inputs retain physical positions across record padding. A label
+resuming after padding, or interleaved labels, still uses the stable grouping
+fallback to preserve Tokamax label recurrence. Inference retains its state-safe
+standalone implementation. Short decode convolution ignores nonexistent history,
+matching latest main for T smaller than the convolution width.
