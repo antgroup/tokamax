@@ -46,6 +46,15 @@ def _silu_and_mul_with_clamp(
   return jax.nn.silu(gate) * up
 
 
+def _situ_and_mul(
+    gate: jax.Array, up: jax.Array, beta: float, linear_beta: float | None
+) -> jax.Array:
+  gate = beta * jnp.tanh(gate / beta) * jax.nn.sigmoid(gate)
+  if linear_beta is not None:
+    up = linear_beta * jnp.tanh(up / linear_beta)
+  return gate * up
+
+
 def apply_act_fn(acc: jax.Array, fuse_act: str | None) -> jax.Array:
   """Optionally applies a fused activation function to the accumulator."""
 
@@ -64,6 +73,10 @@ def apply_act_fn(acc: jax.Array, fuse_act: str | None) -> jax.Array:
       return _swigluoai(acc_gate, acc_up)
     case "silu_and_mul_with_clamp":
       return _silu_and_mul_with_clamp(acc_gate, acc_up)
+    case str() if fuse_act.startswith("situ:"):
+      _, beta, linear_beta = fuse_act.split(":")
+      linear_beta = None if linear_beta == "none" else float(linear_beta)
+      return _situ_and_mul(acc_gate, acc_up, float(beta), linear_beta)
     case _:
       raise NotImplementedError(f"Unsupported activation function: {fuse_act}")
 
@@ -231,19 +244,43 @@ def _scale_after_matmul(
   return jnp.concat(list_acc, axis=1)
 
 
+def _scale_before_matmul(
+    cfg: config.ComputeConfig,
+    x: jax.Array,
+    w: jax.Array,
+    w_scale: jax.Array,
+) -> jax.Array:
+  """Computes unquantized x @ quantized_w by dequantizing w first.
+
+  Args:
+    cfg: Compute config. `cfg.dynamic_quant` must be None.
+    x: Activation tile of shape (tile_m, tile_k), not quantized.
+    w: Quantized weight tile of shape (tile_k, tile_n).
+    w_scale: Weight scale of shape (num_w_blocks, 1, tile_n).
+
+  Returns:
+    The product of shape (tile_m, tile_n) in `cfg.acc_dtype`.
+  """
+  assert cfg.dynamic_quant is None
+  tile_k, tile_n = w.shape
+  num_w_blocks = w_scale.shape[0]
+  assert tile_k % num_w_blocks == 0, f"{num_w_blocks=} must divide {tile_k=}."
+  w_q_block_size = tile_k // num_w_blocks
+  w = w.astype(cfg.matmul_dtype).reshape(num_w_blocks, w_q_block_size, tile_n)
+  w = (w * w_scale.astype(cfg.matmul_dtype)).reshape(tile_k, tile_n)
+  return jnp.matmul(x, w, preferred_element_type=jnp.float32).astype(
+      cfg.acc_dtype
+  )
+
+
 def matmul(
     cfg: config.ComputeConfig,
     x: jax.Array,
     w: jax.Array,
     w_scale: jax.Array | None,
     w_bias: jax.Array | None,
-    *,
-    is_last_k_step: bool = True,
-    is_first_k_step: bool = True,
 ) -> jax.Array:
   """Performs stateless matrix multiplication for a single tile."""
-  # TODO: Support multiple N/K tiles.
-  assert is_last_k_step and is_first_k_step
 
   match cfg.matmul_mode:
     case config.MatmulMode.UNQUANTIZED:
@@ -256,6 +293,9 @@ def matmul(
     case config.MatmulMode.WEIGHT_ONLY_SCALE_AFTER:
       assert w_scale is not None
       acc = _scale_after_matmul(cfg, x, w, w_scale)
+    case config.MatmulMode.WEIGHT_ONLY_SCALE_BEFORE:
+      assert w_scale is not None
+      acc = _scale_before_matmul(cfg, x, w, w_scale)
     case _:
       raise NotImplementedError(f"Unsupported matmul mode: {cfg.matmul_mode}")
 
