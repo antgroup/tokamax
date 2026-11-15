@@ -3,7 +3,7 @@
 Source main: `18ea6891f0e8d9affe9e81815267f5251bdb0b3b`.
 Original native-kernel port: `dca6a09feec2659f2777a6db02f2ee55560f991e` (2026-10-26).
 This is a pinned audit, not a claim about unmerged internal PRs or later commits.
-All four existing PRs stay Draft. Compact all-gather CP is a separate Draft feature.
+Status at the November 15 audit: all four existing PRs were Draft. Current validation is recorded in [the final-source report](review_validation_20261116.md). Compact all-gather CP is a separate feature.
 
 ## Changes since the original port
 

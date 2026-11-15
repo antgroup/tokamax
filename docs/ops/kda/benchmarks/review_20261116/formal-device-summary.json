@@ -1,0 +1,542 @@
+[
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.5071674665,
+    "capture_medians_ms": [
+      1.506752701,
+      1.507474189
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.726271872,
+    "capture_medians_ms": [
+      3.7265906369999997,
+      3.7259531069999996
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.5192971940000002,
+    "capture_medians_ms": [
+      1.51961352,
+      1.518980868
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.092822329,
+    "capture_medians_ms": [
+      3.092667467,
+      3.092977191
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "median_device_ms": 3.6008156885,
+    "capture_medians_ms": [
+      3.592840337,
+      3.6060875599999997
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 7.531834971,
+    "capture_medians_ms": [
+      7.536171818,
+      7.5276254499999995
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.0563822774999998,
+    "capture_medians_ms": [
+      1.0564717129999999,
+      1.05616319
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.294965186,
+    "capture_medians_ms": [
+      0.29471901300000003,
+      0.294995198
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.070050945,
+    "capture_medians_ms": [
+      0.069939976,
+      0.07009963999999999
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.026597764000000003,
+    "capture_medians_ms": [
+      0.026616897,
+      0.026578631000000002
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.9976878755,
+    "capture_medians_ms": [
+      0.997799445,
+      0.997675871
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.27770408199999996,
+    "capture_medians_ms": [
+      0.27765786400000003,
+      0.277879877
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.043010841999999994,
+    "capture_medians_ms": [
+      0.042775585,
+      0.043085309
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.055506677,
+    "capture_medians_ms": [
+      0.055561824,
+      0.05545153
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0176620275,
+    "capture_medians_ms": [
+      0.017704532000000002,
+      0.017579832
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.034643457499999995,
+    "capture_medians_ms": [
+      0.034664091,
+      0.03451253
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.16014341999999998,
+    "capture_medians_ms": [
+      0.160092512,
+      0.160154862
+    ]
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.185463498,
+    "capture_medians_ms": [
+      0.185427521,
+      0.185499475
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.626680072,
+    "capture_medians_ms": [
+      1.6260970890000002,
+      1.627055372
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.8561242494999997,
+    "capture_medians_ms": [
+      3.856117647,
+      3.8565222090000004
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.521145295,
+    "capture_medians_ms": [
+      1.521022809,
+      1.521164465
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.0947231764999996,
+    "capture_medians_ms": [
+      3.0949747149999998,
+      3.094471638
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "median_device_ms": 2.612209446,
+    "capture_medians_ms": [
+      2.612067227,
+      2.613028886
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 8.523910114,
+    "capture_medians_ms": [
+      8.519179922,
+      8.527977191
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.4512328929999998,
+    "capture_medians_ms": [
+      1.451016732,
+      1.4515267859999998
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.394690314,
+    "capture_medians_ms": [
+      0.394405762,
+      0.39477896199999996
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.070007766,
+    "capture_medians_ms": [
+      0.070007203,
+      0.070008478
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0267779855,
+    "capture_medians_ms": [
+      0.026772134,
+      0.026850916000000002
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.3510013125,
+    "capture_medians_ms": [
+      1.350881302,
+      1.351121323
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.37751039200000003,
+    "capture_medians_ms": [
+      0.377539241,
+      0.377481543
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.044858455500000005,
+    "capture_medians_ms": [
+      0.044826006,
+      0.044902836
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0555168065,
+    "capture_medians_ms": [
+      0.05537695,
+      0.055528211
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.017599677499999997,
+    "capture_medians_ms": [
+      0.017601516,
+      0.017413039999999998
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.034713123,
+    "capture_medians_ms": [
+      0.034732293,
+      0.034693953
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.2267737095,
+    "capture_medians_ms": [
+      0.226428571,
+      0.226972164
+    ]
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.1854927595,
+    "capture_medians_ms": [
+      0.18553301300000002,
+      0.185452506
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.5065835085,
+    "capture_medians_ms": [
+      1.506423769,
+      1.50714766
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.72519988,
+    "capture_medians_ms": [
+      3.726014481,
+      3.723045768
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.520060737,
+    "capture_medians_ms": [
+      1.520009679,
+      1.5204825929999999
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 3.0932737845,
+    "capture_medians_ms": [
+      3.092679622,
+      3.0932894660000003
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "median_device_ms": 3.82585643,
+    "capture_medians_ms": [
+      3.8239783160000003,
+      3.828417617
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "median_device_ms": 7.2158882055,
+    "capture_medians_ms": [
+      7.220738145,
+      7.211585758999999
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.41236202,
+    "capture_medians_ms": [
+      1.4121310020000002,
+      1.4134599330000002
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.39668254850000007,
+    "capture_medians_ms": [
+      0.39648972099999996,
+      0.39716919300000003
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.069691514,
+    "capture_medians_ms": [
+      0.069677146,
+      0.069705882
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0293835905,
+    "capture_medians_ms": [
+      0.029388954999999998,
+      0.029356543
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "median_device_ms": 1.3049051245,
+    "capture_medians_ms": [
+      1.304782713,
+      1.30561352
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.38156295,
+    "capture_medians_ms": [
+      0.38179344200000004,
+      0.381498199
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.043058074,
+    "capture_medians_ms": [
+      0.043171667999999996,
+      0.042962935
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0553787145,
+    "capture_medians_ms": [
+      0.055414091,
+      0.055343338000000006
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.017728203499999998,
+    "capture_medians_ms": [
+      0.017837935000000003,
+      0.017618472
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.0345936,
+    "capture_medians_ms": [
+      0.034675870000000004,
+      0.034498274
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.2197414085,
+    "capture_medians_ms": [
+      0.21962289899999998,
+      0.219801995
+    ]
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "median_device_ms": 0.185578631,
+    "capture_medians_ms": [
+      0.185608643,
+      0.185548619
+    ]
+  }
+]

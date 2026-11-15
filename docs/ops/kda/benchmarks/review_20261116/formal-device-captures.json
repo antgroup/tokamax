@@ -1,0 +1,2378 @@
+[
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1451.170543,
+      1451.526786,
+      1454.160715,
+      1454.279712,
+      1448.912365
+    ],
+    "module_events": [
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_59_58/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1451.295243,
+      1448.882353,
+      1460.193127,
+      1450.438175,
+      1451.016732
+    ],
+    "module_events": [
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)",
+      "jit_invoke(5961981319715862135)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_59_56/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      395.488596,
+      394.66169,
+      395.467062,
+      394.778962,
+      394.184649
+    ],
+    "module_events": [
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_59_52/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      394.206483,
+      394.360219,
+      394.405762,
+      394.718938,
+      395.626651
+    ],
+    "module_events": [
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)",
+      "jit_invoke(564804857792811494)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_59_50/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1352.814826,
+      1350.634979,
+      1350.01418,
+      1351.121323,
+      1353.025435
+    ],
+    "module_events": [
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_59_45/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1359.503226,
+      1350.206557,
+      1350.881302,
+      1350.576005,
+      1351.467137
+    ],
+    "module_events": [
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)",
+      "jit_invoke(4298003957594634152)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_59_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      377.915967,
+      377.720288,
+      377.137981,
+      377.087635,
+      377.481543
+    ],
+    "module_events": [
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_59_39/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      379.971113,
+      378.846263,
+      376.243697,
+      376.771909,
+      377.539241
+    ],
+    "module_events": [
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)",
+      "jit_invoke(18297892949897216062)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_59_37/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      45.038265,
+      44.595513,
+      44.847614,
+      44.902836,
+      44.941176
+    ],
+    "module_events": [
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_18_59_33/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      44.869297,
+      44.801996,
+      44.826006,
+      44.596639,
+      44.903811
+    ],
+    "module_events": [
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)",
+      "jit_invoke(421204406492687107)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_18_59_32/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      26.776935,
+      26.907563,
+      26.963985,
+      26.769658,
+      26.850916
+    ],
+    "module_events": [
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_18_59_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      26.779036,
+      26.867648,
+      26.581183,
+      26.7503,
+      26.772134
+    ],
+    "module_events": [
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)",
+      "jit_invoke(12582080778926941355)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_18_59_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.630253,
+      185.452506,
+      185.342287,
+      185.56325,
+      185.366146
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_18_59_23/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.533013,
+      185.136779,
+      185.545093,
+      186.133178,
+      185.407037
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_18_59_21/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      70.008478,
+      69.804622,
+      69.83801,
+      70.07563,
+      70.20168
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_59_18/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.881077,
+      70.052896,
+      69.640081,
+      70.007203,
+      70.008329
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_59_17/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      226.495723,
+      227.106993,
+      227.35054,
+      226.972164,
+      226.951981
+    ],
+    "module_events": [
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_18_59_14/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      226.428571,
+      226.291867,
+      227.318128,
+      226.595438,
+      226.307323
+    ],
+    "module_events": [
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)",
+      "jit_invoke(1749993647863387692)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_18_59_12/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.986945,
+      55.505402,
+      55.721414,
+      55.383029,
+      55.528211
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_59_08/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.116371,
+      55.56295,
+      55.261705,
+      55.37695,
+      55.618172
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_59_07/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.693953,
+      35.151335,
+      34.381603,
+      34.745573,
+      34.36367
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_18_59_04/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.531813,
+      34.863145,
+      34.732293,
+      34.753976,
+      34.564075
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_18_59_03/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.41304,
+      17.757353,
+      17.411689,
+      17.639856,
+      17.302596
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_18_59_00/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.779037,
+      17.767032,
+      17.601516,
+      17.585835,
+      17.597839
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_18_58_58/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3095.351816,
+      3094.471638,
+      3095.52581,
+      3093.705883,
+      3092.490996
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_58_42/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3093.251951,
+      3094.974715,
+      3093.733568,
+      3095.519808,
+      3097.258103
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_58_40/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1521.126125,
+      1521.302596,
+      1520.82488,
+      1521.711885,
+      1521.164465
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_58_32/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1521.022809,
+      1521.173169,
+      1520.603766,
+      1519.804097,
+      1521.181423
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_58_31/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      8522.425195,
+      8529.261629,
+      8529.346938,
+      8527.977191,
+      8515.607668
+    ],
+    "module_events": [
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_58_09/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      8525.395033,
+      8517.927897,
+      8519.179922,
+      8517.332533,
+      8534.571729
+    ],
+    "module_events": [
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)",
+      "jit_invoke(14035566296960936782)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_58_07/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      2613.942302,
+      2611.117797,
+      2613.565501,
+      2613.028886,
+      2609.674745
+    ],
+    "module_events": [
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_18_57_53/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      2611.712935,
+      2612.067227,
+      2611.434424,
+      2614.96166,
+      2612.351665
+    ],
+    "module_events": [
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)",
+      "jit_invoke(15297466413332125436)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_18_57_51/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3856.522209,
+      3856.027611,
+      3855.961585,
+      3858.444328,
+      3860.828481
+    ],
+    "module_events": [
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_57_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3856.117647,
+      3857.799445,
+      3856.130852,
+      3855.787515,
+      3853.966236
+    ],
+    "module_events": [
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)",
+      "jit_invoke(13042414244380240620)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_57_25/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1627.069403,
+      1626.798319,
+      1627.055372,
+      1626.027611,
+      1627.233043
+    ],
+    "module_events": [
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_57_15/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1625.69973,
+      1626.097089,
+      1626.091162,
+      1628.04802,
+      1626.561825
+    ],
+    "module_events": [
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)",
+      "jit_invoke(11139939604142141782)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-opt/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_57_13/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1056.081632,
+      1056.16319,
+      1055.872674,
+      1056.52476,
+      1057.128375
+    ],
+    "module_events": [
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_56_56/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1058.247299,
+      1056.471713,
+      1056.051771,
+      1056.292842,
+      1057.363669
+    ],
+    "module_events": [
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_56_54/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      294.735819,
+      295.222089,
+      295.229141,
+      294.995198,
+      294.935174
+    ],
+    "module_events": [
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_56_51/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      295.231542,
+      294.719013,
+      294.33606,
+      294.559648,
+      295.346939
+    ],
+    "module_events": [
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_56_49/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      997.675871,
+      997.199205,
+      997.622974,
+      997.753902,
+      997.69988
+    ],
+    "module_events": [
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_56_45/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      997.799445,
+      996.989271,
+      1004.177521,
+      998.22569,
+      997.07578
+    ],
+    "module_events": [
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_56_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      277.548619,
+      278.411765,
+      277.42482,
+      277.971188,
+      277.879877
+    ],
+    "module_events": [
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_56_40/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      277.7503,
+      278.078031,
+      277.657864,
+      277.38798,
+      277.546219
+    ],
+    "module_events": [
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_56_38/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      43.463235,
+      43.228167,
+      43.085309,
+      43.052821,
+      42.968863
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_18_56_35/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      42.775585,
+      43.207758,
+      42.758779,
+      42.73717,
+      42.920768
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_18_56_33/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      26.470513,
+      26.71076,
+      26.578631,
+      26.547494,
+      26.823455
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_18_56_30/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      26.616897,
+      26.524685,
+      26.864421,
+      26.687725,
+      26.493697
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_18_56_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      186.0625,
+      185.404562,
+      185.758629,
+      185.499475,
+      185.387755
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_18_56_25/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.271384,
+      185.417842,
+      185.656738,
+      185.427521,
+      185.690351
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_18_56_23/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.826005,
+      70.217587,
+      70.09964,
+      70.038415,
+      70.103241
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_56_20/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.740847,
+      69.927071,
+      69.939976,
+      70.063475,
+      70.265307
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_56_18/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      160.46346,
+      160.154862,
+      159.842737,
+      160.561825,
+      160.131978
+    ],
+    "module_events": [
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_18_56_16/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      159.753977,
+      160.513731,
+      159.906437,
+      160.092512,
+      160.566476
+    ],
+    "module_events": [
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_18_56_14/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.864345,
+      55.45153,
+      55.258103,
+      55.604141,
+      55.310924
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_56_11/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.595513,
+      55.222089,
+      55.561824,
+      55.660039,
+      55.241521
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_56_09/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.770783,
+      34.433524,
+      34.409289,
+      34.657788,
+      34.51253
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_18_56_07/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.891807,
+      34.772959,
+      34.295168,
+      34.664091,
+      34.629127
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_18_56_05/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.678346,
+      17.658914,
+      17.579832,
+      17.385279,
+      17.355417
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_18_56_02/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.944928,
+      17.665141,
+      17.499325,
+      17.704532,
+      17.707158
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_18_56_01/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3089.472989,
+      3094.280837,
+      3092.977191,
+      3093.004652,
+      3090.935174
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_55_44/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3093.483794,
+      3092.667467,
+      3091.745573,
+      3092.292842,
+      3093.579982
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_55_42/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1520.707083,
+      1518.980868,
+      1519.718112,
+      1518.72404,
+      1518.515231
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_55_34/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1519.61352,
+      1519.701005,
+      1519.739571,
+      1518.829832,
+      1518.453856
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_55_33/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7524.542467,
+      7535.940126,
+      7527.62545,
+      7517.229217,
+      7528.248649
+    ],
+    "module_events": [
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_55_11/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7535.421293,
+      7543.534138,
+      7519.883404,
+      7545.667692,
+      7536.171818
+    ],
+    "module_events": [
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)",
+      "jit_invoke(13255727660611039709)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_55_09/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3602.954156,
+      3606.941101,
+      3606.08756,
+      3615.170318,
+      3598.62545
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_18_54_55/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3592.840337,
+      3598.677221,
+      3592.595438,
+      3592.778962,
+      3609.0637
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_18_54_53/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3723.83816,
+      3729.241297,
+      3727.069703,
+      3725.953107,
+      3724.629126
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_54_29/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3725.865396,
+      3727.102116,
+      3723.817602,
+      3727.479067,
+      3726.590637
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_54_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1507.474189,
+      1506.596638,
+      1508.886029,
+      1506.860744,
+      1507.807998
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_54_16/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "forward-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1507.872824,
+      1506.752701,
+      1506.150135,
+      1507.728767,
+      1506.320528
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/forward-default/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_54_15/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1403.856992,
+      1414.257053,
+      1413.459933,
+      1404.76103,
+      1414.509004
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_53_59/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1403.530612,
+      1401.313325,
+      1412.131002,
+      1412.593038,
+      1415.686525
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_53_57/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      397.169193,
+      396.701156,
+      399.232743,
+      396.534139,
+      397.408238
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_53_53/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      396.92332,
+      396.489721,
+      396.345813,
+      396.270183,
+      396.663941
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_53_51/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1305.61352,
+      1303.965261,
+      1311.628002,
+      1302.123649,
+      1306.325255
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_18_53_48/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1303.732218,
+      1303.889555,
+      1305.027536,
+      1304.782713,
+      1315.708208
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_18_53_46/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      380.647059,
+      381.513655,
+      381.498199,
+      382.344763,
+      381.212335
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_18_53_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      382.057623,
+      381.577431,
+      381.961509,
+      381.548469,
+      381.793442
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_18_53_41/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      42.893082,
+      42.906437,
+      42.962935,
+      43.012981,
+      43.28684
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_18_53_38/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      43.171668,
+      42.641057,
+      43.103167,
+      43.276185,
+      43.236495
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_18_53_36/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      29.356543,
+      29.264105,
+      29.44898,
+      29.152761,
+      29.504426
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_18_53_34/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      29.388955,
+      29.421219,
+      29.42497,
+      29.318052,
+      29.378226
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_18_53_32/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      184.929246,
+      185.548619,
+      185.609844,
+      185.858344,
+      185.385354
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_18_53_29/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.809123,
+      185.235294,
+      185.608643,
+      185.415366,
+      185.6241
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_18_53_27/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.373274,
+      69.719012,
+      69.606392,
+      69.705882,
+      70.010805
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_53_24/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.677146,
+      69.67572,
+      70.080282,
+      69.933898,
+      69.457308
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_53_22/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      220.068352,
+      219.680822,
+      220.369823,
+      219.801995,
+      219.669868
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_18_53_20/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      220.745573,
+      219.08891,
+      219.622899,
+      220.01208,
+      219.490021
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_18_53_18/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.594163,
+      55.14886,
+      55.267632,
+      55.343338,
+      55.51283
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_18_53_15/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.057623,
+      55.45003,
+      55.473214,
+      55.414091,
+      55.115171
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_18_53_13/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.369973,
+      34.866747,
+      34.498274,
+      34.457158,
+      34.721339
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_18_53_11/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.51133,
+      35.039766,
+      34.487395,
+      34.67587,
+      34.72524
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_18_53_09/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.871624,
+      17.358869,
+      17.992797,
+      17.618472,
+      17.545018
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_18_53_07/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.494598,
+      17.837935,
+      17.926771,
+      17.992722,
+      17.482518
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_18_53_05/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3093.258103,
+      3093.289466,
+      3094.792317,
+      3094.295319,
+      3092.816627
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_52_48/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3092.679622,
+      3092.531737,
+      3094.731017,
+      3090.720288,
+      3094.031062
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_52_46/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1520.651936,
+      1520.482593,
+      1520.537815,
+      1519.800871,
+      1519.566627
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_52_38/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1520.111795,
+      1519.283314,
+      1519.682023,
+      1520.270033,
+      1520.009679
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_52_37/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7219.559349,
+      7210.417917,
+      7211.585759,
+      7223.57623,
+      7209.453782
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_52_15/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7211.302521,
+      7212.217062,
+      7220.738145,
+      7223.968862,
+      7223.971113
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_52_13/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3843.744372,
+      3821.444027,
+      3829.619523,
+      3828.417617,
+      3811.123725
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_18_52_00/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3819.584484,
+      3823.978316,
+      3834.229142,
+      3827.734544,
+      3820.004802
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_18_51_58/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3725.278511,
+      3722.710835,
+      3721.708283,
+      3723.045768,
+      3729.444177
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_18_51_36/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3726.819778,
+      3728.021684,
+      3724.40216,
+      3725.121249,
+      3726.014481
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_18_51_34/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1507.14766,
+      1507.937575,
+      1506.854892,
+      1506.30012,
+      1507.37425
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_18_51_23/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1506.088911,
+      1506.615922,
+      1506.310849,
+      1506.551095,
+      1506.423769
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/profiles/main-default/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_18_51_22/kda-review-ready-1116-worker-0-0.xplane.pb"
+  }
+]
