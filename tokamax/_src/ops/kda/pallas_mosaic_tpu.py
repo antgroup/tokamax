@@ -83,6 +83,7 @@ class Config:
   omitting the general input permutation and its worst-case temporary buffers.
   """
 
+  # Internal recursion guard; ordinary public calls must keep this enabled.
   canonicalize_packed_inputs: bool = True
   chunk_size: Annotated[int, pydantic.Field(gt=0)] = 64
   mini_batch: Annotated[int, pydantic.Field(gt=0)] | None = None

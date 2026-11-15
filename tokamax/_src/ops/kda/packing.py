@@ -29,15 +29,29 @@ import pydantic
 @jax.tree_util.register_dataclass
 @dataclasses.dataclass(frozen=True)
 class PackingResiduals:
-  pullback: Annotated[Any, pydantic.PlainSerializer(
-      lambda _: None, return_type=type(None), when_used="json"
-  )]
+  pullback: Annotated[
+      Any,
+      pydantic.PlainSerializer(
+          lambda _: None, return_type=type(None), when_used="json"
+      ),
+  ]
 
 
 ARRAY_NAMES = (
-    "query", "key", "value", "gate", "beta", "a_log", "delta_time_bias",
-    "initial_state", "conv_weight_q", "conv_weight_k", "conv_weight_v",
-    "conv_bias_q", "conv_bias_k", "conv_bias_v",
+    "query",
+    "key",
+    "value",
+    "gate",
+    "beta",
+    "a_log",
+    "delta_time_bias",
+    "initial_state",
+    "conv_weight_q",
+    "conv_weight_k",
+    "conv_weight_v",
+    "conv_bias_q",
+    "conv_bias_k",
+    "conv_bias_v",
 )
 
 
@@ -51,13 +65,13 @@ def _take(x, order):
 def _conv(x, weight, bias, ids):
   width = weight.shape[1]
   x_f, w_f = x.astype(jnp.float32), weight.astype(jnp.float32)
-  acc = x_f * w_f[:, None, width - 1:width, :]
+  acc = x_f * w_f[:, None, width - 1 : width, :]
   for lag in range(1, width):
     shifted = jnp.pad(x_f[:, :, :-lag], ((0, 0), (0, 0), (lag, 0), (0, 0)))
     same = (ids[:, lag:] == ids[:, :-lag]) & (ids[:, lag:] > 0)
     same = jnp.pad(same, ((0, 0), (lag, 0)))
     shifted = jnp.where(same[None, ..., None], shifted, 0)
-    acc = acc + shifted * w_f[:, None, width - 1 - lag:width - lag, :]
+    acc = acc + shifted * w_f[:, None, width - 1 - lag : width - lag, :]
   if bias is not None:
     acc = acc + bias.astype(jnp.float32)[:, None, None, :]
   return jax.nn.silu(acc).astype(x.dtype)
@@ -84,7 +98,9 @@ def invoke(op, config, arguments):
       raise ValueError("initial_state state count must match max_num_segments")
     capacity = h0.shape[1]
   if capacity is None:
-    raise ValueError("max_num_segments is required for packed inputs without state")
+    raise ValueError(
+        "max_num_segments is required for packed inputs without state"
+    )
   if capacity <= 0:
     raise ValueError("max_num_segments must be positive")
   if cp and (h0 is not None or original["output_final_state"]):
@@ -98,16 +114,24 @@ def invoke(op, config, arguments):
     needs = jnp.any(valid[:, 1:] & ~valid[:, :-1]) | jnp.any(ids < 0)
     needs = jax.lax.pmax(needs.astype(jnp.int32), context.axis_name) != 0
   else:
-    keys = jnp.where(valid, ids.astype(jnp.uint32), jnp.asarray(jnp.iinfo(jnp.uint32).max, dtype=jnp.uint32))
-    starts = valid & (clean_ids != jnp.pad(clean_ids[:, :-1], ((0,0),(1,0))))
+    keys = jnp.where(
+        valid,
+        ids.astype(jnp.uint32),
+        jnp.asarray(jnp.iinfo(jnp.uint32).max, dtype=jnp.uint32),
+    )
+    starts = valid & (clean_ids != jnp.pad(clean_ids[:, :-1], ((0, 0), (1, 0))))
     dense = jnp.where(valid, jnp.cumsum(starts, axis=1), 0)
     needs = jnp.any(keys[:, 1:] < keys[:, :-1]) | jnp.any(clean_ids != dense)
     needs = needs | jnp.any(ids != clean_ids)
   inner_cfg = dataclasses.replace(config, canonicalize_packed_inputs=False)
   inner = type(op)(config=inner_cfg, bypass_device_check=op.bypass_device_check)
   if not isinstance(needs, jax.core.Tracer) and not bool(needs):
-    return inner(**original, return_residuals=return_residuals) if return_residuals else (inner(**original), None)
-  static = {k:v for k,v in original.items() if k not in ARRAY_NAMES}
+    return (
+        inner(**original, return_residuals=return_residuals)
+        if return_residuals
+        else (inner(**original), None)
+    )
+  static = {k: v for k, v in original.items() if k not in ARRAY_NAMES}
   if cp:
     static["max_num_segments"] = min(capacity, tokens)
 
@@ -123,61 +147,97 @@ def invoke(op, config, arguments):
       q, k, v = (opts[n] for n in ("query", "key", "value"))
       if opts["use_conv1d_in_kernel"]:
         q, k, v = (
-            _conv(x, opts["conv_weight_"+n], opts["conv_bias_"+n], ids)
-            for n,x in zip(("q","k","v"),(q,k,v),strict=True)
+            _conv(x, opts["conv_weight_" + n], opts["conv_bias_" + n], ids)
+            for n, x in zip(("q", "k", "v"), (q, k, v), strict=True)
         )
         opts["use_conv1d_in_kernel"] = False
-        for n in ("q","k","v"):
-          opts["conv_weight_"+n] = None
-          opts["conv_bias_"+n] = None
+        for n in ("q", "k", "v"):
+          opts["conv_weight_" + n] = None
+          opts["conv_bias_" + n] = None
       if cp:
         count = jnp.sum(valid, axis=1, keepdims=True)
-        inverse = jnp.where(valid, jnp.cumsum(valid,axis=1)-1,
-                            count+jnp.cumsum(~valid,axis=1)-1).astype(jnp.int32)
-        order = jnp.zeros_like(inverse).at[jnp.arange(batch)[:,None],inverse].set(iota)
+        inverse = jnp.where(
+            valid,
+            jnp.cumsum(valid, axis=1) - 1,
+            count + jnp.cumsum(~valid, axis=1) - 1,
+        ).astype(jnp.int32)
+        order = (
+            jnp.zeros_like(inverse)
+            .at[jnp.arange(batch)[:, None], inverse]
+            .set(iota)
+        )
       else:
         order = jnp.argsort(keys, axis=1, stable=True).astype(jnp.int32)
-        inverse = jnp.zeros_like(order).at[jnp.arange(batch)[:,None],order].set(iota)
+        inverse = (
+            jnp.zeros_like(order)
+            .at[jnp.arange(batch)[:, None], order]
+            .set(iota)
+        )
       packed_ids = jnp.take_along_axis(clean_ids, order, axis=1)
-      for n,x in zip(("query","key","value","gate","beta"),
-                     (q,k,v,opts["gate"],opts["beta"]),strict=True):
-        opts[n] = _take(x,order)
+      for n, x in zip(
+          ("query", "key", "value", "gate", "beta"),
+          (q, k, v, opts["gate"], opts["beta"]),
+          strict=True,
+      ):
+        opts[n] = _take(x, order)
       if not cp:
         positive = packed_ids > 0
-        starts = positive & (packed_ids != jnp.pad(packed_ids[:,:-1],((0,0),(1,0))))
-        opts["segment_ids"] = jnp.where(positive,jnp.cumsum(starts,axis=1),0)
-        physical = min(capacity,tokens)
+        starts = positive & (
+            packed_ids != jnp.pad(packed_ids[:, :-1], ((0, 0), (1, 0)))
+        )
+        opts["segment_ids"] = jnp.where(positive, jnp.cumsum(starts, axis=1), 0)
+        physical = min(capacity, tokens)
         opts["max_num_segments"] = physical
-        positions = jax.vmap(lambda row:jnp.nonzero(row,size=physical,fill_value=tokens)[0])(starts)
-        labels = jnp.where(positions < tokens, jnp.take_along_axis(packed_ids,jnp.minimum(positions,tokens-1),axis=1), 0)
+        positions = jax.vmap(
+            lambda row: jnp.nonzero(row, size=physical, fill_value=tokens)[0]
+        )(starts)
+        labels = jnp.where(
+            positions < tokens,
+            jnp.take_along_axis(
+                packed_ids, jnp.minimum(positions, tokens - 1), axis=1
+            ),
+            0,
+        )
         if params["initial_state"] is not None:
-          state_index=jnp.maximum(labels-1,0)[...,None,None,None]
-          opts["initial_state"]=jnp.take_along_axis(params["initial_state"],state_index,axis=1)
-          opts["initial_state"]=jnp.where((labels>0)[...,None,None,None],opts["initial_state"],0)
+          state_index = jnp.maximum(labels - 1, 0)[..., None, None, None]
+          opts["initial_state"] = jnp.take_along_axis(
+              params["initial_state"], state_index, axis=1
+          )
+          opts["initial_state"] = jnp.where(
+              (labels > 0)[..., None, None, None], opts["initial_state"], 0
+          )
       else:
         opts["segment_ids"] = packed_ids
-      y,state = inner(**opts)
-      y = _take(y,inverse)
-      y = jnp.where(valid[None,...,None],y,0)
+      y, state = inner(**opts)
+      y = _take(y, inverse)
+      y = jnp.where(valid[None, ..., None], y, 0)
       if state is not None:
-        logical = (jnp.zeros((batch,capacity)+state.shape[2:],state.dtype)
-                   if params["initial_state"] is None else params["initial_state"].astype(state.dtype))
-        dest = jnp.where(labels>0,labels-1,capacity)
-        state = logical.at[jnp.arange(batch)[:,None],dest].set(state,mode="drop")
-      return y,state
+        logical = (
+            jnp.zeros((batch, capacity) + state.shape[2:], state.dtype)
+            if params["initial_state"] is None
+            else params["initial_state"].astype(state.dtype)
+        )
+        dest = jnp.where(labels > 0, labels - 1, capacity)
+        state = logical.at[jnp.arange(batch)[:, None], dest].set(
+            state, mode="drop"
+        )
+      return y, state
 
     return jax.lax.cond(needs, corrected, unchanged, values)
 
   values = tuple(original[n] for n in ARRAY_NAMES)
   if return_residuals:
-    output,pullback = jax.vjp(composed,*values)
-    return output,PackingResiduals(pullback)
-  return composed(*values),None
+    output, pullback = jax.vjp(composed, *values)
+    return output, PackingResiduals(pullback)
+  return composed(*values), None
 
 
 def backward(residuals, cotangent, segment_ids):
   grads = residuals.pullback(cotangent)
-  result = {name:value for name,value in zip(ARRAY_NAMES,grads,strict=True)
-            if value is not None}
+  result = {
+      name: value
+      for name, value in zip(ARRAY_NAMES, grads, strict=True)
+      if value is not None
+  }
   result["segment_ids"] = jnp.zeros_like(segment_ids)
-  return result,None
+  return result, None

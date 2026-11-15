@@ -26,3 +26,7 @@ The first experimental run and its failures are retained separately. No benchmar
 from the preceding head establishes performance of this new correctness patch.
 The PR remains Draft; full upstream GPU/TPU CI and final performance review are
 separate acceptance steps.
+
+The 16 added padding cases also passed CPU Pallas interpretation on JAX 0.11.1
+(124.12 s). A subsequent formatting pass changes no Python AST; the validated
+operations, numerical bounds and assertions are identical.
