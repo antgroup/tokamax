@@ -1,0 +1,2966 @@
+{
+  "artifact_base": {
+    "pod_uid": "ca0e2337-1c19-40ff-8dd1-0068b3969295",
+    "prefix": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4",
+    "measured_head": "gatefix-final-source-manifest-sha256:4cb202117af4cdddf4985bb0f024bcf088e0195f0fc80dc97078754d910c6332"
+  },
+  "archives": {
+    "archive-production-default-profile-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-profile-complete.tgz#1794776719024846",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-profile-complete.tgz",
+      "generation": "1794776719024846",
+      "bytes": 435104292,
+      "sha256": "b85c5f3514fe77db35688ef5cf10cd06702d7eb8ec7e96fbba720d84742d4648",
+      "crc32c": "eJ522Q==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-default-benchmark-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-benchmark-complete.tgz#1794776663587470",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-benchmark-complete.tgz",
+      "generation": "1794776663587470",
+      "bytes": 435096233,
+      "sha256": "232aed41592f2e1d0836cbfec39d8df8bc853c1a4e6af64cc6041ec8902a2887",
+      "crc32c": "AMdL5Q==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-default-route-compact-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-route-compact.tgz#1794776567047051",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-route-compact.tgz",
+      "generation": "1794776567047051",
+      "bytes": 435096100,
+      "sha256": "771e3861bad025952a887f232f2de81e50d023c1dc86263548f21d6e8af77eec",
+      "crc32c": "l07Tdw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-default-route-reference_capacity-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-route-reference_capacity.tgz#1794776506302246",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-route-reference_capacity.tgz",
+      "generation": "1794776506302246",
+      "bytes": 372376489,
+      "sha256": "c9daf7e70b3f5cf8fe069a0c380de8764597d3eb75012dcaec5d20fbbf2268a5",
+      "crc32c": "C8ArHw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-split-profile-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-profile-complete.tgz#1794776301381049",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-profile-complete.tgz",
+      "generation": "1794776301381049",
+      "bytes": 323855605,
+      "sha256": "97cc71111e602aa834d385e313aa2e7efec4c36cc94a970ff58657008a2de023",
+      "crc32c": "jw1zUw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-split-benchmark-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-benchmark-complete.tgz#1794776254277881",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-benchmark-complete.tgz",
+      "generation": "1794776254277881",
+      "bytes": 323850191,
+      "sha256": "39e9153fb05f629452ce8b96af2221944384f2a8fd16480bb10c81fee3c8536e",
+      "crc32c": "VI1dgw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-split-route-compact-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-route-compact.tgz#1794776158124721",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-route-compact.tgz",
+      "generation": "1794776158124721",
+      "bytes": 323850033,
+      "sha256": "5dd94f9e3d153ad28dd98c3754db0b5c38778d524c078a64970886b61ad4470e",
+      "crc32c": "AmbIDw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-production-split-route-reference_capacity-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-route-reference_capacity.tgz#1794776107553006",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-route-reference_capacity.tgz",
+      "generation": "1794776107553006",
+      "bytes": 267020287,
+      "sha256": "62f75b03fa00a9cf222b6b6c58b9c0f60e7cea7bec4b3a6f272237f0969e0abc",
+      "crc32c": "5HIEwg==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-gate-parameter-fix-final-regression-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/gate-parameter-fix-final-regression-complete.tgz#1794775505267666",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/gate-parameter-fix-final-regression-complete.tgz",
+      "generation": "1794775505267666",
+      "bytes": 218733337,
+      "sha256": "c1077cb2e106762331c08736eb35dc84e72307d4ab53cabc8caad5c8ae3f0193",
+      "crc32c": "NCXi5Q==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-gate-parameter-fix-failed-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-8c735afc8267/gate-parameter-fix-failed.tgz#1794775277771530",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-8c735afc8267/gate-parameter-fix-failed.tgz",
+      "generation": "1794775277771530",
+      "bytes": 218732310,
+      "sha256": "a4a21db9eec7e8d2f97099c1d63d774bc349d25e7da31ccdad9c24f377c91800",
+      "crc32c": "w0umsQ==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-default64-profile-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-profile-complete.tgz#1794772026665116",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-profile-complete.tgz",
+      "generation": "1794772026665116",
+      "bytes": 218725584,
+      "sha256": "1d65a5b1a5fd599ea8c2fd79eb87bd48a932d5d3fc89d5caf131f79ce76a9fcb",
+      "crc32c": "NTtXDA==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-default64-benchmark-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-benchmark-complete.tgz#1794771983990611",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-benchmark-complete.tgz",
+      "generation": "1794771983990611",
+      "bytes": 218726506,
+      "sha256": "9faf367394e29011e20974aaadec734b136da7b5157a2aa7000605b76f48f905",
+      "crc32c": "2/434A==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-default64-route-compact-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-route-compact.tgz#1794771900788027",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-route-compact.tgz",
+      "generation": "1794771900788027",
+      "bytes": 218726329,
+      "sha256": "f1c3ccf347a2c8045a2fb865ac4c4c8bea8450167566a842ee988a66075fdc1d",
+      "crc32c": "6qalyw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-default64-route-reference_capacity-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-route-reference_capacity.tgz#1794771854321924",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/default64-route-reference_capacity.tgz",
+      "generation": "1794771854321924",
+      "bytes": 156384002,
+      "sha256": "9bf9aaa337e3958fb3c6ae49d8fb01bdfab426b9842e41918b362a2da5dcf185",
+      "crc32c": "gpTCDA==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-numerical-control-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/numerical-control-complete.tgz#1794771343559802",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/numerical-control-complete.tgz",
+      "generation": "1794771343559802",
+      "bytes": 108227396,
+      "sha256": "16b5c8db74df5a4c7f63604bc59542f68b153fb16b1e054b0842731574f9d048",
+      "crc32c": "29EPew==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-profile-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/profile-complete.tgz#1794771293284863",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/profile-complete.tgz",
+      "generation": "1794771293284863",
+      "bytes": 108223029,
+      "sha256": "17407aa94f062cb52ad444d407ac17a81abe9c69967143a27dd0c9af8e1b8713",
+      "crc32c": "W3xaKw==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-benchmark-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/benchmark-complete.tgz#1794771260195863",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/benchmark-complete.tgz",
+      "generation": "1794771260195863",
+      "bytes": 108216212,
+      "sha256": "662f0493e362b75a7bef9cc8bcf56bafaf551adca6fb710441e20061f98609d3",
+      "crc32c": "RspEQg==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-route-compact-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/route-compact.tgz#1794771183709527",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/route-compact.tgz",
+      "generation": "1794771183709527",
+      "bytes": 108216029,
+      "sha256": "5f624345fb6f92e2a324c378f5e7493da1f0df46c2fb7ca12b6ff0dd65a0e7ca",
+      "crc32c": "3qF4Rg==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-route-reference_capacity-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/route-reference_capacity.tgz#1794771146865833",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/route-reference_capacity.tgz",
+      "generation": "1794771146865833",
+      "bytes": 51897045,
+      "sha256": "3098b6edd25f76bcbabcb811c3d592983fd8598fcaed683f3d32cee0fa6f7f23",
+      "crc32c": "ATAuAQ==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    },
+    "archive-correctness-complete-result.json": {
+      "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/correctness-complete.tgz#1794770961229225",
+      "bucket": "data_ant",
+      "object": "diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/2c3c43fd3857/correctness-complete.tgz",
+      "generation": "1794770961229225",
+      "bytes": 3489269,
+      "sha256": "2089e85516ac174c0e313e5fd54078b02c356f3ebfa85160c5d4dadb2701e1fe",
+      "crc32c": "lxjlPg==",
+      "verified_size": true,
+      "verified_crc32c": true,
+      "metadata_sha256_verified": true
+    }
+  },
+  "benchmarks": {
+    "benchmark-production-default/compact/report.json": {
+      "cp": 16,
+      "heads": 64,
+      "local_tokens": 16384,
+      "route": "compact",
+      "process": 1,
+      "median_ms": 77.591021,
+      "samples_ms": [
+        77.594042,
+        77.588,
+        78.095176,
+        77.282084,
+        77.84162,
+        77.344404,
+        78.208548,
+        77.661172,
+        77.463201,
+        77.413604,
+        77.548805,
+        77.626903,
+        77.334171,
+        78.117894,
+        77.747031,
+        77.988391,
+        77.465663,
+        77.197811,
+        77.602729,
+        77.751931,
+        77.632322,
+        77.376025,
+        77.092787,
+        77.548235,
+        77.926248,
+        77.437589,
+        78.649102,
+        76.943915,
+        78.034063,
+        77.512371
+      ],
+      "compiler_temporary_bytes": 14152910880,
+      "input_formats": [
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context'), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, 'context'), memory_kind=device))"
+      ]
+    },
+    "benchmark-production-default/reference_capacity/report.json": {
+      "cp": 16,
+      "heads": 64,
+      "local_tokens": 16384,
+      "route": "reference_capacity",
+      "process": 1,
+      "median_ms": 54.72783750000001,
+      "samples_ms": [
+        54.732111,
+        54.66462,
+        55.066519,
+        54.628482,
+        54.921369,
+        54.859624,
+        54.798442,
+        54.959468,
+        54.63094,
+        54.320733,
+        54.791429,
+        54.723564,
+        54.649835,
+        54.5619,
+        54.859742,
+        54.77604,
+        54.633652,
+        54.684972,
+        54.778295,
+        54.294319,
+        54.634157,
+        55.075103,
+        54.738936,
+        54.479997,
+        54.53727,
+        54.781051,
+        54.519422,
+        54.942144,
+        54.236381,
+        55.122828
+      ],
+      "compiler_temporary_bytes": 11666661312,
+      "input_formats": [
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context'), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, 'context'), memory_kind=device))"
+      ]
+    },
+    "benchmark-production-split/compact/report.json": {
+      "cp": 16,
+      "heads": 64,
+      "local_tokens": 16384,
+      "route": "compact",
+      "process": 1,
+      "median_ms": 71.21819049999999,
+      "samples_ms": [
+        70.863634,
+        71.444511,
+        70.677707,
+        71.687755,
+        70.702106,
+        71.260732,
+        71.288808,
+        71.324003,
+        71.061212,
+        71.188209,
+        70.954556,
+        71.067816,
+        71.396607,
+        70.994941,
+        71.535113,
+        71.236319,
+        70.889098,
+        71.200062,
+        71.110541,
+        73.53593,
+        71.170707,
+        71.483663,
+        71.435156,
+        71.099972,
+        71.301952,
+        71.30126,
+        71.332748,
+        71.186326,
+        71.614247,
+        70.929731
+      ],
+      "compiler_temporary_bytes": 11917068160,
+      "input_formats": [
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context'), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, 'context'), memory_kind=device))"
+      ]
+    },
+    "benchmark-production-split/reference_capacity/report.json": {
+      "cp": 16,
+      "heads": 64,
+      "local_tokens": 16384,
+      "route": "reference_capacity",
+      "process": 1,
+      "median_ms": 54.846230000000006,
+      "samples_ms": [
+        54.46716,
+        54.520185,
+        54.29895,
+        54.84924,
+        54.686114,
+        54.729931,
+        55.086499,
+        54.870972,
+        54.394464,
+        54.835784,
+        54.52092,
+        54.494892,
+        55.297025,
+        55.088979,
+        54.671831,
+        54.535281,
+        55.200003,
+        54.892197,
+        54.960011,
+        55.07299,
+        55.015948,
+        54.581593,
+        54.735946,
+        54.988588,
+        54.958078,
+        54.683474,
+        54.928339,
+        55.136884,
+        54.901814,
+        54.84322
+      ],
+      "compiler_temporary_bytes": 11666661312,
+      "input_formats": [
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context'), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, None, 'context', None), memory_kind=device))",
+        "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=NamedSharding(mesh=Mesh('context': 16, axis_types=(Auto,)), spec=P(None, 'context'), memory_kind=device))"
+      ]
+    }
+  },
+  "device": {
+    "benchmark-production-default": [
+      {
+        "route": "compact",
+        "capture": 0,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128583401055,
+              "duration_ps": 75110222163
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206204807942,
+              "duration_ps": 75404893158
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284535836754,
+              "duration_ps": 75254261780
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362723566796,
+              "duration_ps": 75264507803
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440747423789,
+              "duration_ps": 75086082833
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128608624269,
+              "duration_ps": 75082090036
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206550639875,
+              "duration_ps": 75058930522
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284457884923,
+              "duration_ps": 75327786315
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362927444347,
+              "duration_ps": 75058524460
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440821566646,
+              "duration_ps": 75009372149
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128431642351,
+              "duration_ps": 75258786315
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206091684293,
+              "duration_ps": 75516542617
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284369642276,
+              "duration_ps": 75416497149
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362667079326,
+              "duration_ps": 75317018007
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440635619542,
+              "duration_ps": 75194513806
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128636136949,
+              "duration_ps": 75056011930
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206408812744,
+              "duration_ps": 75192850090
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284413394977,
+              "duration_ps": 75370259379
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362708112864,
+              "duration_ps": 75275690276
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440660086754,
+              "duration_ps": 75167657563
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128507008423,
+              "duration_ps": 75184397434
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206553167036,
+              "duration_ps": 75053241146
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284613937744,
+              "duration_ps": 75173539166
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362872075649,
+              "duration_ps": 75117044493
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440753132072,
+              "duration_ps": 75075560774
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128350489890,
+              "duration_ps": 75341065952
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206386239140,
+              "duration_ps": 75215859469
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284361344707,
+              "duration_ps": 75426888205
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362679392726,
+              "duration_ps": 75304430823
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440584608738,
+              "duration_ps": 75243246173
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128465207702,
+              "duration_ps": 75224271309
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206134874044,
+              "duration_ps": 75475056347
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284563433543,
+              "duration_ps": 75227362395
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362869612339,
+              "duration_ps": 75118477791
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440803710779,
+              "duration_ps": 75025493472
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 128593412984,
+              "duration_ps": 75096859544
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 206274152480,
+              "duration_ps": 75329998950
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 284541069647,
+              "duration_ps": 75242554697
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 362777922063,
+              "duration_ps": 75205495873
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 440826748068,
+              "duration_ps": 75006065877
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          75.341065952,
+          75.516542617,
+          75.426888205,
+          75.317018007,
+          75.243246173
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-default/compact/0/plugins/profile/2026_11_15_21_02_05/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "compact",
+        "capture": 1,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 110832065631,
+              "duration_ps": 108276026411
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 221857099245,
+              "duration_ps": 75529888355
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299796054977,
+              "duration_ps": 75234229292
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377950069233,
+              "duration_ps": 75118091311
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455898212240,
+              "duration_ps": 75077522059
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111099800400,
+              "duration_ps": 108006327806
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 222210898840,
+              "duration_ps": 75170286839
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299719303477,
+              "duration_ps": 75315822178
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377935667072,
+              "duration_ps": 75120823529
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455883367102,
+              "duration_ps": 75089700930
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 110855304527,
+              "duration_ps": 108250363896
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 221740489476,
+              "duration_ps": 75640231768
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299611781118,
+              "duration_ps": 75422132052
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377759239851,
+              "duration_ps": 75300722539
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455620074185,
+              "duration_ps": 75357863070
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111106956538,
+              "duration_ps": 107995542542
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 222114641862,
+              "duration_ps": 75263018007
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299540381358,
+              "duration_ps": 75486638655
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377785984149,
+              "duration_ps": 75272459634
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455672141337,
+              "duration_ps": 75304600315
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111094478597,
+              "duration_ps": 108013358943
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 221947619128,
+              "duration_ps": 75433306047
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299727174950,
+              "duration_ps": 75309424895
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 378008308128,
+              "duration_ps": 75050401186
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455813664671,
+              "duration_ps": 75164716687
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111010905968,
+              "duration_ps": 108091974865
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 221796862750,
+              "duration_ps": 75583936525
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299492203762,
+              "duration_ps": 75536618247
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377801316532,
+              "duration_ps": 75255721488
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455701080112,
+              "duration_ps": 75275565501
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111321317807,
+              "duration_ps": 107783622975
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 222281214491,
+              "duration_ps": 75102343412
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299649401766,
+              "duration_ps": 75382288115
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 377981879707,
+              "duration_ps": 75080557098
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455754911970,
+              "duration_ps": 75219777911
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 111344126931,
+              "duration_ps": 107758620573
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 221952914371,
+              "duration_ps": 75422624400
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 299803500355,
+              "duration_ps": 75227543668
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 378006335815,
+              "duration_ps": 75051932698
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(13923105213432331279)",
+              "offset_ps": 455884733098,
+              "duration_ps": 75094444253
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          108.276026411,
+          75.640231768,
+          75.536618247,
+          75.300722539,
+          75.35786307
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-default/compact/1/plugins/profile/2026_11_15_21_02_13/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "reference_capacity",
+        "capture": 0,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377431459242,
+              "duration_ps": 73717273935
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453426955041,
+              "duration_ps": 52486214811
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508567930956,
+              "duration_ps": 52328552221
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562963937034,
+              "duration_ps": 52550735894
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 616985353675,
+              "duration_ps": 53219493248
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377239088219,
+              "duration_ps": 73906940051
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453433057082,
+              "duration_ps": 52477450105
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508491433057,
+              "duration_ps": 52404473965
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562811858927,
+              "duration_ps": 52700198230
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 617091082367,
+              "duration_ps": 53110977191
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377207195062,
+              "duration_ps": 73940606317
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453067342796,
+              "duration_ps": 52844849865
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508411432757,
+              "duration_ps": 52486103241
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562866442361,
+              "duration_ps": 52647219988
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 616890304306,
+              "duration_ps": 53313393832
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377465575614,
+              "duration_ps": 73681489796
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453408540875,
+              "duration_ps": 52502953181
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508340381136,
+              "duration_ps": 52554587035
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562615883012,
+              "duration_ps": 52897055222
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 616895913024,
+              "duration_ps": 53306998800
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377438414750,
+              "duration_ps": 73709335009
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453264723348,
+              "duration_ps": 52647546219
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508566065410,
+              "duration_ps": 52331513805
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 563054692211,
+              "duration_ps": 52458965111
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 617092022268,
+              "duration_ps": 53111745498
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377471225074,
+              "duration_ps": 73675877626
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453401255161,
+              "duration_ps": 52510207608
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508381032997,
+              "duration_ps": 52513865546
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562592297178,
+              "duration_ps": 52920867872
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 616886021067,
+              "duration_ps": 53317047944
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377573172253,
+              "duration_ps": 73575595438
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453251375359,
+              "duration_ps": 52661828106
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508550000584,
+              "duration_ps": 52346540216
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562890293501,
+              "duration_ps": 52624474340
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 616828641640,
+              "duration_ps": 53376058824
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 377600460593,
+              "duration_ps": 73545681798
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 453333535998,
+              "duration_ps": 52576900435
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 508573180806,
+              "duration_ps": 52323025210
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 562843504786,
+              "duration_ps": 52668456257
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 617082762889,
+              "duration_ps": 53119216236
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          73.940606317,
+          52.844849865,
+          52.554587035,
+          52.920867872,
+          53.376058824
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-default/reference_capacity/0/plugins/profile/2026_11_15_21_01_12/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "reference_capacity",
+        "capture": 1,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107858207184,
+              "duration_ps": 52325565426
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161895199906,
+              "duration_ps": 52442858343
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216299314026,
+              "duration_ps": 53001953182
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271807240871,
+              "duration_ps": 52300292917
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326275053522,
+              "duration_ps": 52618583359
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107740691127,
+              "duration_ps": 52440442752
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161841791818,
+              "duration_ps": 52493410489
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216373317628,
+              "duration_ps": 52925147659
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271660949079,
+              "duration_ps": 52443981918
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326298145884,
+              "duration_ps": 52592751576
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107591941803,
+              "duration_ps": 52590811524
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161868718513,
+              "duration_ps": 52468226966
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216677412391,
+              "duration_ps": 52622788790
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271600476091,
+              "duration_ps": 52506010805
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326053597265,
+              "duration_ps": 52839073229
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107867209510,
+              "duration_ps": 52314962785
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161874516908,
+              "duration_ps": 52461673469
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216259543318,
+              "duration_ps": 53039919493
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271659305547,
+              "duration_ps": 52446842737
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326020277937,
+              "duration_ps": 52871654337
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107668231268,
+              "duration_ps": 52514500450
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161864137631,
+              "duration_ps": 52472807773
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216838688576,
+              "duration_ps": 52461518533
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271803124276,
+              "duration_ps": 52303392632
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326195324756,
+              "duration_ps": 52697351815
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107795013906,
+              "duration_ps": 52387172945
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161840540917,
+              "duration_ps": 52495626576
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216426138906,
+              "duration_ps": 52873329907
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271830416066,
+              "duration_ps": 52275594238
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326041152112,
+              "duration_ps": 52850810099
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107670263606,
+              "duration_ps": 52513601366
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 161835562526,
+              "duration_ps": 52502612320
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216401891457,
+              "duration_ps": 52899365021
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271770827757,
+              "duration_ps": 52336669868
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326041061926,
+              "duration_ps": 52852553346
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107693135080,
+              "duration_ps": 52488024009
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 162001692103,
+              "duration_ps": 52333503151
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 216528266007,
+              "duration_ps": 52770246099
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 271723514582,
+              "duration_ps": 52381392482
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 326192424546,
+              "duration_ps": 52698508928
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          52.590811524,
+          52.50261232,
+          53.039919493,
+          52.506010805,
+          52.871654337
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-default/reference_capacity/1/plugins/profile/2026_11_15_21_01_18/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      }
+    ],
+    "benchmark-production-split": [
+      {
+        "route": "compact",
+        "capture": 0,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109246639827,
+              "duration_ps": 68906468187
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 181070585881,
+              "duration_ps": 68864812650
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252299469509,
+              "duration_ps": 68837328932
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 324001462231,
+              "duration_ps": 68997332458
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395425350586,
+              "duration_ps": 68868614646
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109151172840,
+              "duration_ps": 68993473065
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 180975764677,
+              "duration_ps": 68953942377
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252324012126,
+              "duration_ps": 68812687800
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 323996360265,
+              "duration_ps": 69004562950
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395516049341,
+              "duration_ps": 68776879877
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109265458705,
+              "duration_ps": 68881780162
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 181046773155,
+              "duration_ps": 68886966462
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252367768279,
+              "duration_ps": 68768196953
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 324011241268,
+              "duration_ps": 68990702281
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395437668714,
+              "duration_ps": 68856714210
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109250695049,
+              "duration_ps": 68896439376
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 180819932744,
+              "duration_ps": 69109626651
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252115344509,
+              "duration_ps": 69017759904
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 323822163312,
+              "duration_ps": 69173552295
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395278923140,
+              "duration_ps": 69009982068
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109337565472,
+              "duration_ps": 68810213686
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 180818915938,
+              "duration_ps": 69115169342
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252142895529,
+              "duration_ps": 68992128527
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 323828835580,
+              "duration_ps": 69167944778
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395309306094,
+              "duration_ps": 68986575030
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109516872720,
+              "duration_ps": 68629504276
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 180912220860,
+              "duration_ps": 69015614870
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252282196850,
+              "duration_ps": 68850738595
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 324089597810,
+              "duration_ps": 68904295318
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395668286886,
+              "duration_ps": 68622671068
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109238868068,
+              "duration_ps": 68905869073
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 181072885926,
+              "duration_ps": 68855997599
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252175643729,
+              "duration_ps": 68960053796
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 323921404833,
+              "duration_ps": 69073876201
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395314168113,
+              "duration_ps": 68976409289
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 109179648456,
+              "duration_ps": 68967581032
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 180972803092,
+              "duration_ps": 68962558299
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 252364878798,
+              "duration_ps": 68768031287
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 323945825902,
+              "duration_ps": 69046770708
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 395374267678,
+              "duration_ps": 68915722689
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          68.993473065,
+          69.115169342,
+          69.017759904,
+          69.173552295,
+          69.009982068
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-split/compact/0/plugins/profile/2026_11_15_20_55_26/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "compact",
+        "capture": 1,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 143886364268,
+              "duration_ps": 133040688100
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 280047036537,
+              "duration_ps": 68657020408
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351030116969,
+              "duration_ps": 69055414165
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422686840933,
+              "duration_ps": 69064462185
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494192798917,
+              "duration_ps": 69104075705
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 144149094235,
+              "duration_ps": 132778510129
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279727831405,
+              "duration_ps": 68971038415
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351383267029,
+              "duration_ps": 68698582232
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422758262227,
+              "duration_ps": 68994421443
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494444673016,
+              "duration_ps": 68851147509
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 144087996996,
+              "duration_ps": 132839677146
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279781271906,
+              "duration_ps": 68923573829
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351445696876,
+              "duration_ps": 68636957908
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422663089508,
+              "duration_ps": 69087348139
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494283125372,
+              "duration_ps": 69016570228
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 143968637977,
+              "duration_ps": 132957837935
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279849018604,
+              "duration_ps": 68853454907
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351019204604,
+              "duration_ps": 69060296669
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422557125522,
+              "duration_ps": 69192408013
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494246371546,
+              "duration_ps": 69047614570
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 143954630774,
+              "duration_ps": 132974019358
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279854275432,
+              "duration_ps": 68853640006
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351169437497,
+              "duration_ps": 68911021759
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422515953703,
+              "duration_ps": 69233009679
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494308396681,
+              "duration_ps": 68989096113
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 144091764028,
+              "duration_ps": 132836571578
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279878707605,
+              "duration_ps": 68818678496
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351271141053,
+              "duration_ps": 68807192002
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422578287437,
+              "duration_ps": 69170857218
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494666724412,
+              "duration_ps": 68630484994
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 144068133776,
+              "duration_ps": 132860452731
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279820079979,
+              "duration_ps": 68879134379
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351395274232,
+              "duration_ps": 68689151260
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422524112242,
+              "duration_ps": 69227240171
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494327503598,
+              "duration_ps": 68968400961
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 144009358340,
+              "duration_ps": 132917169193
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 279965654784,
+              "duration_ps": 68734393832
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 351443601963,
+              "duration_ps": 68639552296
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 422729382275,
+              "duration_ps": 69019680747
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(18097829592040396959)",
+              "offset_ps": 494244549142,
+              "duration_ps": 69050669943
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          133.0406881,
+          68.971038415,
+          69.060296669,
+          69.233009679,
+          69.104075705
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-split/compact/1/plugins/profile/2026_11_15_20_55_33/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "reference_capacity",
+        "capture": 0,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381307472264,
+              "duration_ps": 114147705732
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497745900986,
+              "duration_ps": 52849177371
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552874762630,
+              "duration_ps": 52904791117
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 607802089236,
+              "duration_ps": 52687380477
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662797101316,
+              "duration_ps": 52571488520
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381063719413,
+              "duration_ps": 114388971339
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497740724365,
+              "duration_ps": 52851773109
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552777617522,
+              "duration_ps": 53001496924
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 607851623375,
+              "duration_ps": 52635121248
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662896371349,
+              "duration_ps": 52469494523
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381311092912,
+              "duration_ps": 114143079157
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497596700280,
+              "duration_ps": 52997428497
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552816577981,
+              "duration_ps": 52964100766
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 608062797594,
+              "duration_ps": 52425856993
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662840408639,
+              "duration_ps": 52527228016
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381369732618,
+              "duration_ps": 114083885955
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497437952381,
+              "duration_ps": 53155570228
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552708592162,
+              "duration_ps": 53069564301
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 607864646334,
+              "duration_ps": 52623218412
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662690348540,
+              "duration_ps": 52676527010
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381204192552,
+              "duration_ps": 114249990471
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497538150460,
+              "duration_ps": 53056055147
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552683234419,
+              "duration_ps": 53097504202
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 607858795043,
+              "duration_ps": 52629731093
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662713977516,
+              "duration_ps": 52653626801
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381227574155,
+              "duration_ps": 114225971263
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497648011205,
+              "duration_ps": 52945381677
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552772570628,
+              "duration_ps": 53005596564
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 607828815451,
+              "duration_ps": 52658998800
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662751783038,
+              "duration_ps": 52615102041
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381319915166,
+              "duration_ps": 114135332533
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497737943978,
+              "duration_ps": 52857202806
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552707657138,
+              "duration_ps": 53071951831
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 608080080758,
+              "duration_ps": 52409480267
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662901196079,
+              "duration_ps": 52467442977
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 381140463861,
+              "duration_ps": 114312016656
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 497733168393,
+              "duration_ps": 52859201830
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 552816172069,
+              "duration_ps": 52962900435
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 608075147984,
+              "duration_ps": 52411840337
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 662837710109,
+              "duration_ps": 52528326306
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          114.388971339,
+          53.155570228,
+          53.097504202,
+          52.687380477,
+          52.67652701
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-split/reference_capacity/0/plugins/profile/2026_11_15_20_54_39/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      },
+      {
+        "route": "reference_capacity",
+        "capture": 1,
+        "process": 1,
+        "events": {
+          "/device:TPU:0": [
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107996556429,
+              "duration_ps": 52478147509
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163264569484,
+              "duration_ps": 52490270408
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218011539472,
+              "duration_ps": 52560091311
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272763468643,
+              "duration_ps": 52685935175
+            },
+            {
+              "plane": "/device:TPU:0",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327805676402,
+              "duration_ps": 52929629051
+            }
+          ],
+          "/device:TPU:1": [
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107910114652,
+              "duration_ps": 52562016657
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163249509460,
+              "duration_ps": 52502626725
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218247294574,
+              "duration_ps": 52321567827
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272825355797,
+              "duration_ps": 52621313401
+            },
+            {
+              "plane": "/device:TPU:1",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327800723145,
+              "duration_ps": 52931835534
+            }
+          ],
+          "/device:TPU:2": [
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107706606699,
+              "duration_ps": 52767303946
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163190062956,
+              "duration_ps": 52563770708
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218121377407,
+              "duration_ps": 52449289316
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272858808379,
+              "duration_ps": 52589511555
+            },
+            {
+              "plane": "/device:TPU:2",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327758763061,
+              "duration_ps": 52975550796
+            }
+          ],
+          "/device:TPU:3": [
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107627125381,
+              "duration_ps": 52846109169
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163086290972,
+              "duration_ps": 52666934124
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218163078487,
+              "duration_ps": 52406809124
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272792539621,
+              "duration_ps": 52655378076
+            },
+            {
+              "plane": "/device:TPU:3",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327624857599,
+              "duration_ps": 53108806723
+            }
+          ],
+          "/device:TPU:4": [
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107856503457,
+              "duration_ps": 52617274910
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163111939457,
+              "duration_ps": 52641876350
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 217990299526,
+              "duration_ps": 52580328781
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272810532419,
+              "duration_ps": 52637752551
+            },
+            {
+              "plane": "/device:TPU:4",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327639280168,
+              "duration_ps": 53095024010
+            }
+          ],
+          "/device:TPU:5": [
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107821220294,
+              "duration_ps": 52651902611
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163344367803,
+              "duration_ps": 52408827281
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218014460390,
+              "duration_ps": 52555405612
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272734821584,
+              "duration_ps": 52713073229
+            },
+            {
+              "plane": "/device:TPU:5",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327587271765,
+              "duration_ps": 53146366146
+            }
+          ],
+          "/device:TPU:6": [
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107677565957,
+              "duration_ps": 52797168368
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163248430303,
+              "duration_ps": 52506456108
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218161452137,
+              "duration_ps": 52410179772
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272787413421,
+              "duration_ps": 52661870424
+            },
+            {
+              "plane": "/device:TPU:6",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327688631008,
+              "duration_ps": 53046698530
+            }
+          ],
+          "/device:TPU:7": [
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 107601457914,
+              "duration_ps": 52870699880
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 163276058079,
+              "duration_ps": 52476100991
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 218201821585,
+              "duration_ps": 52367186074
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 272811849195,
+              "duration_ps": 52634840486
+            },
+            {
+              "plane": "/device:TPU:7",
+              "line_id": "XLA Modules",
+              "event": "jit_local(8285311577274630053)",
+              "offset_ps": 327704150516,
+              "duration_ps": 53028527011
+            }
+          ]
+        },
+        "local_slowest_rank_ms": [
+          52.87069988,
+          52.666934124,
+          52.580328781,
+          52.713073229,
+          53.146366146
+        ],
+        "input_reshard_modules": 0,
+        "xplane": "/workspace/benchmark-production-split/reference_capacity/1/plugins/profile/2026_11_15_20_54_46/kda-review-cp16-1116-worker-0-1.xplane.pb"
+      }
+    ]
+  },
+  "correctness": "DISTRIBUTED 1 16 8\n.....\n5 passed, 12 deselected in 278.02s (0:04:38)\nPYTEST_RESULT 1 0\n",
+  "gatefix_native": "DISTRIBUTED 1 16 8\n.....F\n=================================== FAILURES ===================================\n____________ test_packed_gate_parameters_keep_fp32_until_reduction _____________\n\n>   output, tape = compact.forward(\n        *xs[:5], return_residuals=True, sorted_segments=True, **options\n    )\n\ntokamax/_src/ops/kda/compact_gate_parameter_test.py:98: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntokamax/_src/ops/kda/compact.py:192: in forward\n    _check_sorted_segments(segment_ids, max_num_segments)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n>   checkify.check(condition, message)\nE   jax._src.source_info_util.JaxStackTraceBeforeTransformation: ValueError: Cannot abstractly evaluate a checkify.check which was not functionalized. This probably means you tried to stage (jit/scan/pmap/...) a `check` without functionalizing it through `checkify.checkify`.\nE   \nE   The preceding stack trace is the source of the JAX operation that, once transformed by JAX, triggered the following exception.\nE   \nE   --------------------\n\ntokamax/_src/ops/kda/compact.py:152: JaxStackTraceBeforeTransformation\n\nThe above exception was the direct cause of the following exception:\n\n    def test_packed_gate_parameters_keep_fp32_until_reduction():\n      if jax.default_backend() != \"tpu\":\n        pytest.skip(\"The compact M5 kernel requires native TPU\")\n      inputs, ids, dout = _inputs()\n    \n      def actual_call(*xs):\n        options = dict(\n            a_log=xs[5],\n            delta_time_bias=xs[6],\n            segment_ids=ids,\n            max_num_segments=25,\n            use_gate_in_kernel=True,\n            lower_bound=-5.0,\n            scale=128**-0.5,\n        )\n        output, tape = compact.forward(\n            *xs[:5], return_residuals=True, sorted_segments=True, **options\n        )\n        grads = compact.backward(\n            tape,\n            (dout, None),\n            query=xs[0],\n            value=xs[2],\n            gate=xs[3],\n            a_log=xs[5],\n            delta_time_bias=xs[6],\n            scale=128**-0.5,\n            use_gate_in_kernel=True,\n            lower_bound=-5.0,\n        )\n        names = (\n            \"query\",\n            \"key\",\n            \"value\",\n            \"gate\",\n            \"beta\",\n            \"a_log\",\n            \"delta_time_bias\",\n        )\n        return output[0], tuple(\n            grads[name].astype(x.dtype) for name, x in zip(names, xs, strict=True)\n        )\n    \n      def evaluate(fn, *xs):\n        output, back = jax.vjp(fn, *xs)\n        return output, back(dout)\n    \n>     actual = jax.jit(actual_call)(*inputs)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE     ValueError: Cannot abstractly evaluate a checkify.check which was not functionalized. This probably means you tried to stage (jit/scan/pmap/...) a `check` without functionalizing it through `checkify.checkify`.\nE     --------------------\nE     For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.\n\ntokamax/_src/ops/kda/compact_gate_parameter_test.py:130: ValueError\n=========================== short test summary info ============================\nFAILED tokamax/_src/ops/kda/compact_gate_parameter_test.py::test_packed_gate_parameters_keep_fp32_until_reduction\n!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!\n1 failed, 5 passed, 12 deselected in 278.91s (0:04:38)\nPYTEST_RESULT 1 1\n",
+  "gatefix_final": "DISTRIBUTED 1 16 8\n.\n1 passed in 9.66s\nPYTEST_RESULT 1 0\n",
+  "numerical_control": "DISTRIBUTED 1 16 8\nLEAF 1 0 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 0 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.004289626384959402 5.833222566743299e-07 0.00013598439685088111\nLEAF 1 0 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004328453737877831 5.895060897295281e-07 0.00013619322867443955\nLEAF 1 0 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004319049681188691 5.958053647311168e-07 0.00013794825452601391\nLEAF 1 0 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.004315451067293321 5.931882099286126e-07 0.00013745682680180732\nLEAF 1 0 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004339245652270304 5.988609932660865e-07 0.00013801039195666668\nLEAF 1 0 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.004292655469241944 5.921092965581821e-07 0.0001379354343251649\nLEAF 1 0 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004308693322459753 5.908134222262188e-07 0.00013712125185297113\nLEAF 1 1 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 1 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.003962565405578095 5.413639680453551e-07 0.0001366195665270984\nLEAF 1 1 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.003975081428285447 5.482823199804078e-07 0.0001379298336076843\nLEAF 1 1 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.003995296843038737 5.477149478295581e-07 0.00013708992581712098\nLEAF 1 1 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.003972072161897057 5.465227402889683e-07 0.00013759134225495786\nLEAF 1 1 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.0039837535581683054 5.493075361487566e-07 0.0001378869270219926\nLEAF 1 1 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.0039542604213603375 5.419187922566815e-07 0.00013704681394510976\nLEAF 1 1 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.003993735868325397 5.480001551226511e-07 0.00013721492186523384\nLEAF 1 2 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 2 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.004038306412397213 5.547921828234761e-07 0.00013738238909269426\nLEAF 1 2 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.0040408846935776396 5.564384756702281e-07 0.0001377021414529845\nLEAF 1 2 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004035211120029505 5.52887504681201e-07 0.0001370157566073416\nLEAF 1 2 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.00400938250684443 5.548733433999988e-07 0.00013839371585344445\nLEAF 1 2 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004072920856365924 5.593407126304781e-07 0.00013733159380110115\nLEAF 1 2 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.0039988042731055225 5.477285477266886e-07 0.00013697308253132268\nLEAF 1 2 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004031187778931062 5.533485917687976e-07 0.00013726688562137074\nLEAF 1 3 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 3 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.0040863017999940784 5.584101216712629e-07 0.00013665415551833987\nLEAF 1 3 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004095086756221203 5.577307902104289e-07 0.00013619510975271316\nLEAF 1 3 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004042712860628696 5.562614671903606e-07 0.0001375960861845267\nLEAF 1 3 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0040516807310761 5.56369495408801e-07 0.00013731819764116333\nLEAF 1 3 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004094024907567001 5.654066398970665e-07 0.00013810532487284664\nLEAF 1 3 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.00403155334327898 5.547522504998476e-07 0.0001376026070508722\nLEAF 1 3 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004058441619130936 5.551116415855025e-07 0.00013677950644128587\nLEAF 1 4 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 4 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.007164654142239934 5.593907065662195e-09 7.807644241586983e-07\nLEAF 1 4 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.007248260182406028 5.724198522229761e-09 7.897341400801701e-07\nLEAF 1 4 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.00701248509937558 5.562128413813745e-09 7.931750777351412e-07\nLEAF 1 4 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.00710891868289549 5.6461864872193255e-09 7.942398470254568e-07\nLEAF 1 4 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.007185402695613062 5.700534595044557e-09 7.933493551481716e-07\nLEAF 1 4 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.00718357395153664 5.633514202355898e-09 7.842216479376302e-07\nLEAF 1 4 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.007380984548440675 5.827502034255576e-09 7.895290927667243e-07\nLEAF 1 5 TPU_8(process=1,(0,0,1,0)) (8, 1, 512) 0.0 0.0 1e-30\nLEAF 1 5 TPU_9(process=1,(0,0,1,1)) (8, 1, 512) 0.0039608177067932725 6.188758531029784e-07 0.00015624951687161288\nLEAF 1 5 TPU_10(process=1,(1,0,1,0)) (8, 1, 512) 0.004016644026000373 6.328922144156504e-07 0.00015756741456769355\nLEAF 1 5 TPU_11(process=1,(1,0,1,1)) (8, 1, 512) 0.004030930594715407 6.266206244545165e-07 0.00015545309196740394\nLEAF 1 5 TPU_12(process=1,(0,1,1,0)) (8, 1, 512) 0.004145265897288221 6.438416194141431e-07 0.0001553197395214951\nLEAF 1 5 TPU_13(process=1,(0,1,1,1)) (8, 1, 512) 0.004156843868414069 6.543781336219026e-07 0.00015742186965313248\nLEAF 1 5 TPU_14(process=1,(1,1,1,0)) (8, 1, 512) 0.004124623268668964 6.535579291636901e-07 0.0001584527571592245\nLEAF 1 5 TPU_15(process=1,(1,1,1,1)) (8, 1, 512) 0.004066227533524128 6.193858861832674e-07 0.00015232445333585566\nLEAF 1 6 TPU_8(process=1,(0,0,1,0)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_9(process=1,(0,0,1,1)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_10(process=1,(1,0,1,0)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_11(process=1,(1,0,1,1)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_12(process=1,(0,1,1,0)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_13(process=1,(0,1,1,1)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_14(process=1,(1,1,1,0)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 6 TPU_15(process=1,(1,1,1,1)) (8,) 0.033557188567241845 0.00015334642662768634 0.004569704232534588\nLEAF 1 7 TPU_8(process=1,(0,0,1,0)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_9(process=1,(0,0,1,1)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_10(process=1,(1,0,1,0)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_11(process=1,(1,0,1,1)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_12(process=1,(0,1,1,0)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_13(process=1,(0,1,1,1)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_14(process=1,(1,1,1,0)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 7 TPU_15(process=1,(1,1,1,1)) (1024,) 0.013233516911488887 2.7314241245846506e-06 0.0002064019823946665\nLEAF 1 0 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 0 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.004289626384959402 5.833222566743299e-07 0.00013598439685088111\nLEAF 1 0 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004328453737877831 5.895060897295281e-07 0.00013619322867443955\nLEAF 1 0 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004319049681188691 5.958053647311168e-07 0.00013794825452601391\nLEAF 1 0 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.004315451067293321 5.931882099286126e-07 0.00013745682680180732\nLEAF 1 0 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004339245652270304 5.988609932660865e-07 0.00013801039195666668\nLEAF 1 0 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.004292655469241944 5.921092965581821e-07 0.0001379354343251649\nLEAF 1 0 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004308693322459753 5.908134222262188e-07 0.00013712125185297113\nLEAF 1 1 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 1 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.0036983472926835803 5.052666039930986e-07 0.0001366195665270984\nLEAF 1 1 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.003710656760088987 5.118102694943029e-07 0.0001379298336076843\nLEAF 1 1 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.0037506509284879882 5.141764575523342e-07 0.00013708992581712098\nLEAF 1 1 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.003716697655981452 5.113854192423436e-07 0.00013759134225495786\nLEAF 1 1 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.003735750279646342 5.151111261819836e-07 0.0001378869270219926\nLEAF 1 1 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.003704556324523239 5.07697641356116e-07 0.00013704681394510976\nLEAF 1 1 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.0037298871412822935 5.117961726571903e-07 0.00013721492186523384\nLEAF 1 2 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 2 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.00377563719264309 5.187060578725408e-07 0.00013738238909269426\nLEAF 1 2 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.003776116887445683 5.19979381778049e-07 0.0001377021414529845\nLEAF 1 2 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.0037846898910067306 5.185621489404444e-07 0.0001370157566073416\nLEAF 1 2 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0037518616622504546 5.192340768069212e-07 0.00013839371585344445\nLEAF 1 2 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.0038103462866196963 5.232809284755902e-07 0.00013733159380110115\nLEAF 1 2 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.003734432223769141 5.115166931939614e-07 0.00013697308253132268\nLEAF 1 2 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.0037483624721727543 5.145260427351759e-07 0.00013726688562137074\nLEAF 1 3 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 3 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.00408630116382352 5.584100347359126e-07 0.00013665415551833987\nLEAF 1 3 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004095086756221203 5.577307902104289e-07 0.00013619510975271316\nLEAF 1 3 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004042712860628696 5.562614671903606e-07 0.0001375960861845267\nLEAF 1 3 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0040516807310761 5.56369495408801e-07 0.00013731819764116333\nLEAF 1 3 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004094024851634666 5.654066321725133e-07 0.00013810532487284664\nLEAF 1 3 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.004031553385409892 5.547522562971709e-07 0.0001376026070508722\nLEAF 1 3 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004058442466968165 5.551117575522603e-07 0.00013677950644128587\nLEAF 1 4 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 4 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.00704015073034559 5.496699230968714e-09 7.807644241586983e-07\nLEAF 1 4 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.007120484049860521 5.623289348071165e-09 7.897341400801701e-07\nLEAF 1 4 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.006886699274939218 5.462358232738454e-09 7.931750777351412e-07\nLEAF 1 4 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.006973098531370556 5.538312710849188e-09 7.942398470254568e-07\nLEAF 1 4 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.0070473220723722306 5.590988421637985e-09 7.933493551481716e-07\nLEAF 1 4 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.00705935026183833 5.536095295707797e-09 7.842216479376302e-07\nLEAF 1 4 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.007268405713489121 5.738617768831541e-09 7.895290927667243e-07\nLEAF 1 5 TPU_8(process=1,(0,0,1,0)) (8, 1, 512) 0.0 0.0 1e-30\nLEAF 1 5 TPU_9(process=1,(0,0,1,1)) (8, 1, 512) 0.003979999267294128 6.218729626640808e-07 0.00015624951687161288\nLEAF 1 5 TPU_10(process=1,(1,0,1,0)) (8, 1, 512) 0.00401942883246496 6.333310091703469e-07 0.00015756741456769355\nLEAF 1 5 TPU_11(process=1,(1,0,1,1)) (8, 1, 512) 0.004012710533028753 6.237882595294892e-07 0.00015545309196740394\nLEAF 1 5 TPU_12(process=1,(0,1,1,0)) (8, 1, 512) 0.00414117661215558 6.432064727125122e-07 0.0001553197395214951\nLEAF 1 5 TPU_13(process=1,(0,1,1,1)) (8, 1, 512) 0.004142147086160297 6.520645386816288e-07 0.00015742186965313248\nLEAF 1 5 TPU_14(process=1,(1,1,1,0)) (8, 1, 512) 0.004099470295425557 6.495723712025202e-07 0.0001584527571592245\nLEAF 1 5 TPU_15(process=1,(1,1,1,1)) (8, 1, 512) 0.0040522050929184 6.172499255835655e-07 0.00015232445333585566\nLEAF 1 6 TPU_8(process=1,(0,0,1,0)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_9(process=1,(0,0,1,1)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_10(process=1,(1,0,1,0)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_11(process=1,(1,0,1,1)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_12(process=1,(0,1,1,0)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_13(process=1,(0,1,1,1)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_14(process=1,(1,1,1,0)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 6 TPU_15(process=1,(1,1,1,1)) (8,) 0.031541416942161685 0.0001441349465007344 0.004569704232534588\nLEAF 1 7 TPU_8(process=1,(0,0,1,0)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_9(process=1,(0,0,1,1)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_10(process=1,(1,0,1,0)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_11(process=1,(1,0,1,1)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_12(process=1,(0,1,1,0)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_13(process=1,(0,1,1,1)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_14(process=1,(1,1,1,0)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 7 TPU_15(process=1,(1,1,1,1)) (1024,) 0.013129540734312302 2.7099632354935843e-06 0.0002064019823946665\nLEAF 1 0 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 0 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.00423236059029407 5.755350021265782e-07 0.00013598439685088111\nLEAF 1 0 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004285853252233408 5.837041920465149e-07 0.00013619322867443955\nLEAF 1 0 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004245887439466043 5.857127611882671e-07 0.00013794825452601391\nLEAF 1 0 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.004251811415237414 5.844405052982365e-07 0.00013745682680180732\nLEAF 1 0 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.004282580187976431 5.910405703284825e-07 0.00013801039195666668\nLEAF 1 0 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.004255516940837577 5.869865775125282e-07 0.0001379354343251649\nLEAF 1 0 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.004265897658262605 5.849452271776265e-07 0.00013712125185297113\nLEAF 1 1 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 1 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.003350859231592625 4.577929357135104e-07 0.0001366195665270984\nLEAF 1 1 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.00351482243143523 4.847988731284176e-07 0.0001379298336076843\nLEAF 1 1 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.0034757198000613583 4.7648616955151017e-07 0.00013708992581712098\nLEAF 1 1 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0034474285079535223 4.7433631573733183e-07 0.00013759134225495786\nLEAF 1 1 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.003548729948012777 4.893234673623973e-07 0.0001378869270219926\nLEAF 1 1 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.0033878285124246447 4.6429110382019827e-07 0.00013704681394510976\nLEAF 1 1 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.003501970184460439 4.805225652351177e-07 0.00013721492186523384\nLEAF 1 2 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 2 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.0034251113393994666 4.705499787151767e-07 0.00013738238909269426\nLEAF 1 2 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.0035827501081398673 4.933523621817715e-07 0.0001377021414529845\nLEAF 1 2 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.0034884278947557323 4.779695873701124e-07 0.0001370157566073416\nLEAF 1 2 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0034552249784411205 4.781814238761042e-07 0.00013839371585344445\nLEAF 1 2 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.003625926021307177 4.979541995110001e-07 0.00013733159380110115\nLEAF 1 2 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.0034008871466392875 4.6582999581633766e-07 0.00013697308253132268\nLEAF 1 2 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.0035158659826595765 4.826119737018003e-07 0.00013726688562137074\nLEAF 1 3 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 3 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.00449149806555404 6.137818751605445e-07 0.00013665415551833987\nLEAF 1 3 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.004630325186171927 6.306276469214377e-07 0.00013619510975271316\nLEAF 1 3 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.004494415973283721 6.184140476090603e-07 0.0001375960861845267\nLEAF 1 3 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.004455631205921149 6.118392465508152e-07 0.00013731819764116333\nLEAF 1 3 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.0045243448348622015 6.248361132554299e-07 0.00013810532487284664\nLEAF 1 3 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.004624399045591475 6.363293647169522e-07 0.0001376026070508722\nLEAF 1 3 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.0044320818923835065 6.062179737475763e-07 0.00013677950644128587\nLEAF 1 4 TPU_8(process=1,(0,0,1,0)) (8, 1, 512, 128) 0.0 0.0 1e-30\nLEAF 1 4 TPU_9(process=1,(0,0,1,1)) (8, 1, 512, 128) 0.0068602738219209645 5.356257740143114e-09 7.807644241586983e-07\nLEAF 1 4 TPU_10(process=1,(1,0,1,0)) (8, 1, 512, 128) 0.00670914289192936 5.2984391924328185e-09 7.897341400801701e-07\nLEAF 1 4 TPU_11(process=1,(1,0,1,1)) (8, 1, 512, 128) 0.006767039241545979 5.367446876449983e-09 7.931750777351412e-07\nLEAF 1 4 TPU_12(process=1,(0,1,1,0)) (8, 1, 512, 128) 0.0067642619605192715 5.372446384762943e-09 7.942398470254568e-07\nLEAF 1 4 TPU_13(process=1,(0,1,1,1)) (8, 1, 512, 128) 0.006829459865549721 5.418147580344189e-09 7.933493551481716e-07\nLEAF 1 4 TPU_14(process=1,(1,1,1,0)) (8, 1, 512, 128) 0.006751641183468095 5.2947831751829214e-09 7.842216479376302e-07\nLEAF 1 4 TPU_15(process=1,(1,1,1,1)) (8, 1, 512, 128) 0.006840746453486762 5.40096834126859e-09 7.895290927667243e-07\nLEAF 1 5 TPU_8(process=1,(0,0,1,0)) (8, 1, 512) 0.0 0.0 1e-30\nLEAF 1 5 TPU_9(process=1,(0,0,1,1)) (8, 1, 512) 0.004434698767386947 6.929195398753477e-07 0.00015624951687161288\nLEAF 1 5 TPU_10(process=1,(1,0,1,0)) (8, 1, 512) 0.004428017787937606 6.97711314505086e-07 0.00015756741456769355\nLEAF 1 5 TPU_11(process=1,(1,0,1,1)) (8, 1, 512) 0.004387000223277309 6.819727491701492e-07 0.00015545309196740394\nLEAF 1 5 TPU_12(process=1,(0,1,1,0)) (8, 1, 512) 0.004349184924862354 6.755142696604341e-07 0.0001553197395214951\nLEAF 1 5 TPU_13(process=1,(0,1,1,1)) (8, 1, 512) 0.004463864013610195 7.02709818899853e-07 0.00015742186965313248\nLEAF 1 5 TPU_14(process=1,(1,1,1,0)) (8, 1, 512) 0.004545059278929838 7.201771741985497e-07 0.0001584527571592245\nLEAF 1 5 TPU_15(process=1,(1,1,1,1)) (8, 1, 512) 0.004364304357991615 6.647902755223653e-07 0.00015232445333585566\nLEAF 1 6 TPU_8(process=1,(0,0,1,0)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_9(process=1,(0,0,1,1)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_10(process=1,(1,0,1,0)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_11(process=1,(1,0,1,1)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_12(process=1,(0,1,1,0)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_13(process=1,(0,1,1,1)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_14(process=1,(1,1,1,0)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 6 TPU_15(process=1,(1,1,1,1)) (8,) 0.016682918820845695 7.62360047466495e-05 0.004569704232534588\nLEAF 1 7 TPU_8(process=1,(0,0,1,0)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_9(process=1,(0,0,1,1)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_10(process=1,(1,0,1,0)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_11(process=1,(1,0,1,1)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_12(process=1,(0,1,1,0)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_13(process=1,(0,1,1,1)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_14(process=1,(1,1,1,0)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nLEAF 1 7 TPU_15(process=1,(1,1,1,1)) (1024,) 0.012150628703111399 2.5079138516637284e-06 0.0002064019823946665\nCOMPLETE 1\n",
+  "production_status": "START production-split-benchmark\nARCHIVE_VERIFIED {\"uri\": \"gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-benchmark-complete.tgz#1794776254277881\", \"bucket\": \"data_ant\", \"object\": \"diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-benchmark-complete.tgz\", \"generation\": \"1794776254277881\", \"bytes\": 323850191, \"sha256\": \"39e9153fb05f629452ce8b96af2221944384f2a8fd16480bb10c81fee3c8536e\", \"crc32c\": \"VI1dgw==\", \"verified_size\": true, \"verified_crc32c\": true, \"metadata_sha256_verified\": true}\nARCHIVED production-split-benchmark-complete\nDONE production-split-benchmark\nSTART production-split-profile\nARCHIVE_VERIFIED {\"uri\": \"gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-profile-complete.tgz#1794776301381049\", \"bucket\": \"data_ant\", \"object\": \"diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-split-profile-complete.tgz\", \"generation\": \"1794776301381049\", \"bytes\": 323855605, \"sha256\": \"97cc71111e602aa834d385e313aa2e7efec4c36cc94a970ff58657008a2de023\", \"crc32c\": \"jw1zUw==\", \"verified_size\": true, \"verified_crc32c\": true, \"metadata_sha256_verified\": true}\nARCHIVED production-split-profile-complete\nDONE production-split-profile\nSTART production-default-benchmark\nARCHIVE_VERIFIED {\"uri\": \"gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-benchmark-complete.tgz#1794776663587470\", \"bucket\": \"data_ant\", \"object\": \"diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-benchmark-complete.tgz\", \"generation\": \"1794776663587470\", \"bytes\": 435096233, \"sha256\": \"232aed41592f2e1d0836cbfec39d8df8bc853c1a4e6af64cc6041ec8902a2887\", \"crc32c\": \"AMdL5Q==\", \"verified_size\": true, \"verified_crc32c\": true, \"metadata_sha256_verified\": true}\nARCHIVED production-default-benchmark-complete\nDONE production-default-benchmark\nSTART production-default-profile\nARCHIVE_VERIFIED {\"uri\": \"gs://data_ant/diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-profile-complete.tgz#1794776719024846\", \"bucket\": \"data_ant\", \"object\": \"diagnostics/kda-ready-review-20261116/ca0e2337-1c19-40ff-8dd1-0068b3969295/gatefix-final-4cb202117af4/production-default-profile-complete.tgz\", \"generation\": \"1794776719024846\", \"bytes\": 435104292, \"sha256\": \"b85c5f3514fe77db35688ef5cf10cd06702d7eb8ec7e96fbba720d84742d4648\", \"crc32c\": \"eJ522Q==\", \"verified_size\": true, \"verified_crc32c\": true, \"metadata_sha256_verified\": true}\nARCHIVED production-default-profile-complete\nDONE production-default-profile\nCOMPLETE\n"
+}

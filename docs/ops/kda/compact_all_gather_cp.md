@@ -57,12 +57,18 @@ The shared forward/backward carry and padding fixes have independent native
 reference and scratch-poison checks in #1688/#1689. The full internal-main
 migration ledger inventories 24 KDA source files and all three post-port commits.
 
-## Draft acceptance still required
+## Final review validation
 
-- Production-scale CP8/CP16 shapes, including H64 and long local token windows.
-- Nested scanned/rematerialized H64 integration lowering to stress the #699 layout.
-- Whole-call memory, synchronized wall time and full-device traces with resident
-  input Formats. No speedup or memory-fit claim is made by this Draft.
-- Broader cross-rank packing and upstream review after the parent PRs converge.
+Native CP4/CP8 tests now include H64, long local token windows, nested scan and
+rematerialization. Two-process CP16 validation covers H64/global256K, randomized
+packing and a highest-precision independent recurrence. Default cap64 and forced
+split cap2 whole-call wall time, full-device traces and compiler temporary bytes
+are recorded on the final M5 parameter-reduction fix. All original numerical
+bounds remain unchanged. See [full final-source evidence](review_validation_20261116.md).
 
-Historical CP/workspace speedups in #1690 are not measurements of this new entry.
+Cross-rank continuation follows the aligned parent's contiguous owning-rank
+chain contract. A sequence resuming across an entirely empty rank and arbitrary
+cross-rank interleaving are outside that contract. Existing empty-rank fixtures
+place padding between unrelated runs. Intra-rank padding/resumed-label grouping
+is retained. Full-model loss, peak training memory and whole-model throughput
+remain separate integrations; the report measures the operator and its VJP.

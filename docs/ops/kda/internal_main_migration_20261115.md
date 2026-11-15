@@ -3,7 +3,7 @@
 Source main: `18ea6891f0e8d9affe9e81815267f5251bdb0b3b`.
 Original native-kernel port: `dca6a09feec2659f2777a6db02f2ee55560f991e` (2026-10-26).
 This is a pinned audit, not a claim about unmerged internal PRs or later commits.
-All four existing PRs stay Draft. Compact all-gather CP is a separate Draft feature.
+Status at the November 15 audit: the four existing PRs were Draft. Current source acceptance is in [the review validation report](review_validation_20261116.md). Compact all-gather CP remains a separate opt-in feature.
 
 ## Changes since the original port
 
@@ -91,3 +91,16 @@ resuming after padding, or interleaved labels, still uses the stable grouping
 fallback to preserve Tokamax label recurrence. Inference retains its state-safe
 standalone implementation. Short decode convolution ignores nonexistent history,
 matching latest main for T smaller than the convolution width.
+
+## Additional gate-parameter finding during final review validation
+
+A long packed same-input control exposed premature BF16 narrowing of the M5
+intra gate cotangent before FP32 A_log/bias reductions. The correction belongs
+in #1689 and is inherited by #2009. #1690 does not contain that compact M5 module.
+The public output and all five token gradients retain the original rounding;
+only parameter reductions use the unrounded FP32 cotangent. The original
+regression fails the old kernel and passes the correction with unchanged norm
+and elementwise budgets. Existing reference modules are unchanged. The full
+input hash, independent FP32 recurrence and before/after records are in the
+November 16 review report. The pinned internal source audit remains a record
+of its original commit; this is an additional upstream correctness finding.
