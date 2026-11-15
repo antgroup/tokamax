@@ -40,7 +40,6 @@ from tokamax._src.ops.kda.common import (
     get_tpu_limits,
     get_max_mini_batch,
     kda_gate_chunk_cumsum,
-    l2norm_bwd,
 )
 from tokamax._src.ops.kda.cp_utils import (
     ContextParallelMetadata,
@@ -54,6 +53,7 @@ from tokamax._src.ops.kda.utils import (
     _unalign_output,
     exp2,
     get_interpret,
+    l2norm_bwd,
     segment_ids_to_seqlens,
 )
 
