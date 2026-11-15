@@ -192,6 +192,7 @@ def _align_seqs(
     cu_seqlens,
     align,
     aligned_cu_seqlens=None,
+    token_order=None,
 ):
   """Align (pad) each variable-length sequence to a multiple of ``align``.
 
@@ -219,6 +220,7 @@ def _align_seqs(
           cu_seqlens[b],
           align,
           aligned_cu_seqlens=aligned_cu_b,
+          token_order=None if token_order is None else token_order[b],
       )
       for idx, a in enumerate(aligned_4d):
         per_batch_4d[idx].append(a)
@@ -291,6 +293,12 @@ def _align_seqs(
   else:
     gather_idx = jax.lax.fori_loop(0, N, _build_gather, gather_idx)
 
+  if token_order is not None:
+    # Compose packing with the existing alignment gather, avoiding a full
+    # intermediate copy of every Q/K/V/gate/beta operand.
+    order_with_guard = jnp.pad(token_order, (0, 1), constant_values=T_old)
+    gather_idx = order_with_guard[gather_idx]
+
   def repack_4d(t):
     # t: [H, B, T, K] — gather along axis 2 (T dimension)
     return jnp.pad(t, ((0, 0), (0, 0), (0, T_new - T_old), (0, 0)))[
@@ -309,7 +317,9 @@ def _align_seqs(
   )
 
 
-def _unalign_output(o, orig_cu_seqlens, aligned_cu_seqlens, T_out):
+def _unalign_output(
+    o, orig_cu_seqlens, aligned_cu_seqlens, T_out, token_order=None
+):
   """Reverse _align_seqs: scatter aligned output back to original positions.
 
   Supports batched cu_seqlens [B, N+1] — processes each batch element
@@ -326,6 +336,7 @@ def _unalign_output(o, orig_cu_seqlens, aligned_cu_seqlens, T_out):
           orig_cu_seqlens[b],
           aligned_cu_seqlens[b],
           T_out,
+          token_order=None if token_order is None else token_order[b],
       )
       per_batch.append(ob)
     return jnp.concatenate(per_batch, axis=1)
@@ -333,7 +344,11 @@ def _unalign_output(o, orig_cu_seqlens, aligned_cu_seqlens, T_out):
   # --- Single-batch path (original) ---
   N = orig_cu_seqlens.shape[0] - 1
   if N > 8192:
-    positions = jnp.arange(T_out, dtype=jnp.int32)
+    positions = (
+        jnp.arange(T_out, dtype=jnp.int32)
+        if token_order is None
+        else token_order
+    )
     seq = jnp.minimum(
         jnp.searchsorted(orig_cu_seqlens[1:], positions, side="right"),
         N - 1,
@@ -349,7 +364,7 @@ def _unalign_output(o, orig_cu_seqlens, aligned_cu_seqlens, T_out):
     orig_start = orig_cu_seqlens[i]
     aligned_start = aligned_cu_seqlens[i]
     sl = orig_seg_lens[i]
-    j = jnp.arange(T_out)
+    j = jnp.arange(T_out) if token_order is None else token_order
     in_seg = (j >= orig_start) & (j < orig_start + sl)
     src = aligned_start + (j - orig_start)
     return jnp.where(in_seg, src, gather_idx)
