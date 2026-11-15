@@ -48,3 +48,12 @@ The padding wrapper also bounds convolution history by the actual token count,
 matching the physical-history semantics of latest main for one/two-token decode.
 Exact analytic CPU checks for both lengths pass; the full `packing_test.py`
 now has 2 passing tests (1.08 s), with no tolerance changes.
+
+## Raw packed-tape CI fixture followup
+
+The TPU6e packed-forward comparison exposed opaque pullback function identities
+in `return_residuals=True` mode. That white-box mode now explicitly requests the
+raw aligned tape; it still compares every array leaf with its original bounds.
+Ordinary output mode retains the public padding wrapper. No numerical tolerance
+or reference change. Directed CPU/Pallas checks: 4 passed (13.41 s). This is a
+test-only change; the benchmark calculation files are unchanged.
