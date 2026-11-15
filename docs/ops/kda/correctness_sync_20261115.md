@@ -36,3 +36,12 @@ initialization gap: 16,384 nonfinite outputs versus zero after the upstream fix.
 Internal main was not edited. This is not a production-loss reproduction claim.
 
 Keep Draft. Old benchmark results do not establish performance of the new source.
+
+## Raw packed-tape CI fixture followup
+
+The TPU6e packed-forward comparison exposed opaque pullback function identities
+in `return_residuals=True` mode. That white-box mode now explicitly requests the
+raw aligned tape; it still compares every array leaf with its original bounds.
+Ordinary output mode retains the public padding wrapper. No numerical tolerance
+or reference change. Directed CPU/Pallas checks: 4 passed (13.41 s). This is a
+test-only change; the benchmark calculation files are unchanged.

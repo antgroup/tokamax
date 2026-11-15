@@ -34,6 +34,7 @@ def test_packed_forward(dtype, return_residuals):
   for packed in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
         config=mosaic.Config(
+            canonicalize_packed_inputs=not return_residuals,
             fuse_forward=True, fuse_backward=True, packed_forward=packed
         )
     )
