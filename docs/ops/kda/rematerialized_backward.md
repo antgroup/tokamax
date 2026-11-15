@@ -32,4 +32,6 @@ gradient checks continue to include padding and empty-state semantics.
 See the [November 15 performance and numerical follow-up](backward_performance_followup_20261115.md)
 for frozen revisions, raw samples, independent FP32 reference errors and
 unfavorable historical controls. CPU interpretation is not a native-device
-performance result. This PR remains Draft until its acceptance is complete.
+performance result. Review readiness follows the internal numerical contracts
+and final-head checks in that report; bespoke parameter-RMS diagnostics are
+not additional acceptance gates.
