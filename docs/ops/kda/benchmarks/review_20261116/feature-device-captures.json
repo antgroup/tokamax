@@ -1,0 +1,462 @@
+[
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "state512",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      119.109243,
+      119.217287,
+      119.17527,
+      118.747824,
+      119.164616
+    ],
+    "module_events": [
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-1/profile-state512-forward/plugins/profile/2026_11_15_19_53_45/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      14027.693803,
+      14029.404412,
+      13991.219688,
+      14031.159814,
+      14017.093562
+    ],
+    "module_events": [
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-1/profile-fragmented-forward/plugins/profile/2026_11_15_19_53_41/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "arg_packed",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3770.147584,
+      3783.141882,
+      3767.457308,
+      3784.148785,
+      3779.511254
+    ],
+    "module_events": [
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-1/profile-arg_packed-forward/plugins/profile/2026_11_15_19_53_37/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens8192",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1008.14886,
+      1008.639706,
+      1007.877551,
+      1008.579757,
+      1009.056498
+    ],
+    "module_events": [
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-1/profile-tokens8192-forward/plugins/profile/2026_11_15_19_53_32/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens512",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      118.630327,
+      118.525735,
+      119.398259,
+      119.095738,
+      118.109244
+    ],
+    "module_events": [
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-1/profile-tokens512-forward/plugins/profile/2026_11_15_19_53_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "state512",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      60.38888,
+      60.518683,
+      60.163265,
+      60.279412,
+      59.993998
+    ],
+    "module_events": [
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-1/profile-state512-forward/plugins/profile/2026_11_15_19_53_13/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "fragmented",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1565.385429,
+      1565.667317,
+      1565.541266,
+      1565.585834,
+      1565.821129
+    ],
+    "module_events": [
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-1/profile-fragmented-forward/plugins/profile/2026_11_15_19_53_09/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "arg_packed",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      4445.92437,
+      4445.092512,
+      4445.279637,
+      4445.587035,
+      4445.823454
+    ],
+    "module_events": [
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-1/profile-arg_packed-forward/plugins/profile/2026_11_15_19_53_05/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens8192",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      365.555898,
+      364.821203,
+      365.13573,
+      365.148935,
+      364.568953
+    ],
+    "module_events": [
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-1/profile-tokens8192-forward/plugins/profile/2026_11_15_19_52_55/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens512",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      43.822329,
+      43.70003,
+      43.578781,
+      43.753977,
+      43.809124
+    ],
+    "module_events": [
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-1/profile-tokens512-forward/plugins/profile/2026_11_15_19_52_50/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "state512",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      60.346864,
+      60.085309,
+      60.239046,
+      59.915817,
+      60.135654
+    ],
+    "module_events": [
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)",
+      "jit_inference_native_state512_forward(13766459965086564993)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-0/profile-state512-forward/plugins/profile/2026_11_15_19_52_35/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "fragmented",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1565.821054,
+      1565.882277,
+      1565.731242,
+      1565.601591,
+      1565.642332
+    ],
+    "module_events": [
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)",
+      "jit_inference_native_fragmented_forward(2653806737377767175)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-0/profile-fragmented-forward/plugins/profile/2026_11_15_19_52_30/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "arg_packed",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      4445.276035,
+      4445.815126,
+      4445.240096,
+      4445.304922,
+      4445.577581
+    ],
+    "module_events": [
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)",
+      "jit_inference_native_arg_packed_forward(7307925218157856368)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-0/profile-arg_packed-forward/plugins/profile/2026_11_15_19_52_26/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens8192",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      364.33741,
+      364.397434,
+      365.175271,
+      364.535339,
+      364.879802
+    ],
+    "module_events": [
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)",
+      "jit_inference_native_tokens8192_forward(4612354142137445485)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-0/profile-tokens8192-forward/plugins/profile/2026_11_15_19_52_12/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens512",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      44.01208,
+      44.139181,
+      43.807998,
+      43.827131,
+      43.670993
+    ],
+    "module_events": [
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)",
+      "jit_inference_native_tokens512_forward(14865195403325981979)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-native-0/profile-tokens512-forward/plugins/profile/2026_11_15_19_52_06/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "state512",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      118.959183,
+      118.818802,
+      118.890682,
+      118.683223,
+      119.607443
+    ],
+    "module_events": [
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)",
+      "jit_inference_main_state512_forward(12936264012658401141)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-0/profile-state512-forward/plugins/profile/2026_11_15_19_51_50/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      14013.155988,
+      14022.501801,
+      14010.781362,
+      14024.727491,
+      14001.858494
+    ],
+    "module_events": [
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)",
+      "jit_inference_main_fragmented_forward(844888519658477616)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-0/profile-fragmented-forward/plugins/profile/2026_11_15_19_51_47/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "arg_packed",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3777.284588,
+      3781.79937,
+      3769.229291,
+      3773.35174,
+      3779.828331
+    ],
+    "module_events": [
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)",
+      "jit_inference_main_arg_packed_forward(3649173598496193526)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-0/profile-arg_packed-forward/plugins/profile/2026_11_15_19_51_43/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens8192",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1011.006002,
+      1009.080582,
+      1009.658989,
+      1009.72629,
+      1010.18735
+    ],
+    "module_events": [
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)",
+      "jit_inference_main_tokens8192_forward(11199133427845027712)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-0/profile-tokens8192-forward/plugins/profile/2026_11_15_19_51_33/kda-review-ready-1116-worker-0-0.xplane.pb"
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens512",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      118.659063,
+      118.638655,
+      118.905012,
+      118.733343,
+      119.046668
+    ],
+    "module_events": [
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)",
+      "jit_inference_main_tokens512_forward(14303843169381998310)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/ready/features/inference-main-0/profile-tokens512-forward/plugins/profile/2026_11_15_19_51_28/kda-review-ready-1116-worker-0-0.xplane.pb"
+  }
+]

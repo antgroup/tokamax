@@ -1,0 +1,27 @@
+{
+  "stage1_raw": {
+    "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/formal-stage1-raw.tgz#1794770854263763",
+    "bucket": "data_ant",
+    "object": "diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/formal-stage1-raw.tgz",
+    "generation": "1794770854263763",
+    "bytes": 9749844159,
+    "sha256": "12eac7ea4ee5aa0baf3c324f5bfc4642f38381c6b1dff9f416e75b32a8d91683",
+    "crc32c": "gbnuXg==",
+    "verified_size": true,
+    "verified_crc32c": true,
+    "metadata_sha256_verified": true
+  },
+  "note": "Combine the stage1 formal raw archive with the forward/inference feature archive. Both have verified immutable generations, size, CRC32C and SHA256.",
+  "forward_inference_final": {
+    "uri": "gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/forward-inference-final-raw.tgz#1794775402685712",
+    "bucket": "data_ant",
+    "object": "diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/forward-inference-final-raw.tgz",
+    "generation": "1794775402685712",
+    "bytes": 1488681578,
+    "sha256": "c561a57a3b138109dfcf11b5a7aea7d1cd2638fdbcd84826582c0e11155df6d5",
+    "crc32c": "pxMa+A==",
+    "verified_size": true,
+    "verified_crc32c": true,
+    "metadata_sha256_verified": true
+  }
+}

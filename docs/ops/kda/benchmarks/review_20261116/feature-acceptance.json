@@ -1,0 +1,37 @@
+[
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens512",
+    "mode": "forward",
+    "passed": true
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens8192",
+    "mode": "forward",
+    "passed": true
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "arg_packed",
+    "mode": "forward",
+    "passed": true
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "fragmented",
+    "mode": "forward",
+    "passed": true
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "state512",
+    "mode": "forward",
+    "passed": true
+  }
+]

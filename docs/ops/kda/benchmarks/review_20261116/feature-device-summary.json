@@ -1,0 +1,112 @@
+[
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "arg_packed",
+    "mode": "forward",
+    "median_device_ms": 3.778397921,
+    "capture_medians_ms": [
+      3.777284588,
+      3.779511254
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "fragmented",
+    "mode": "forward",
+    "median_device_ms": 14.0197976815,
+    "capture_medians_ms": [
+      14.013155988000001,
+      14.027693803
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "state512",
+    "mode": "forward",
+    "median_device_ms": 0.119034213,
+    "capture_medians_ms": [
+      0.118890682,
+      0.119164616
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens512",
+    "mode": "forward",
+    "median_device_ms": 0.118696203,
+    "capture_medians_ms": [
+      0.118733343,
+      0.118630327
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "main",
+    "case": "tokens8192",
+    "mode": "forward",
+    "median_device_ms": 1.00906854,
+    "capture_medians_ms": [
+      1.00972629,
+      1.008579757
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "arg_packed",
+    "mode": "forward",
+    "median_device_ms": 4.4454412515,
+    "capture_medians_ms": [
+      4.445304922,
+      4.445587035
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "fragmented",
+    "mode": "forward",
+    "median_device_ms": 1.5656548245,
+    "capture_medians_ms": [
+      1.565731242,
+      1.565585834
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "state512",
+    "mode": "forward",
+    "median_device_ms": 0.0602011555,
+    "capture_medians_ms": [
+      0.060135654000000004,
+      0.060279412
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens512",
+    "mode": "forward",
+    "median_device_ms": 0.043808560999999996,
+    "capture_medians_ms": [
+      0.043827131,
+      0.043753977
+    ]
+  },
+  {
+    "suite": "inference",
+    "variant": "native",
+    "case": "tokens8192",
+    "mode": "forward",
+    "median_device_ms": 0.3648505025,
+    "capture_medians_ms": [
+      0.364535339,
+      0.36513573000000005
+    ]
+  }
+]
