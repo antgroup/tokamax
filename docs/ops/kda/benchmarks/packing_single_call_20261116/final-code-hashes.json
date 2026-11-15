@@ -1,0 +1,10 @@
+{
+  "tokamax/_src/ops/kda/packing.py": "03114e123288dfb4b10a8b2987835375368d726548b5b9adcb788591c97bc8e9",
+  "tokamax/_src/ops/kda/pallas_mosaic_tpu.py": "33a539cb7d3247086f7b345fb59890cccd031dc99c061ced8cbe5941b14b4ce5",
+  "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py": "7d09552606f32e17ca335e264705e3c82382286cad0a1708f4118e0e08f6dc26",
+  "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_optimized.py": "f270ca967523f32b2b0ce0481bfd8d9bd9a6b95d4f5e75771437ac09454f8980",
+  "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py": "94d87cd393af0c2000390eb96c69372b62bd3ced2f2abbf7201404e2117635a9",
+  "tokamax/_src/ops/kda/pallas_mosaic_tpu_types.py": "2842e242d9458af8ee3b352010c2e97f4ef799ceb99f941baa28aa15bb6ba17f",
+  "tokamax/_src/ops/kda/utils.py": "6308fbd214deabec6ae6a2e4ad332b18e9c31330f15f3dbbf029c3b3d501ca16",
+  "tokamax/_src/ops/kda/packing_single_call_test.py": "ff5f5363daf8ed3b6f758b5f97f31a7318445c432caed3184fa499d1b312767b"
+}

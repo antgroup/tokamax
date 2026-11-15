@@ -1,0 +1,2378 @@
+[
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1449.516281,
+      1450.833058,
+      1452.046744,
+      1452.876275,
+      1449.632728
+    ],
+    "module_events": [
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_51_00/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1448.638581,
+      1451.018082,
+      1459.859769,
+      1448.604067,
+      1450.065051
+    ],
+    "module_events": [
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)",
+      "jit_invoke(5104152729535253412)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_50_58/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      395.876275,
+      395.067077,
+      395.557023,
+      395.009679,
+      395.153661
+    ],
+    "module_events": [
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_50_54/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      394.234244,
+      395.667467,
+      395.494598,
+      395.499549,
+      395.393757
+    ],
+    "module_events": [
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)",
+      "jit_invoke(3794652945876762253)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_50_52/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1350.118773,
+      1350.628976,
+      1350.255477,
+      1351.357893,
+      1350.26283
+    ],
+    "module_events": [
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_50_47/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1349.491897,
+      1350.218338,
+      1349.732293,
+      1350.78984,
+      1351.800645
+    ],
+    "module_events": [
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)",
+      "jit_invoke(17527682872988030349)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_50_45/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      376.956783,
+      377.056573,
+      377.076981,
+      376.871473,
+      377.200405
+    ],
+    "module_events": [
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_50_41/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      378.573754,
+      379.176471,
+      376.290441,
+      380.202806,
+      376.578482
+    ],
+    "module_events": [
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)",
+      "jit_invoke(1284298022895685754)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_50_40/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      44.680747,
+      44.827281,
+      45.008478,
+      44.965111,
+      44.594238
+    ],
+    "module_events": [
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_17_50_36/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      44.828331,
+      45.405687,
+      45.194477,
+      44.763505,
+      44.96376
+    ],
+    "module_events": [
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)",
+      "jit_invoke(2326649836539418171)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_17_50_34/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      26.917167,
+      26.949655,
+      26.952881,
+      26.981843,
+      26.927897
+    ],
+    "module_events": [
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_17_50_31/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      26.960459,
+      27.046594,
+      27.083958,
+      27.16319,
+      26.898034
+    ],
+    "module_events": [
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)",
+      "jit_invoke(18004092914949918119)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_17_50_29/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.850991,
+      185.48627,
+      185.300045,
+      185.773184,
+      185.487545
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_17_50_26/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.479141,
+      185.645783,
+      186.190726,
+      184.972239,
+      185.870273
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_17_50_24/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.691477,
+      69.692602,
+      69.531813,
+      70.201756,
+      69.741597
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_50_21/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.796069,
+      69.846414,
+      69.570228,
+      69.84979,
+      69.8116
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_50_19/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      226.570303,
+      225.839286,
+      227.170618,
+      226.792317,
+      226.445378
+    ],
+    "module_events": [
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_17_50_17/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      226.764706,
+      227.114045,
+      226.613296,
+      226.987019,
+      226.803122
+    ],
+    "module_events": [
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)",
+      "jit_invoke(12326325849163083090)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_17_50_15/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.378301,
+      55.606318,
+      55.163491,
+      55.231692,
+      55.155988
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_50_11/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.915816,
+      55.223364,
+      55.631603,
+      55.356543,
+      55.620724
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_50_10/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.451306,
+      34.368772,
+      34.104667,
+      34.421294,
+      34.383028
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_17_50_07/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.377025,
+      34.764781,
+      34.834334,
+      34.685474,
+      34.776786
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_17_50_05/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      18.131003,
+      17.851141,
+      18.040891,
+      17.819928,
+      17.681948
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_17_50_03/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.57383,
+      17.410564,
+      17.740847,
+      17.431123,
+      17.743247
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_17_50_01/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3090.923094,
+      3093.595514,
+      3094.105718,
+      3091.586885,
+      3091.949655
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_49_58/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3092.092362,
+      3094.164391,
+      3095.310924,
+      3095.528211,
+      3091.297719
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_49_57/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1519.862095,
+      1519.499475,
+      1518.467061,
+      1519.351816,
+      1519.858418
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_49_53/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1518.929172,
+      1519.419043,
+      1520.121474,
+      1519.408013,
+      1520.250825
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_49_51/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7310.871698,
+      7305.505477,
+      7294.09844,
+      7299.996548,
+      7301.701081
+    ],
+    "module_events": [
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_49_47/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7299.654337,
+      7291.075706,
+      7310.099565,
+      7291.695003,
+      7307.028887
+    ],
+    "module_events": [
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)",
+      "jit_invoke(17425898335028603884)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_49_45/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      2583.496848,
+      2583.38768,
+      2584.058673,
+      2584.069703,
+      2584.135804
+    ],
+    "module_events": [
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_17_49_36/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      2582.070828,
+      2588.921968,
+      2585.642257,
+      2582.989121,
+      2583.166792
+    ],
+    "module_events": [
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)",
+      "jit_invoke(3824644669596085109)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_17_49_34/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3441.128451,
+      3442.895483,
+      3441.684274,
+      3440.699805,
+      3443.418967
+    ],
+    "module_events": [
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_49_28/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3441.432173,
+      3443.025286,
+      3442.458434,
+      3441.585759,
+      3442.154862
+    ],
+    "module_events": [
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)",
+      "jit_invoke(1803157937195747187)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_49_26/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1463.284439,
+      1462.345889,
+      1462.82338,
+      1464.642332,
+      1463.15021
+    ],
+    "module_events": [
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_49_20/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-opt",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1462.728691,
+      1462.086584,
+      1462.602491,
+      1461.024085,
+      1462.222164
+    ],
+    "module_events": [
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)",
+      "jit_invoke(9260619657296487604)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-opt-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_49_19/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1060.47524,
+      1057.653061,
+      1056.97479,
+      1056.5655,
+      1056.055147
+    ],
+    "module_events": [
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_49_02/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1058.74895,
+      1058.211135,
+      1057.733418,
+      1057.445378,
+      1060.727415
+    ],
+    "module_events": [
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)",
+      "jit_invoke(14017562247796708858)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_49_00/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      295.267707,
+      294.806497,
+      294.553572,
+      294.572779,
+      294.809348
+    ],
+    "module_events": [
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_48_57/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      294.240096,
+      295.384153,
+      295.068503,
+      294.469388,
+      294.860744
+    ],
+    "module_events": [
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)",
+      "jit_invoke(18140680171371341198)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_48_55/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      996.128451,
+      998.890831,
+      1004.393757,
+      997.657713,
+      997.644583
+    ],
+    "module_events": [
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_48_52/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      997.235294,
+      997.612395,
+      996.16214,
+      996.970063,
+      996.706032
+    ],
+    "module_events": [
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)",
+      "jit_invoke(1843381413938849776)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_48_50/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      278.354067,
+      277.893382,
+      277.815276,
+      277.639781,
+      277.674595
+    ],
+    "module_events": [
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_48_46/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      277.454982,
+      277.328856,
+      277.831933,
+      278.143982,
+      278.151336
+    ],
+    "module_events": [
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)",
+      "jit_invoke(1313887393425076121)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_48_45/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      42.806648,
+      42.972464,
+      43.155988,
+      43.171669,
+      42.979592
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_17_48_41/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      43.33981,
+      42.978466,
+      43.0637,
+      43.321804,
+      42.886254
+    ],
+    "module_events": [
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)",
+      "jit_invoke(17922181124058045327)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_17_48_40/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      26.418818,
+      26.565577,
+      26.441702,
+      26.42602,
+      26.369748
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_17_48_36/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      26.505477,
+      26.410564,
+      26.380477,
+      26.307323,
+      26.370948
+    ],
+    "module_events": [
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)",
+      "jit_invoke(1023045492260297329)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_17_48_35/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.342062,
+      185.43915,
+      185.483793,
+      185.334934,
+      185.740697
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_17_48_32/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.442978,
+      185.474115,
+      185.354142,
+      185.654336,
+      185.555822
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_17_48_30/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      69.905312,
+      69.780313,
+      70.02491,
+      69.731092,
+      69.792242
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_48_27/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      70.004577,
+      69.684274,
+      69.747674,
+      69.815277,
+      69.761029
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_48_25/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      160.168142,
+      159.817452,
+      160.270183,
+      159.841686,
+      159.995123
+    ],
+    "module_events": [
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_17_48_23/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      159.853541,
+      160.864346,
+      160.827056,
+      160.219688,
+      160.547343
+    ],
+    "module_events": [
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)",
+      "jit_invoke(4544573681021287780)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_17_48_21/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.247299,
+      55.695154,
+      55.470589,
+      55.764706,
+      55.47419
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_48_18/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.661689,
+      55.110519,
+      55.507728,
+      55.709634,
+      55.545244
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_48_16/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.384153,
+      34.397134,
+      34.679471,
+      34.098364,
+      34.411764
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_17_48_14/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.575105,
+      34.213686,
+      34.128377,
+      34.097239,
+      34.068577
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_17_48_12/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.357668,
+      18.182323,
+      17.92557,
+      17.846338,
+      17.776711
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_17_48_10/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.942377,
+      17.786314,
+      17.865546,
+      17.884829,
+      18.180072
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_17_48_08/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3093.528436,
+      3096.360144,
+      3091.075705,
+      3087.735895,
+      3090.71181
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_48_05/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3093.9976,
+      3091.207533,
+      3093.001501,
+      3091.62425,
+      3088.504277
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_48_03/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1519.639706,
+      1519.123724,
+      1519.851216,
+      1518.999925,
+      1520.504201
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_47_59/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1520.997674,
+      1519.593937,
+      1519.033614,
+      1519.464586,
+      1519.651861
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_47_58/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7289.566476,
+      7314.37575,
+      7287.382803,
+      7294.182323,
+      7297.347013
+    ],
+    "module_events": [
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_47_54/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7297.234093,
+      7295.362845,
+      7295.817527,
+      7316.609994,
+      7287.185924
+    ],
+    "module_events": [
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)",
+      "jit_invoke(18279281978962941424)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_47_52/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3610.995273,
+      3598.324204,
+      3589.488896,
+      3612.621923,
+      3589.047944
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_17_47_42/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3609.217137,
+      3628.905162,
+      3590.924369,
+      3600.122224,
+      3615.046894
+    ],
+    "module_events": [
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)",
+      "jit_invoke(2100572238547431967)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_17_47_40/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3727.522283,
+      3727.764781,
+      3726.965261,
+      3726.109544,
+      3724.793592
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_47_35/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3725.277461,
+      3723.783838,
+      3724.919643,
+      3723.227041,
+      3724.713085
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_47_33/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1506.809123,
+      1507.802071,
+      1507.394958,
+      1506.740771,
+      1506.172869
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_47_27/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "merge-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1507.019208,
+      1507.150135,
+      1507.613596,
+      1508.019358,
+      1507.331483
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/merge-default-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_47_25/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1412.902686,
+      1412.664991,
+      1403.358943,
+      1402.689151,
+      1404.97599
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_47_10/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1404.076831,
+      1404.669868,
+      1405.25105,
+      1413.80072,
+      1404.023934
+    ],
+    "module_events": [
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)",
+      "jit_invoke(3810239341153061308)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_dp2_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_47_08/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      395.935324,
+      396.705882,
+      396.674745,
+      396.956857,
+      396.940051
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_47_05/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      398.185924,
+      396.642107,
+      397.057548,
+      396.763505,
+      396.642182
+    ],
+    "module_events": [
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)",
+      "jit_invoke(8298595512162611771)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_dp2_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_47_03/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1312.759904,
+      1304.73597,
+      1309.968563,
+      1310.895483,
+      1306.229217
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_decode_b1_t64_n64_bf16-forward/1/plugins/profile/2026_11_15_17_47_00/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t64_n64_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1306.048094,
+      1306.889406,
+      1313.283388,
+      1303.213685,
+      1303.193277
+    ],
+    "module_events": [
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)",
+      "jit_invoke(15418245382027103499)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_decode_b1_t64_n64_bf16-forward/0/plugins/profile/2026_11_15_17_46_58/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      381.768308,
+      381.749025,
+      381.866521,
+      382.499474,
+      381.672119
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/1/plugins/profile/2026_11_15_17_46_55/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t64_n16_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      382.482593,
+      381.744372,
+      381.407113,
+      381.836735,
+      380.789841
+    ],
+    "module_events": [
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)",
+      "jit_invoke(10313477245085387347)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_dspark_decode_b1_t64_n16_bf16-forward/0/plugins/profile/2026_11_15_17_46_53/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      42.809124,
+      42.97359,
+      43.10084,
+      42.593112,
+      42.757503
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/1/plugins/profile/2026_11_15_17_46_50/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      42.989196,
+      42.571578,
+      43.339736,
+      42.609919,
+      42.890831
+    ],
+    "module_events": [
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)",
+      "jit_invoke(6429740665440102606)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_dspark_decode_b1_t8_n1_bf16-forward/0/plugins/profile/2026_11_15_17_46_48/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      29.27611,
+      29.476666,
+      29.074505,
+      29.086284,
+      29.141582
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_decode_b1_t1_n1_bf16-forward/1/plugins/profile/2026_11_15_17_46_46/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      29.075705,
+      29.247298,
+      29.204006,
+      29.23642,
+      29.445528
+    ],
+    "module_events": [
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)",
+      "jit_invoke(16262788324858311217)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_decode_b1_t1_n1_bf16-forward/0/plugins/profile/2026_11_15_17_46_44/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      185.560775,
+      185.840261,
+      185.785114,
+      186.06235,
+      185.457307
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp8_prefill_b1_t2048_bf16-forward/1/plugins/profile/2026_11_15_17_46_41/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp8_prefill_b1_t2048_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      185.636255,
+      185.455057,
+      185.539016,
+      185.404637,
+      185.358869
+    ],
+    "module_events": [
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)",
+      "jit_invoke(2689919675263482741)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp8_prefill_b1_t2048_bf16-forward/0/plugins/profile/2026_11_15_17_46_39/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      70.058823,
+      70.234093,
+      69.878901,
+      69.942377,
+      69.853616
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_46_37/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp16_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      69.653061,
+      69.721789,
+      69.416492,
+      69.734618,
+      69.719163
+    ],
+    "module_events": [
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)",
+      "jit_invoke(3192633212205161342)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp16_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_46_35/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      220.331332,
+      219.677071,
+      220.513656,
+      219.554697,
+      219.713011
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_verify_b1_t64_n8_bf16-forward/1/plugins/profile/2026_11_15_17_46_32/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_verify_b1_t64_n8_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      219.533088,
+      220.195754,
+      219.893232,
+      221.318128,
+      220.505402
+    ],
+    "module_events": [
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)",
+      "jit_invoke(15130420020809590044)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_verify_b1_t64_n8_bf16-forward/0/plugins/profile/2026_11_15_17_46_30/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      55.229142,
+      55.224565,
+      55.456033,
+      55.310999,
+      55.492197
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t1024_bf16-forward/1/plugins/profile/2026_11_15_17_46_27/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t1024_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      55.535415,
+      55.061224,
+      55.420093,
+      55.457382,
+      55.615921
+    ],
+    "module_events": [
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)",
+      "jit_invoke(14500180401232589449)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t1024_bf16-forward/0/plugins/profile/2026_11_15_17_46_26/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      34.870423,
+      34.621999,
+      34.691402,
+      34.585609,
+      34.689151
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t512_bf16-forward/1/plugins/profile/2026_11_15_17_46_23/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t512_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      34.056498,
+      34.503076,
+      34.306122,
+      34.289316,
+      34.393683
+    ],
+    "module_events": [
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)",
+      "jit_invoke(12245896648481014865)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t512_bf16-forward/0/plugins/profile/2026_11_15_17_46_21/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      17.636329,
+      17.956782,
+      17.87515,
+      17.39976,
+      17.65066
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t128_bf16-forward/1/plugins/profile/2026_11_15_17_46_19/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_prefill_b1_t128_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      17.843863,
+      17.470513,
+      17.465786,
+      17.721489,
+      17.532938
+    ],
+    "module_events": [
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)",
+      "jit_invoke(5885547938443605599)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/tp32_prefill_b1_t128_bf16-forward/0/plugins/profile/2026_11_15_17_46_17/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3092.36367,
+      3091.454006,
+      3091.015531,
+      3091.363821,
+      3093.365096
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_46_15/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3095.178721,
+      3094.155763,
+      3095.204081,
+      3091.442902,
+      3092.446579
+    ],
+    "module_events": [
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)",
+      "jit_invoke(7212291215755422268)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_46_13/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1520.73702,
+      1519.815276,
+      1520.027761,
+      1521.254577,
+      1521.600315
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_46_09/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "gdn_fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1520.667392,
+      1519.53669,
+      1520.267707,
+      1520.465786,
+      1520.605042
+    ],
+    "module_events": [
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)",
+      "jit_invoke(7992036862641982500)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/gdn_fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_46_07/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      7208.547419,
+      7220.489871,
+      7227.672269,
+      7220.254502,
+      7215.492272
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_46_04/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      7225.08891,
+      7210.383104,
+      7214.992722,
+      7239.191927,
+      7225.647209
+    ],
+    "module_events": [
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)",
+      "jit_invoke(7588889009068882598)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_46_02/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      3829.3756,
+      3827.443052,
+      3832.562875,
+      3825.08516,
+      3833.732142
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward/1/plugins/profile/2026_11_15_17_45_53/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "packed_training_b1_t8192_n25_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      3810.061374,
+      3835.645858,
+      3824.779262,
+      3833.190652,
+      3834.101966
+    ],
+    "module_events": [
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)",
+      "jit_invoke(1562649854032243360)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/packed_training_b1_t8192_n25_bf16-forward/0/plugins/profile/2026_11_15_17_45_51/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 1,
+    "module_us": [
+      3728.183523,
+      3722.59904,
+      3726.278436,
+      3729.613595,
+      3727.542767
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/1/plugins/profile/2026_11_15_17_45_46/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward_and_vjp",
+    "capture": 0,
+    "module_us": [
+      3724.708433,
+      3725.570303,
+      3724.941026,
+      3726.69868,
+      3728.216086
+    ],
+    "module_events": [
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)",
+      "jit_invoke(10526500474768636159)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward_and_vjp/0/plugins/profile/2026_11_15_17_45_45/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 1,
+    "module_us": [
+      1506.830807,
+      1506.252025,
+      1507.09964,
+      1506.448904,
+      1506.6878
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward/1/plugins/profile/2026_11_15_17_45_39/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  },
+  {
+    "variant": "main-default",
+    "case": "fixed_training_b1_t8192_bf16",
+    "mode": "forward",
+    "capture": 0,
+    "module_us": [
+      1507.123724,
+      1505.877551,
+      1507.157188,
+      1507.028886,
+      1506.646984
+    ],
+    "module_events": [
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)",
+      "jit_invoke(8927360681394114992)"
+    ],
+    "input_reshard_modules": 0,
+    "xplane": "/workspace/validation/profiles/main-default-10/fixed_training_b1_t8192_bf16-forward/0/plugins/profile/2026_11_15_17_45_37/kda-pack-singlecall-1115-worker-0-0.xplane.pb"
+  }
+]

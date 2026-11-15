@@ -1,0 +1,12 @@
+{
+  "uri": "gs://data_ant/diagnostics/kda-packing-singlecall-20261116/7e64b520-0f78-4d90-b6a6-ce39fb8b40a4/evidence-16c5afa1-main0d3e82b4.tgz#1794765685858753",
+  "bucket": "data_ant",
+  "object": "diagnostics/kda-packing-singlecall-20261116/7e64b520-0f78-4d90-b6a6-ce39fb8b40a4/evidence-16c5afa1-main0d3e82b4.tgz",
+  "generation": "1794765685858753",
+  "bytes": 4050423500,
+  "sha256": "cbfef06988b9124d7ccc23ce5fb79470f22fb88092c02128a9dbbf30ff4dcbd0",
+  "crc32c": "nxcq4g==",
+  "verified_size": true,
+  "verified_crc32c": true,
+  "metadata_sha256_verified": true
+}

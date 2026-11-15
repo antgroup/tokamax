@@ -1,5 +1,7 @@
 # Complete official ArgSpec comparison after correctness synchronization
 
+Follow-up: [single-core packing refactor and complete rerun](packing_single_call_validation_20261116.md). The measurements below retain their historical source revisions.
+
 Status: Ready for Review authorized with the two measured Tokamax default-path regressions disclosed as follow-up work. Current MaxText KDA training uses TOPS; the benchmark results and numerical checks are unchanged.
 
 ## Revisions and scope
