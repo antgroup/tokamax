@@ -132,8 +132,6 @@ def invoke(op, config, arguments):
         else (inner(**original), None)
     )
   static = {k: v for k, v in original.items() if k not in ARRAY_NAMES}
-  if cp:
-    static["max_num_segments"] = min(capacity, tokens)
 
   def composed(*values):
     def unchanged(xs):

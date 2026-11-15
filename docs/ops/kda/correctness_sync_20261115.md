@@ -30,3 +30,8 @@ separate acceptance steps.
 The 16 added padding cases also passed CPU Pallas interpretation on JAX 0.11.1
 (124.12 s). A subsequent formatting pass changes no Python AST; the validated
 operations, numerical bounds and assertions are identical.
+
+A separate exact CPU/JAX regression ensures the default CP adapter preserves
+logical capacity 512 for global label 500 and T_local=4. Capacity narrowing stays
+in the explicit workspace adapter; the default padding correction cannot inherit
+that optimization. Test: `pytest tokamax/_src/ops/kda/packing_test.py -q` (1 passed).
