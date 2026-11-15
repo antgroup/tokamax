@@ -1,0 +1,6853 @@
+{
+  "operator_head": "490072162de7ab00d62bd0aadba1c60bef2557d7",
+  "baseline": "1f4d897e73029f4f8405aef12c1727ff20276087",
+  "internal_main": "18ea6891f0e8d9affe9e81815267f5251bdb0b3b",
+  "table": [
+    {
+      "case": "cp4_normal",
+      "before_ms": 0.8901285,
+      "published_ms": 0.8996595000000001,
+      "internal_ms": 0.787774,
+      "change_pct": 1.0707442801797695
+    },
+    {
+      "case": "cp8_normal",
+      "before_ms": 1.4088245000000001,
+      "published_ms": 1.395174,
+      "internal_ms": 1.240048,
+      "change_pct": -0.9689283512602342
+    },
+    {
+      "case": "cp4_remat",
+      "before_ms": 0.9039925,
+      "published_ms": 0.9008115,
+      "internal_ms": 0.807858,
+      "change_pct": -0.3518834503604795
+    },
+    {
+      "case": "cp8_long",
+      "before_ms": 3.0417405,
+      "published_ms": 2.990976,
+      "internal_ms": 2.135919,
+      "change_pct": -1.6689293514683512
+    },
+    {
+      "case": "cp8_long_remat",
+      "before_ms": 3.191619,
+      "published_ms": 3.091252,
+      "internal_ms": 2.5419954999999996,
+      "change_pct": -3.144704928752473
+    },
+    {
+      "case": "cp8_capacity",
+      "before_ms": 1.3470460000000002,
+      "published_ms": 1.3261775,
+      "internal_ms": 1.1539285000000001,
+      "change_pct": -1.5492047042194645
+    },
+    {
+      "case": "cp8_overflow",
+      "before_ms": 23.6521605,
+      "published_ms": 21.2796315,
+      "internal_ms": 354.296334,
+      "change_pct": -10.030918739960349
+    }
+  ],
+  "validation": {
+    "internal_policy_sha": "18ea6891f0e8d9affe9e81815267f5251bdb0b3b",
+    "cases": {
+      "before_workspace/cp8_long": {
+        "samples_ms": [
+          3.107152,
+          3.124639,
+          3.094965,
+          3.118345,
+          3.085296,
+          3.183624,
+          3.119351,
+          3.087383,
+          3.042646,
+          3.125929,
+          3.141322,
+          3.075829,
+          3.060737,
+          3.040178,
+          3.101384,
+          3.077024,
+          3.04018,
+          3.081383,
+          3.209118,
+          3.045092,
+          3.034558,
+          3.007383,
+          3.055864,
+          3.043387,
+          3.012839,
+          3.00475,
+          3.000617,
+          3.015566,
+          3.011331,
+          3.022436,
+          2.996594,
+          2.995502,
+          2.994123,
+          3.010766,
+          2.992303,
+          2.9995,
+          2.998725,
+          3.004352,
+          3.008919,
+          3.040835
+        ],
+        "median_ms": 3.0417405,
+        "round_medians_ms": [
+          3.091174,
+          3.008151
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp8_long_remat": {
+        "samples_ms": [
+          3.199027,
+          3.212245,
+          3.259869,
+          3.227181,
+          3.221974,
+          3.231394,
+          3.191499,
+          3.214451,
+          3.208879,
+          4.106982,
+          3.215905,
+          4.740827,
+          3.221559,
+          3.213252,
+          3.219816,
+          3.229224,
+          3.201496,
+          3.175267,
+          3.181202,
+          3.178801,
+          3.164649,
+          3.159656,
+          3.171203,
+          3.148355,
+          3.143848,
+          3.15374,
+          3.145,
+          3.154472,
+          3.168347,
+          3.138919,
+          3.167146,
+          3.191739,
+          3.202777,
+          3.185869,
+          3.17529,
+          3.162797,
+          3.149445,
+          3.358091,
+          3.228274,
+          3.165127
+        ],
+        "median_ms": 3.191619,
+        "round_medians_ms": [
+          3.215178,
+          3.164888
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp4_normal": {
+        "samples_ms": [
+          0.915459,
+          0.908795,
+          0.901046,
+          0.891291,
+          0.895523,
+          0.892321,
+          0.88624,
+          0.889662,
+          0.885143,
+          0.885078,
+          0.881865,
+          0.872846,
+          0.890595,
+          0.867217,
+          0.885359,
+          0.881474,
+          0.894288,
+          0.88319,
+          0.885777,
+          0.858885,
+          0.894727,
+          0.904791,
+          0.899023,
+          0.97205,
+          0.899371,
+          0.885741,
+          0.894295,
+          0.890684,
+          0.914489,
+          0.888051,
+          0.928387,
+          0.89747,
+          0.886678,
+          0.899277,
+          0.881111,
+          0.856732,
+          0.882971,
+          0.875575,
+          0.911775,
+          0.880826
+        ],
+        "median_ms": 0.8901285,
+        "round_medians_ms": [
+          0.8860085,
+          0.8945110000000001
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp8_normal": {
+        "samples_ms": [
+          1.418528,
+          1.398717,
+          1.392687,
+          1.426374,
+          1.387992,
+          1.445767,
+          1.387678,
+          1.381392,
+          1.405189,
+          1.35816,
+          1.410009,
+          1.401984,
+          1.376823,
+          1.387654,
+          1.401749,
+          1.412765,
+          1.395921,
+          1.378329,
+          1.413215,
+          1.393724,
+          1.44445,
+          1.438002,
+          1.443162,
+          1.506167,
+          1.438449,
+          1.422903,
+          1.430615,
+          1.404047,
+          1.405303,
+          1.411142,
+          1.409872,
+          1.407777,
+          1.413284,
+          1.378462,
+          1.436561,
+          1.406356,
+          1.420194,
+          1.443439,
+          1.405579,
+          1.477467
+        ],
+        "median_ms": 1.4088245000000001,
+        "round_medians_ms": [
+          1.397319,
+          1.4215485
+        ],
+        "input_sha256": "43ba4ca0d31b3e7af9021d5b2e7af7249a1a85a4046c27580bec41b3cc189f8b",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp4_remat": {
+        "samples_ms": [
+          0.901794,
+          0.909232,
+          0.919912,
+          0.89197,
+          0.864798,
+          0.900351,
+          0.909467,
+          0.877619,
+          0.888912,
+          0.885179,
+          0.887383,
+          0.875838,
+          0.868568,
+          0.88223,
+          0.907041,
+          0.891776,
+          0.876388,
+          0.891556,
+          0.893115,
+          0.872792,
+          0.930731,
+          0.954496,
+          0.916671,
+          0.941781,
+          0.920672,
+          0.911491,
+          0.911217,
+          0.92024,
+          0.92474,
+          0.906191,
+          0.923939,
+          0.894488,
+          0.891817,
+          1.219342,
+          0.973888,
+          0.930059,
+          0.89458,
+          0.895789,
+          0.9649,
+          0.941322
+        ],
+        "median_ms": 0.9039925,
+        "round_medians_ms": [
+          0.890234,
+          0.9223055
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp8_capacity": {
+        "samples_ms": [
+          1.34803,
+          1.346062,
+          1.361603,
+          1.303753,
+          1.336686,
+          1.322932,
+          1.337894,
+          1.353343,
+          1.337414,
+          1.314171,
+          1.338092,
+          1.282391,
+          1.304455,
+          1.293392,
+          1.321587,
+          1.318675,
+          1.309407,
+          1.316039,
+          1.316153,
+          1.303167,
+          1.352847,
+          1.362552,
+          1.361081,
+          1.449759,
+          1.377131,
+          1.367983,
+          1.407971,
+          1.374394,
+          1.358966,
+          1.396558,
+          1.360154,
+          1.438362,
+          1.368497,
+          1.350586,
+          1.339999,
+          1.36898,
+          1.378578,
+          1.393741,
+          1.339946,
+          1.323939
+        ],
+        "median_ms": 1.3470460000000002,
+        "round_medians_ms": [
+          1.320131,
+          1.3682400000000001
+        ],
+        "input_sha256": "ee8d8f7dc2627618b2d28605fd7e5975f7e291bea05da6a3fdfae41bf7e08bd9",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "before_workspace/cp8_overflow": {
+        "samples_ms": [
+          23.309702,
+          23.827815,
+          23.639906,
+          24.213191,
+          22.749991,
+          23.200324,
+          24.112379,
+          23.396752,
+          23.770737,
+          23.415681,
+          23.322776,
+          23.630588,
+          24.034572,
+          25.016233,
+          23.158515,
+          23.159545,
+          23.327418,
+          23.664415,
+          23.783277,
+          23.688647,
+          23.893621,
+          23.988414,
+          23.685839,
+          23.131478,
+          22.759524,
+          23.612765,
+          24.386705,
+          24.077058,
+          23.541653,
+          22.641612,
+          22.693749,
+          23.451491,
+          23.816509,
+          23.929347,
+          23.716253,
+          23.02036,
+          23.049278,
+          23.88182,
+          24.003343,
+          24.039726
+        ],
+        "median_ms": 23.6521605,
+        "round_medians_ms": [
+          23.635247,
+          23.701045999999998
+        ],
+        "input_sha256": "3641d31b9dd80cc6ef632a7efc488a78e376119e1fa50638d2815cb2e288f87c",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": true,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp8_long": {
+        "samples_ms": [
+          3.030786,
+          2.997442,
+          3.193943,
+          2.998718,
+          2.977346,
+          2.980107,
+          3.007144,
+          2.993024,
+          2.995919,
+          3.152921,
+          2.998926,
+          3.062603,
+          2.995353,
+          3.034959,
+          2.989467,
+          2.977846,
+          2.998803,
+          2.961435,
+          2.999726,
+          2.95947,
+          3.070968,
+          3.015775,
+          2.968149,
+          2.992112,
+          2.969305,
+          2.965262,
+          2.96729,
+          2.971961,
+          2.980918,
+          2.982402,
+          2.973441,
+          2.966215,
+          2.994799,
+          2.988709,
+          3.029514,
+          2.979465,
+          2.955759,
+          2.98984,
+          2.995199,
+          2.965391
+        ],
+        "median_ms": 2.990976,
+        "round_medians_ms": [
+          2.99808,
+          2.9801915
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp8_long_remat": {
+        "samples_ms": [
+          3.109574,
+          3.09209,
+          3.069328,
+          3.242521,
+          3.069899,
+          3.110191,
+          3.135332,
+          3.092032,
+          3.090248,
+          3.080073,
+          3.063293,
+          3.077569,
+          6.916398,
+          3.078134,
+          3.184908,
+          3.095569,
+          3.049724,
+          3.117985,
+          3.067332,
+          3.056516,
+          3.126169,
+          3.114505,
+          3.088898,
+          3.118713,
+          3.117774,
+          3.102571,
+          3.095996,
+          3.116023,
+          3.080377,
+          3.08683,
+          3.058423,
+          3.068031,
+          7.352787,
+          3.047482,
+          3.092452,
+          3.085284,
+          3.094315,
+          3.090472,
+          3.050523,
+          3.067807
+        ],
+        "median_ms": 3.091252,
+        "round_medians_ms": [
+          3.09114,
+          3.091462
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp4_normal": {
+        "samples_ms": [
+          0.905824,
+          0.898819,
+          0.905129,
+          0.917461,
+          0.885154,
+          0.936034,
+          0.921632,
+          0.89587,
+          0.922953,
+          0.893673,
+          0.908999,
+          0.90883,
+          0.907927,
+          0.902765,
+          0.886647,
+          0.875931,
+          0.888584,
+          0.88949,
+          0.894502,
+          0.896139,
+          0.890701,
+          0.901042,
+          0.905919,
+          0.903133,
+          0.9005,
+          0.872463,
+          0.907229,
+          0.901293,
+          0.909552,
+          0.892148,
+          0.896343,
+          0.89858,
+          0.927531,
+          0.881177,
+          0.904535,
+          0.902987,
+          0.889665,
+          0.890956,
+          0.880048,
+          0.883325
+        ],
+        "median_ms": 0.8996595000000001,
+        "round_medians_ms": [
+          0.900792,
+          0.89954
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp8_normal": {
+        "samples_ms": [
+          1.395284,
+          1.387736,
+          1.386822,
+          1.435867,
+          1.538245,
+          1.40731,
+          1.391657,
+          1.376015,
+          1.408234,
+          1.394109,
+          1.404192,
+          1.434363,
+          1.429123,
+          1.421578,
+          1.418342,
+          1.428631,
+          1.386334,
+          1.382094,
+          1.375308,
+          1.380548,
+          1.406826,
+          1.395113,
+          1.382425,
+          1.401061,
+          1.403141,
+          1.380326,
+          1.391458,
+          1.399773,
+          1.390954,
+          1.378272,
+          1.389853,
+          1.368222,
+          1.395235,
+          1.407358,
+          1.387518,
+          1.404798,
+          1.377705,
+          1.36966,
+          1.419241,
+          1.406007
+        ],
+        "median_ms": 1.395174,
+        "round_medians_ms": [
+          1.3997380000000001,
+          1.3932855000000002
+        ],
+        "input_sha256": "43ba4ca0d31b3e7af9021d5b2e7af7249a1a85a4046c27580bec41b3cc189f8b",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp4_remat": {
+        "samples_ms": [
+          0.902187,
+          0.901726,
+          0.905896,
+          0.903692,
+          0.896411,
+          0.908325,
+          0.881786,
+          0.874849,
+          0.88855,
+          0.893409,
+          0.889946,
+          0.900212,
+          0.901063,
+          0.912103,
+          0.91317,
+          0.889825,
+          0.918378,
+          0.89782,
+          0.907397,
+          0.909625,
+          0.886132,
+          0.89498,
+          0.876148,
+          1.030444,
+          0.902824,
+          0.87042,
+          0.89407,
+          0.909839,
+          0.927361,
+          0.877749,
+          0.917587,
+          0.893375,
+          0.870044,
+          0.945279,
+          0.90056,
+          0.90268,
+          0.892671,
+          0.91102,
+          0.903439,
+          0.888488
+        ],
+        "median_ms": 0.9008115,
+        "round_medians_ms": [
+          0.9013945,
+          0.89777
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp8_capacity": {
+        "samples_ms": [
+          1.349639,
+          1.361558,
+          1.33156,
+          1.357761,
+          1.321583,
+          1.315513,
+          1.34906,
+          1.341707,
+          1.312668,
+          1.358682,
+          1.344744,
+          1.343811,
+          1.312963,
+          1.328906,
+          1.34852,
+          1.327815,
+          1.337385,
+          1.294617,
+          1.343387,
+          1.282424,
+          1.313689,
+          1.343006,
+          1.36698,
+          1.31412,
+          1.328089,
+          1.308409,
+          1.336818,
+          1.302173,
+          1.281831,
+          1.321012,
+          1.312711,
+          1.331254,
+          1.32454,
+          1.287302,
+          1.302108,
+          1.276824,
+          1.308285,
+          1.338192,
+          1.317212,
+          1.30651
+        ],
+        "median_ms": 1.3261775,
+        "round_medians_ms": [
+          1.339546,
+          1.3139045
+        ],
+        "input_sha256": "ee8d8f7dc2627618b2d28605fd7e5975f7e291bea05da6a3fdfae41bf7e08bd9",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate_workspace/cp8_overflow": {
+        "samples_ms": [
+          21.298143,
+          20.792201,
+          21.031378,
+          20.841012,
+          20.781068,
+          21.284309,
+          21.243986,
+          21.766202,
+          21.91798,
+          21.543305,
+          21.841125,
+          21.963213,
+          21.796559,
+          21.253225,
+          20.733262,
+          21.05118,
+          21.308382,
+          20.875767,
+          20.716788,
+          21.349067,
+          21.535027,
+          21.412445,
+          20.688779,
+          20.827471,
+          20.697013,
+          20.755069,
+          21.126081,
+          21.390901,
+          20.845444,
+          20.712273,
+          21.274954,
+          21.681836,
+          21.80497,
+          21.376294,
+          21.672293,
+          21.517905,
+          21.583201,
+          21.491121,
+          20.965932,
+          20.842676
+        ],
+        "median_ms": 21.2796315,
+        "round_medians_ms": [
+          21.268767,
+          21.325624
+        ],
+        "input_sha256": "3641d31b9dd80cc6ef632a7efc488a78e376119e1fa50638d2815cb2e288f87c",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": true,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp8_long": {
+        "samples_ms": [
+          2.137164,
+          2.124965,
+          2.122757,
+          2.08122,
+          2.122082,
+          2.109897,
+          2.070123,
+          2.096073,
+          2.107732,
+          2.089636,
+          2.085953,
+          2.104532,
+          2.063716,
+          2.112655,
+          2.090161,
+          2.094302,
+          2.115203,
+          2.087214,
+          2.073468,
+          2.086268,
+          2.199471,
+          2.210426,
+          2.154483,
+          2.176634,
+          2.181711,
+          2.134674,
+          2.179445,
+          2.180817,
+          2.1995,
+          2.17232,
+          2.157536,
+          2.209491,
+          2.189648,
+          2.202212,
+          2.193504,
+          2.154621,
+          2.169739,
+          2.188738,
+          2.195312,
+          2.324604
+        ],
+        "median_ms": 2.135919,
+        "round_medians_ms": [
+          2.0951874999999998,
+          2.1852245
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp8_long_remat": {
+        "samples_ms": [
+          2.507699,
+          2.498851,
+          2.503567,
+          2.561031,
+          2.537628,
+          2.500189,
+          2.493491,
+          2.511152,
+          2.478339,
+          2.512727,
+          2.516419,
+          2.485784,
+          2.484798,
+          2.488648,
+          2.468472,
+          2.520675,
+          2.505646,
+          2.495508,
+          2.5122,
+          2.483695,
+          2.560792,
+          2.587137,
+          2.587741,
+          2.538776,
+          2.54943,
+          2.545215,
+          2.593868,
+          3.020616,
+          3.021128,
+          2.622179,
+          2.604005,
+          2.623934,
+          2.576138,
+          2.56414,
+          2.644632,
+          2.584467,
+          2.597658,
+          2.629316,
+          2.598455,
+          2.559103
+        ],
+        "median_ms": 2.5419954999999996,
+        "round_medians_ms": [
+          2.501878,
+          2.5908045
+        ],
+        "input_sha256": "f6e5f902da05037347756a4a38c281ae7082b5bb797dc4929d1eba63df30876a",
+        "spec": {
+          "b": 1,
+          "t": 8192,
+          "h": 32,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp4_normal": {
+        "samples_ms": [
+          0.787538,
+          0.939743,
+          0.800359,
+          0.815406,
+          0.769087,
+          0.797582,
+          0.79582,
+          0.794007,
+          0.786225,
+          0.781917,
+          0.792379,
+          0.830781,
+          0.804375,
+          0.790104,
+          0.771172,
+          0.807489,
+          0.811536,
+          0.775876,
+          0.779598,
+          0.816969,
+          0.795312,
+          0.784319,
+          0.777476,
+          0.80056,
+          0.781788,
+          0.776202,
+          0.785076,
+          0.786266,
+          0.77711,
+          0.777768,
+          0.789458,
+          0.791621,
+          0.78801,
+          0.782525,
+          0.777951,
+          0.778674,
+          0.785787,
+          0.798264,
+          0.786567,
+          0.809576
+        ],
+        "median_ms": 0.787774,
+        "round_medians_ms": [
+          0.7949135,
+          0.7854315000000001
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp8_normal": {
+        "samples_ms": [
+          1.235498,
+          1.205805,
+          1.204032,
+          1.240045,
+          1.228311,
+          1.202848,
+          1.221029,
+          1.234015,
+          1.227698,
+          1.247207,
+          1.23772,
+          1.217466,
+          1.222673,
+          1.229612,
+          1.206093,
+          1.210505,
+          1.243152,
+          1.215872,
+          1.204009,
+          1.216894,
+          1.306783,
+          1.300478,
+          1.263751,
+          1.287233,
+          1.280172,
+          1.272825,
+          1.24263,
+          1.278225,
+          1.255506,
+          1.257515,
+          1.241048,
+          1.267402,
+          1.274749,
+          1.245552,
+          1.221138,
+          1.288508,
+          1.247671,
+          1.237491,
+          1.264054,
+          1.240051
+        ],
+        "median_ms": 1.240048,
+        "round_medians_ms": [
+          1.221851,
+          1.2639025
+        ],
+        "input_sha256": "43ba4ca0d31b3e7af9021d5b2e7af7249a1a85a4046c27580bec41b3cc189f8b",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp4_remat": {
+        "samples_ms": [
+          0.803346,
+          0.806491,
+          0.797003,
+          0.786558,
+          0.807531,
+          0.772299,
+          0.796043,
+          0.801076,
+          0.784855,
+          0.805469,
+          0.827287,
+          0.795501,
+          0.801355,
+          0.812509,
+          0.800206,
+          0.821894,
+          0.810041,
+          0.816836,
+          0.824236,
+          0.811423,
+          0.846111,
+          0.803134,
+          0.850407,
+          0.861533,
+          0.824367,
+          0.844093,
+          0.813522,
+          0.816879,
+          0.808185,
+          0.785678,
+          0.81234,
+          0.858257,
+          0.815286,
+          0.792479,
+          0.823958,
+          0.799175,
+          0.793936,
+          0.805875,
+          0.789754,
+          0.976381
+        ],
+        "median_ms": 0.807858,
+        "round_medians_ms": [
+          0.8044074999999999,
+          0.8144039999999999
+        ],
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "spec": {
+          "b": 1,
+          "t": 512,
+          "h": 8,
+          "n": 32,
+          "norm": true,
+          "fixed": false,
+          "cp": 4,
+          "remat": true,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp8_capacity": {
+        "samples_ms": [
+          1.142644,
+          1.125632,
+          1.165981,
+          1.16859,
+          1.180301,
+          1.126701,
+          1.113436,
+          1.105187,
+          1.091969,
+          1.097695,
+          1.082315,
+          1.120471,
+          1.10821,
+          1.123127,
+          1.14107,
+          1.110514,
+          6.432634,
+          1.094064,
+          1.081697,
+          1.101667,
+          1.228958,
+          1.193347,
+          1.193096,
+          1.208148,
+          1.192843,
+          1.184492,
+          1.218692,
+          1.157503,
+          1.185143,
+          1.169695,
+          1.164722,
+          1.167822,
+          1.184583,
+          1.145101,
+          1.166263,
+          1.150354,
+          1.148151,
+          1.161825,
+          1.197702,
+          1.136624
+        ],
+        "median_ms": 1.1539285000000001,
+        "round_medians_ms": [
+          1.1169535000000002,
+          1.1770935
+        ],
+        "input_sha256": "ee8d8f7dc2627618b2d28605fd7e5975f7e291bea05da6a3fdfae41bf7e08bd9",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": false,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal_workspace/cp8_overflow": {
+        "samples_ms": [
+          354.165022,
+          354.171383,
+          354.255592,
+          354.398206,
+          354.409861,
+          354.283281,
+          354.152157,
+          354.286186,
+          354.462453,
+          354.284077,
+          354.309236,
+          354.306482,
+          354.537895,
+          354.372295,
+          354.593611,
+          354.816738,
+          354.673118,
+          354.469242,
+          354.703636,
+          354.988367,
+          354.078962,
+          354.044882,
+          353.984594,
+          354.247061,
+          354.516732,
+          354.312406,
+          354.552925,
+          354.387451,
+          353.988285,
+          353.958347,
+          353.84587,
+          354.069499,
+          354.004598,
+          354.236414,
+          354.349545,
+          354.203181,
+          353.888129,
+          354.181436,
+          354.312998,
+          354.31754
+        ],
+        "median_ms": 354.296334,
+        "round_medians_ms": [
+          354.3852505,
+          354.19230849999997
+        ],
+        "input_sha256": "3641d31b9dd80cc6ef632a7efc488a78e376119e1fa50638d2815cb2e288f87c",
+        "spec": {
+          "b": 2,
+          "t": 1024,
+          "h": 4,
+          "n": 8192,
+          "norm": false,
+          "fixed": false,
+          "cp": 8,
+          "remat": false,
+          "over": true,
+          "preactivated": false,
+          "state": false
+        },
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((2, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,8]<=[8]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,8,1]<=[8]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      }
+    },
+    "comparisons": {
+      "before_workspace/cp8_long": [
+        {
+          "leaf": "output",
+          "max_abs": 2.5767949409782887e-05,
+          "relative_rms_diagnostic": 0.004887922942863309,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.2509600967168808e-05,
+          "relative_rms_diagnostic": 0.004096386579505241,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.627214416861534e-05,
+          "relative_rms_diagnostic": 0.004115361278793977,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0852778106927872e-05,
+          "relative_rms_diagnostic": 0.0043979116982509146,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.889850515610306e-07,
+          "relative_rms_diagnostic": 0.01639391079308616,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3539451174438e-05,
+          "relative_rms_diagnostic": 0.004406922661440815,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0025552705337759107,
+          "relative_rms_diagnostic": 0.06585332888387908,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 0.00010296642722096294,
+          "relative_rms_diagnostic": 0.05263798089658134,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp8_long_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 2.5767949409782887e-05,
+          "relative_rms_diagnostic": 0.004887922942863309,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.2509600967168808e-05,
+          "relative_rms_diagnostic": 0.0040816900676792995,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.627214416861534e-05,
+          "relative_rms_diagnostic": 0.004114477244508607,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0852778106927872e-05,
+          "relative_rms_diagnostic": 0.004397619949188158,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.889850515610306e-07,
+          "relative_rms_diagnostic": 0.016386348563276015,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3539451174438e-05,
+          "relative_rms_diagnostic": 0.004404198422338334,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.002558032370870933,
+          "relative_rms_diagnostic": 0.06581702391498773,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 0.0001029433224175591,
+          "relative_rms_diagnostic": 0.052615087421768236,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp4_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 1.9316095858812332e-05,
+          "relative_rms_diagnostic": 0.004892705605852042,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.7362181097269058e-05,
+          "relative_rms_diagnostic": 0.004054092481706135,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 1.814146526157856e-05,
+          "relative_rms_diagnostic": 0.004059032069707612,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.004410607267730154,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.0688786384635023e-07,
+          "relative_rms_diagnostic": 0.015269031435444768,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.0783318430185318e-05,
+          "relative_rms_diagnostic": 0.004510848680832967,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0005055274814367294,
+          "relative_rms_diagnostic": 0.08215171371627675,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 2.656122433108976e-05,
+          "relative_rms_diagnostic": 0.04749461389199298,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp8_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 2.0708655938506126e-05,
+          "relative_rms_diagnostic": 0.004894100648904819,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.972145400941372e-05,
+          "relative_rms_diagnostic": 0.004095238884570579,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.6300549507141113e-05,
+          "relative_rms_diagnostic": 0.0041081840162635885,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.6713980585336685e-05,
+          "relative_rms_diagnostic": 0.004379920069403582,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.2597866922733374e-07,
+          "relative_rms_diagnostic": 0.01249195285394356,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 9.335752110928297e-06,
+          "relative_rms_diagnostic": 0.0043822767916438165,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.001260261982679367,
+          "relative_rms_diagnostic": 0.04740130332986136,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 3.79579869331792e-05,
+          "relative_rms_diagnostic": 0.03539593602190788,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp4_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 1.9316095858812332e-05,
+          "relative_rms_diagnostic": 0.004892705605852042,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.7362181097269058e-05,
+          "relative_rms_diagnostic": 0.00405238473205439,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 1.814146526157856e-05,
+          "relative_rms_diagnostic": 0.0040574704269340164,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.004407592613759425,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.064972927153576e-07,
+          "relative_rms_diagnostic": 0.01526816679379262,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.0783318430185318e-05,
+          "relative_rms_diagnostic": 0.004498595740650866,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0005073091015219688,
+          "relative_rms_diagnostic": 0.08211397037324096,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 2.6561340746411588e-05,
+          "relative_rms_diagnostic": 0.04748842431670159,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp8_capacity": [
+        {
+          "leaf": "output",
+          "max_abs": 5.132751539349556e-06,
+          "relative_rms_diagnostic": 0.0041756464684900504,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 4.569068551063538e-06,
+          "relative_rms_diagnostic": 0.0036870602820790696,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.900976248085499e-06,
+          "relative_rms_diagnostic": 0.0036971218312373774,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 4.913599696010351e-06,
+          "relative_rms_diagnostic": 0.0037076822838156857,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 1.1764768714783713e-07,
+          "relative_rms_diagnostic": 0.016363006148326188,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 3.0167284421622753e-06,
+          "relative_rms_diagnostic": 0.003793068812832807,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00020253460388630629,
+          "relative_rms_diagnostic": 0.14077913388519636,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.646126293053385e-05,
+          "relative_rms_diagnostic": 0.06501434996132877,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "before_workspace/cp8_overflow": [
+        {
+          "leaf": "output",
+          "max_abs": 5.761306965723634e-06,
+          "relative_rms_diagnostic": 0.004175090827076595,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 4.569068551063538e-06,
+          "relative_rms_diagnostic": 0.003687570747851921,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.90167474001646e-06,
+          "relative_rms_diagnostic": 0.00369843779386064,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 4.913599696010351e-06,
+          "relative_rms_diagnostic": 0.0037080534869003896,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 1.1764768714783713e-07,
+          "relative_rms_diagnostic": 0.016227460029843894,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 3.0167284421622753e-06,
+          "relative_rms_diagnostic": 0.0037881182629791892,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00023076438810676336,
+          "relative_rms_diagnostic": 0.14986596657724455,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.565565435157623e-05,
+          "relative_rms_diagnostic": 0.06371758239613468,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp8_long": [
+        {
+          "leaf": "output",
+          "max_abs": 2.5767949409782887e-05,
+          "relative_rms_diagnostic": 0.004887922942863309,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.2758962586522102e-05,
+          "relative_rms_diagnostic": 0.004101750899522994,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.627214416861534e-05,
+          "relative_rms_diagnostic": 0.004120556883716379,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0852778106927872e-05,
+          "relative_rms_diagnostic": 0.004397921280724579,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.889850515610306e-07,
+          "relative_rms_diagnostic": 0.016393879653217185,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3539451174438e-05,
+          "relative_rms_diagnostic": 0.0044069262498503,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0025550942809786648,
+          "relative_rms_diagnostic": 0.06587200291071246,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 0.00010296631808159873,
+          "relative_rms_diagnostic": 0.05263869348649657,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp8_long_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 2.5767949409782887e-05,
+          "relative_rms_diagnostic": 0.004887922942863309,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.2758962586522102e-05,
+          "relative_rms_diagnostic": 0.004092793043408737,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.627214416861534e-05,
+          "relative_rms_diagnostic": 0.004119781936615076,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0852778106927872e-05,
+          "relative_rms_diagnostic": 0.004397657850694804,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.889850515610306e-07,
+          "relative_rms_diagnostic": 0.016389808632564024,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3539451174438e-05,
+          "relative_rms_diagnostic": 0.004405459414312841,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0025567203701939434,
+          "relative_rms_diagnostic": 0.06607571264048771,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 0.00010306615149602294,
+          "relative_rms_diagnostic": 0.052633876667866626,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp4_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 1.9316095858812332e-05,
+          "relative_rms_diagnostic": 0.004892705605852042,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.7362181097269058e-05,
+          "relative_rms_diagnostic": 0.004060707382540305,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 1.814146526157856e-05,
+          "relative_rms_diagnostic": 0.0040652131683461806,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.004410750771606571,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.0688786384635023e-07,
+          "relative_rms_diagnostic": 0.015268919139960316,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.0783318430185318e-05,
+          "relative_rms_diagnostic": 0.004510827044174782,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0005055274814367294,
+          "relative_rms_diagnostic": 0.08216396381119853,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 2.65614498857758e-05,
+          "relative_rms_diagnostic": 0.047494373207189605,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp8_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 2.0708655938506126e-05,
+          "relative_rms_diagnostic": 0.004894100648904819,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.972145400941372e-05,
+          "relative_rms_diagnostic": 0.004101015820588443,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.6300549507141113e-05,
+          "relative_rms_diagnostic": 0.0041116406471902915,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.6713980585336685e-05,
+          "relative_rms_diagnostic": 0.004379886893341571,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.2597866922733374e-07,
+          "relative_rms_diagnostic": 0.012491956719102776,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 9.335752110928297e-06,
+          "relative_rms_diagnostic": 0.00438227308981293,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0012602638453245163,
+          "relative_rms_diagnostic": 0.047397920489536796,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 3.7957943277433515e-05,
+          "relative_rms_diagnostic": 0.035394454190646366,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp4_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 1.9316095858812332e-05,
+          "relative_rms_diagnostic": 0.004892705605852042,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.7362181097269058e-05,
+          "relative_rms_diagnostic": 0.00405914336396183,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 1.814146526157856e-05,
+          "relative_rms_diagnostic": 0.00406413892514328,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.004407588521420187,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 4.064972927153576e-07,
+          "relative_rms_diagnostic": 0.015267700229566332,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.0783318430185318e-05,
+          "relative_rms_diagnostic": 0.004498737207025849,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.0005068723112344742,
+          "relative_rms_diagnostic": 0.08207443708333137,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 2.6564793188299518e-05,
+          "relative_rms_diagnostic": 0.04748787275468565,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp8_capacity": [
+        {
+          "leaf": "output",
+          "max_abs": 5.132751539349556e-06,
+          "relative_rms_diagnostic": 0.0041756464684900504,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 4.569068551063538e-06,
+          "relative_rms_diagnostic": 0.0036870602820790696,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.900976248085499e-06,
+          "relative_rms_diagnostic": 0.0036971218312373774,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 4.913599696010351e-06,
+          "relative_rms_diagnostic": 0.0037076822838156857,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 1.1764768714783713e-07,
+          "relative_rms_diagnostic": 0.016363006148326188,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 3.0167284421622753e-06,
+          "relative_rms_diagnostic": 0.003793068812832807,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00020253460388630629,
+          "relative_rms_diagnostic": 0.14077913388519636,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.646126293053385e-05,
+          "relative_rms_diagnostic": 0.06501434996132877,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "candidate_workspace/cp8_overflow": [
+        {
+          "leaf": "output",
+          "max_abs": 5.761306965723634e-06,
+          "relative_rms_diagnostic": 0.004175090827076595,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 4.569068551063538e-06,
+          "relative_rms_diagnostic": 0.003687570747851921,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.90167474001646e-06,
+          "relative_rms_diagnostic": 0.00369843779386064,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 4.913599696010351e-06,
+          "relative_rms_diagnostic": 0.0037080534869003896,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 1.1764768714783713e-07,
+          "relative_rms_diagnostic": 0.016227460029843894,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 3.0167284421622753e-06,
+          "relative_rms_diagnostic": 0.0037881182629791892,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00023076438810676336,
+          "relative_rms_diagnostic": 0.14986596657724455,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.565565435157623e-05,
+          "relative_rms_diagnostic": 0.06371758239613468,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp8_long": [
+        {
+          "leaf": "output",
+          "max_abs": 2.404698170721531e-05,
+          "relative_rms_diagnostic": 0.00485824924981542,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.4288659915328026e-05,
+          "relative_rms_diagnostic": 0.004126007871159239,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.821441739797592e-05,
+          "relative_rms_diagnostic": 0.004135085519119069,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0253006368875504e-05,
+          "relative_rms_diagnostic": 0.004359009878897144,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 3.4493132261559367e-07,
+          "relative_rms_diagnostic": 0.004200584314299486,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3178098015487194e-05,
+          "relative_rms_diagnostic": 0.004376089630415836,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00024968013167381287,
+          "relative_rms_diagnostic": 0.005197755671791399,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.235411036759615e-05,
+          "relative_rms_diagnostic": 0.0038757966214528062,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp8_long_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 2.404698170721531e-05,
+          "relative_rms_diagnostic": 0.004858247946531528,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.4288659915328026e-05,
+          "relative_rms_diagnostic": 0.00412128827896729,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.821441739797592e-05,
+          "relative_rms_diagnostic": 0.004134880217053575,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0253006368875504e-05,
+          "relative_rms_diagnostic": 0.004359009549514021,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 3.3366814022883773e-07,
+          "relative_rms_diagnostic": 0.004191291602056827,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.3178098015487194e-05,
+          "relative_rms_diagnostic": 0.004375474242920898,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00026137009263038635,
+          "relative_rms_diagnostic": 0.005472395523958683,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 1.1866097338497639e-05,
+          "relative_rms_diagnostic": 0.003869464337925758,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp4_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 1.517939381301403e-05,
+          "relative_rms_diagnostic": 0.004844850095881883,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.744343899190426e-05,
+          "relative_rms_diagnostic": 0.004078660935613641,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.0825304090976715e-05,
+          "relative_rms_diagnostic": 0.004074753165990213,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.0043527951025730365,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 2.9379953048191965e-07,
+          "relative_rms_diagnostic": 0.004179185494603052,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 7.885624654591084e-06,
+          "relative_rms_diagnostic": 0.004342703859189081,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 3.692507743835449e-05,
+          "relative_rms_diagnostic": 0.003361028414147206,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 3.2819807529449463e-06,
+          "relative_rms_diagnostic": 0.004153006007648921,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp8_normal": [
+        {
+          "leaf": "output",
+          "max_abs": 2.0708655938506126e-05,
+          "relative_rms_diagnostic": 0.0048932726402060875,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 2.009398303925991e-05,
+          "relative_rms_diagnostic": 0.004121726650851291,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.918601967394352e-05,
+          "relative_rms_diagnostic": 0.004127197894816762,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 2.0340317860245705e-05,
+          "relative_rms_diagnostic": 0.0043742498759315575,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 2.4585824576206505e-07,
+          "relative_rms_diagnostic": 0.004174531101336212,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 1.0003568604588509e-05,
+          "relative_rms_diagnostic": 0.004403577061043067,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 0.00011096522212028503,
+          "relative_rms_diagnostic": 0.004078108859237736,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 7.973896572366357e-06,
+          "relative_rms_diagnostic": 0.004105371319137384,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp4_remat": [
+        {
+          "leaf": "output",
+          "max_abs": 1.517939381301403e-05,
+          "relative_rms_diagnostic": 0.004844850095881883,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 1.744343899190426e-05,
+          "relative_rms_diagnostic": 0.004076328898128768,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 2.0825304090976715e-05,
+          "relative_rms_diagnostic": 0.004074319098715254,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 1.3582990504801273e-05,
+          "relative_rms_diagnostic": 0.004352821258137217,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 2.9379953048191965e-07,
+          "relative_rms_diagnostic": 0.004177079191265933,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 7.885624654591084e-06,
+          "relative_rms_diagnostic": 0.004342887851942718,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 3.8197264075279236e-05,
+          "relative_rms_diagnostic": 0.0034756633252080904,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 3.2928946893662214e-06,
+          "relative_rms_diagnostic": 0.004151567882576,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp8_capacity": [
+        {
+          "leaf": "output",
+          "max_abs": 5.051027983427048e-06,
+          "relative_rms_diagnostic": 0.004139895161682156,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 3.4808763302862644e-06,
+          "relative_rms_diagnostic": 0.0033167544666409315,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.900976248085499e-06,
+          "relative_rms_diagnostic": 0.003320855325019002,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 5.387410055845976e-06,
+          "relative_rms_diagnostic": 0.0036662816310826566,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 5.21540641784668e-08,
+          "relative_rms_diagnostic": 0.0033350398778099,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 2.6773486752063036e-06,
+          "relative_rms_diagnostic": 0.0037254327732080582,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 1.121553941629827e-05,
+          "relative_rms_diagnostic": 0.006819824811243881,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 7.857961463741958e-07,
+          "relative_rms_diagnostic": 0.002713125741557693,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ],
+      "internal_workspace/cp8_overflow": [
+        {
+          "leaf": "output",
+          "max_abs": 5.051027983427048e-06,
+          "relative_rms_diagnostic": 0.00413894451683497,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dq",
+          "max_abs": 3.4808763302862644e-06,
+          "relative_rms_diagnostic": 0.003317714750673211,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dk",
+          "max_abs": 5.90167474001646e-06,
+          "relative_rms_diagnostic": 0.003321989634509337,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dv",
+          "max_abs": 5.387410055845976e-06,
+          "relative_rms_diagnostic": 0.003665560473084112,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dg",
+          "max_abs": 5.21540641784668e-08,
+          "relative_rms_diagnostic": 0.00333611791741015,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dbeta",
+          "max_abs": 2.6773486752063036e-06,
+          "relative_rms_diagnostic": 0.0037229491444074163,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "dA_log",
+          "max_abs": 7.09824962541461e-06,
+          "relative_rms_diagnostic": 0.005060182376955223,
+          "atol": 0.05,
+          "rtol": 0.05,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        },
+        {
+          "leaf": "ddt_bias",
+          "max_abs": 7.486160029657185e-07,
+          "relative_rms_diagnostic": 0.002706620026527784,
+          "atol": 0.008,
+          "rtol": 0.008,
+          "max_ulp": 1,
+          "violations": 0,
+          "finite": true,
+          "passed": true
+        }
+      ]
+    },
+    "passed": true,
+    "complete": true
+  },
+  "paired_cp4": {
+    "source": {
+      "before": {
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "candidate": {
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      },
+      "internal": {
+        "input_sha256": "2a6757b0b9e745a739a30b79fb187a3c5a020e9b782f92f758f7b1624b722fa0",
+        "input_formats": [
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({replicated}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,4]<=[4]}, memory_kind=device))",
+          "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=GSPMDSharding({devices=[1,1,4,1]<=[4]}, memory_kind=device))",
+          "Format(layout=None, sharding=None)"
+        ]
+      }
+    },
+    "protocol": "100 paired blocks, randomly ordered palindrome, same process/backend/actual input tuple; 20 warmups per implementation; all 200 samples retained",
+    "blocks": [
+      {
+        "before": [
+          0.964135,
+          0.950509
+        ],
+        "candidate": [
+          0.932579,
+          0.992897
+        ],
+        "internal": [
+          2.251009,
+          0.854164
+        ]
+      },
+      {
+        "before": [
+          0.940958,
+          0.900947
+        ],
+        "candidate": [
+          0.896213,
+          0.884418
+        ],
+        "internal": [
+          0.80889,
+          0.820488
+        ]
+      },
+      {
+        "before": [
+          0.933842,
+          0.885072
+        ],
+        "candidate": [
+          0.898871,
+          0.884778
+        ],
+        "internal": [
+          0.831609,
+          0.792786
+        ]
+      },
+      {
+        "before": [
+          0.949834,
+          0.913127
+        ],
+        "candidate": [
+          0.886912,
+          0.915717
+        ],
+        "internal": [
+          0.781279,
+          0.835106
+        ]
+      },
+      {
+        "before": [
+          0.934298,
+          0.889675
+        ],
+        "candidate": [
+          0.876362,
+          0.883682
+        ],
+        "internal": [
+          0.814827,
+          0.818827
+        ]
+      },
+      {
+        "before": [
+          0.906358,
+          0.894097
+        ],
+        "candidate": [
+          0.895721,
+          0.883511
+        ],
+        "internal": [
+          0.80336,
+          0.79908
+        ]
+      },
+      {
+        "before": [
+          0.904424,
+          0.92052
+        ],
+        "candidate": [
+          0.894345,
+          0.916737
+        ],
+        "internal": [
+          0.78016,
+          0.781024
+        ]
+      },
+      {
+        "before": [
+          0.89504,
+          0.911754
+        ],
+        "candidate": [
+          0.89022,
+          0.89321
+        ],
+        "internal": [
+          0.800863,
+          0.806893
+        ]
+      },
+      {
+        "before": [
+          0.895761,
+          0.895529
+        ],
+        "candidate": [
+          0.93106,
+          0.895241
+        ],
+        "internal": [
+          0.80725,
+          0.919876
+        ]
+      },
+      {
+        "before": [
+          0.93944,
+          0.953139
+        ],
+        "candidate": [
+          0.924903,
+          0.92364
+        ],
+        "internal": [
+          0.796184,
+          0.818432
+        ]
+      },
+      {
+        "before": [
+          0.918403,
+          0.910326
+        ],
+        "candidate": [
+          0.929384,
+          0.915661
+        ],
+        "internal": [
+          0.837801,
+          0.841409
+        ]
+      },
+      {
+        "before": [
+          0.930485,
+          0.956319
+        ],
+        "candidate": [
+          0.896703,
+          0.937764
+        ],
+        "internal": [
+          0.808389,
+          0.821394
+        ]
+      },
+      {
+        "before": [
+          1.15318,
+          0.922417
+        ],
+        "candidate": [
+          0.927229,
+          0.885444
+        ],
+        "internal": [
+          0.836995,
+          0.81393
+        ]
+      },
+      {
+        "before": [
+          0.910769,
+          0.921829
+        ],
+        "candidate": [
+          0.916959,
+          0.909327
+        ],
+        "internal": [
+          0.795926,
+          0.798529
+        ]
+      },
+      {
+        "before": [
+          0.959211,
+          0.911287
+        ],
+        "candidate": [
+          0.931865,
+          0.904598
+        ],
+        "internal": [
+          0.808228,
+          0.810334
+        ]
+      },
+      {
+        "before": [
+          0.915896,
+          0.918662
+        ],
+        "candidate": [
+          0.920637,
+          0.927446
+        ],
+        "internal": [
+          0.846375,
+          0.796676
+        ]
+      },
+      {
+        "before": [
+          0.901657,
+          0.90272
+        ],
+        "candidate": [
+          0.859979,
+          0.869459
+        ],
+        "internal": [
+          0.757611,
+          0.785777
+        ]
+      },
+      {
+        "before": [
+          0.894785,
+          0.915366
+        ],
+        "candidate": [
+          0.878149,
+          0.883077
+        ],
+        "internal": [
+          0.765033,
+          0.777507
+        ]
+      },
+      {
+        "before": [
+          0.876682,
+          0.890879
+        ],
+        "candidate": [
+          0.885816,
+          0.868726
+        ],
+        "internal": [
+          0.803318,
+          0.824163
+        ]
+      },
+      {
+        "before": [
+          0.892352,
+          0.886594
+        ],
+        "candidate": [
+          0.887806,
+          0.870581
+        ],
+        "internal": [
+          0.800877,
+          0.766569
+        ]
+      },
+      {
+        "before": [
+          0.922368,
+          0.851412
+        ],
+        "candidate": [
+          0.87752,
+          0.873174
+        ],
+        "internal": [
+          0.771495,
+          0.768416
+        ]
+      },
+      {
+        "before": [
+          0.866796,
+          0.872892
+        ],
+        "candidate": [
+          0.859762,
+          0.866367
+        ],
+        "internal": [
+          0.76941,
+          0.768886
+        ]
+      },
+      {
+        "before": [
+          0.899163,
+          0.85832
+        ],
+        "candidate": [
+          0.875568,
+          0.883416
+        ],
+        "internal": [
+          0.796921,
+          0.753943
+        ]
+      },
+      {
+        "before": [
+          0.909381,
+          0.884734
+        ],
+        "candidate": [
+          0.869546,
+          0.841579
+        ],
+        "internal": [
+          0.791716,
+          0.76301
+        ]
+      },
+      {
+        "before": [
+          0.877457,
+          0.875749
+        ],
+        "candidate": [
+          0.853113,
+          0.862503
+        ],
+        "internal": [
+          0.771271,
+          0.79084
+        ]
+      },
+      {
+        "before": [
+          0.866037,
+          0.911265
+        ],
+        "candidate": [
+          0.847393,
+          0.870905
+        ],
+        "internal": [
+          0.765434,
+          0.769914
+        ]
+      },
+      {
+        "before": [
+          0.884923,
+          0.900337
+        ],
+        "candidate": [
+          0.878399,
+          0.870576
+        ],
+        "internal": [
+          0.786214,
+          0.779096
+        ]
+      },
+      {
+        "before": [
+          0.879262,
+          0.894403
+        ],
+        "candidate": [
+          0.884464,
+          0.875919
+        ],
+        "internal": [
+          0.790744,
+          0.784897
+        ]
+      },
+      {
+        "before": [
+          0.863209,
+          0.870547
+        ],
+        "candidate": [
+          0.888718,
+          0.892151
+        ],
+        "internal": [
+          0.774041,
+          0.774635
+        ]
+      },
+      {
+        "before": [
+          0.983903,
+          0.896039
+        ],
+        "candidate": [
+          0.896328,
+          0.885008
+        ],
+        "internal": [
+          0.782812,
+          0.778824
+        ]
+      },
+      {
+        "before": [
+          0.880293,
+          0.881646
+        ],
+        "candidate": [
+          0.868027,
+          0.897252
+        ],
+        "internal": [
+          0.772264,
+          0.796222
+        ]
+      },
+      {
+        "before": [
+          0.897666,
+          0.866083
+        ],
+        "candidate": [
+          0.884818,
+          0.86432
+        ],
+        "internal": [
+          0.801543,
+          0.793875
+        ]
+      },
+      {
+        "before": [
+          0.872601,
+          0.910809
+        ],
+        "candidate": [
+          0.863659,
+          0.868853
+        ],
+        "internal": [
+          0.80062,
+          0.769218
+        ]
+      },
+      {
+        "before": [
+          0.898889,
+          0.867427
+        ],
+        "candidate": [
+          0.887364,
+          0.870436
+        ],
+        "internal": [
+          0.766416,
+          0.777145
+        ]
+      },
+      {
+        "before": [
+          0.896847,
+          0.883172
+        ],
+        "candidate": [
+          0.902484,
+          0.887244
+        ],
+        "internal": [
+          0.787709,
+          0.762772
+        ]
+      },
+      {
+        "before": [
+          0.885312,
+          0.879781
+        ],
+        "candidate": [
+          0.893472,
+          0.866896
+        ],
+        "internal": [
+          0.775443,
+          0.778222
+        ]
+      },
+      {
+        "before": [
+          0.887087,
+          0.879723
+        ],
+        "candidate": [
+          0.88279,
+          0.874963
+        ],
+        "internal": [
+          0.796702,
+          0.784085
+        ]
+      },
+      {
+        "before": [
+          0.87532,
+          0.917628
+        ],
+        "candidate": [
+          0.880653,
+          0.865648
+        ],
+        "internal": [
+          0.787447,
+          0.798249
+        ]
+      },
+      {
+        "before": [
+          0.886384,
+          0.895314
+        ],
+        "candidate": [
+          0.862834,
+          0.873812
+        ],
+        "internal": [
+          0.788335,
+          0.767674
+        ]
+      },
+      {
+        "before": [
+          0.902838,
+          0.896436
+        ],
+        "candidate": [
+          0.888304,
+          0.884596
+        ],
+        "internal": [
+          0.759635,
+          0.7731
+        ]
+      },
+      {
+        "before": [
+          0.869713,
+          0.88206
+        ],
+        "candidate": [
+          0.912674,
+          0.908845
+        ],
+        "internal": [
+          0.792254,
+          0.77176
+        ]
+      },
+      {
+        "before": [
+          0.878108,
+          0.906401
+        ],
+        "candidate": [
+          0.878,
+          0.876067
+        ],
+        "internal": [
+          0.794782,
+          0.784167
+        ]
+      },
+      {
+        "before": [
+          0.897866,
+          0.904238
+        ],
+        "candidate": [
+          0.882676,
+          0.905685
+        ],
+        "internal": [
+          0.780656,
+          0.784488
+        ]
+      },
+      {
+        "before": [
+          0.881199,
+          0.911531
+        ],
+        "candidate": [
+          0.876609,
+          0.871645
+        ],
+        "internal": [
+          0.778417,
+          0.780036
+        ]
+      },
+      {
+        "before": [
+          0.897447,
+          0.892895
+        ],
+        "candidate": [
+          0.865564,
+          0.880492
+        ],
+        "internal": [
+          0.79441,
+          0.7892
+        ]
+      },
+      {
+        "before": [
+          0.875304,
+          0.860759
+        ],
+        "candidate": [
+          0.858538,
+          0.839727
+        ],
+        "internal": [
+          0.766188,
+          0.758292
+        ]
+      },
+      {
+        "before": [
+          0.868278,
+          0.87734
+        ],
+        "candidate": [
+          0.887929,
+          0.870112
+        ],
+        "internal": [
+          0.762474,
+          0.751123
+        ]
+      },
+      {
+        "before": [
+          0.868135,
+          0.871546
+        ],
+        "candidate": [
+          0.861038,
+          0.846309
+        ],
+        "internal": [
+          0.773116,
+          0.764232
+        ]
+      },
+      {
+        "before": [
+          0.897175,
+          0.869526
+        ],
+        "candidate": [
+          0.858125,
+          0.864287
+        ],
+        "internal": [
+          0.758767,
+          0.794602
+        ]
+      },
+      {
+        "before": [
+          0.856916,
+          0.89787
+        ],
+        "candidate": [
+          0.901112,
+          0.896937
+        ],
+        "internal": [
+          0.778581,
+          0.781104
+        ]
+      },
+      {
+        "before": [
+          0.894764,
+          0.863086
+        ],
+        "candidate": [
+          0.847732,
+          0.846256
+        ],
+        "internal": [
+          0.770095,
+          0.77569
+        ]
+      },
+      {
+        "before": [
+          0.868744,
+          0.859303
+        ],
+        "candidate": [
+          0.874061,
+          0.851292
+        ],
+        "internal": [
+          0.767836,
+          0.74802
+        ]
+      },
+      {
+        "before": [
+          1.12335,
+          0.880574
+        ],
+        "candidate": [
+          0.871595,
+          0.862796
+        ],
+        "internal": [
+          0.767381,
+          0.780665
+        ]
+      },
+      {
+        "before": [
+          0.878968,
+          0.862476
+        ],
+        "candidate": [
+          0.87876,
+          0.897991
+        ],
+        "internal": [
+          0.795496,
+          0.784212
+        ]
+      },
+      {
+        "before": [
+          0.896735,
+          0.894736
+        ],
+        "candidate": [
+          0.873167,
+          0.869215
+        ],
+        "internal": [
+          0.816613,
+          0.793828
+        ]
+      },
+      {
+        "before": [
+          0.891038,
+          0.891703
+        ],
+        "candidate": [
+          0.858194,
+          0.87251
+        ],
+        "internal": [
+          0.800372,
+          0.778799
+        ]
+      },
+      {
+        "before": [
+          0.873139,
+          0.893177
+        ],
+        "candidate": [
+          0.866208,
+          0.864353
+        ],
+        "internal": [
+          0.776437,
+          0.780994
+        ]
+      },
+      {
+        "before": [
+          0.881516,
+          0.872721
+        ],
+        "candidate": [
+          0.877861,
+          0.869817
+        ],
+        "internal": [
+          0.763151,
+          0.796857
+        ]
+      },
+      {
+        "before": [
+          0.898111,
+          0.886655
+        ],
+        "candidate": [
+          0.89313,
+          0.911419
+        ],
+        "internal": [
+          0.798337,
+          0.787051
+        ]
+      },
+      {
+        "before": [
+          0.876001,
+          0.851934
+        ],
+        "candidate": [
+          0.871065,
+          0.866646
+        ],
+        "internal": [
+          0.781044,
+          0.775449
+        ]
+      },
+      {
+        "before": [
+          0.866533,
+          0.894915
+        ],
+        "candidate": [
+          0.87711,
+          0.85494
+        ],
+        "internal": [
+          0.754056,
+          0.777756
+        ]
+      },
+      {
+        "before": [
+          0.892432,
+          0.888947
+        ],
+        "candidate": [
+          0.876857,
+          0.877495
+        ],
+        "internal": [
+          0.774927,
+          0.790436
+        ]
+      },
+      {
+        "before": [
+          0.893407,
+          0.872369
+        ],
+        "candidate": [
+          0.899858,
+          0.865953
+        ],
+        "internal": [
+          0.786439,
+          0.758098
+        ]
+      },
+      {
+        "before": [
+          0.857605,
+          0.860219
+        ],
+        "candidate": [
+          0.858964,
+          0.848083
+        ],
+        "internal": [
+          0.769896,
+          0.775165
+        ]
+      },
+      {
+        "before": [
+          0.890832,
+          0.852752
+        ],
+        "candidate": [
+          0.874467,
+          0.880247
+        ],
+        "internal": [
+          0.766916,
+          0.778039
+        ]
+      },
+      {
+        "before": [
+          0.855815,
+          0.866814
+        ],
+        "candidate": [
+          0.866671,
+          0.866455
+        ],
+        "internal": [
+          0.767146,
+          0.751124
+        ]
+      },
+      {
+        "before": [
+          0.861976,
+          0.859756
+        ],
+        "candidate": [
+          0.863038,
+          0.866184
+        ],
+        "internal": [
+          0.745968,
+          0.774498
+        ]
+      },
+      {
+        "before": [
+          0.879075,
+          0.895431
+        ],
+        "candidate": [
+          0.878178,
+          0.856146
+        ],
+        "internal": [
+          0.768192,
+          0.747969
+        ]
+      },
+      {
+        "before": [
+          0.899423,
+          0.894226
+        ],
+        "candidate": [
+          0.85818,
+          0.849388
+        ],
+        "internal": [
+          0.822533,
+          0.760509
+        ]
+      },
+      {
+        "before": [
+          0.902189,
+          0.879426
+        ],
+        "candidate": [
+          0.90991,
+          0.879891
+        ],
+        "internal": [
+          0.771692,
+          0.762582
+        ]
+      },
+      {
+        "before": [
+          0.865477,
+          0.869353
+        ],
+        "candidate": [
+          0.855523,
+          0.865511
+        ],
+        "internal": [
+          0.783552,
+          0.774522
+        ]
+      },
+      {
+        "before": [
+          0.896217,
+          0.870788
+        ],
+        "candidate": [
+          0.868927,
+          0.880053
+        ],
+        "internal": [
+          0.782819,
+          0.781336
+        ]
+      },
+      {
+        "before": [
+          0.892203,
+          0.865777
+        ],
+        "candidate": [
+          0.879009,
+          0.891381
+        ],
+        "internal": [
+          0.779406,
+          0.775921
+        ]
+      },
+      {
+        "before": [
+          0.869482,
+          0.864612
+        ],
+        "candidate": [
+          0.912388,
+          0.865203
+        ],
+        "internal": [
+          0.778686,
+          0.773092
+        ]
+      },
+      {
+        "before": [
+          0.939935,
+          0.904687
+        ],
+        "candidate": [
+          0.901788,
+          0.873788
+        ],
+        "internal": [
+          0.792852,
+          0.775254
+        ]
+      },
+      {
+        "before": [
+          0.89771,
+          0.885052
+        ],
+        "candidate": [
+          0.892221,
+          0.851392
+        ],
+        "internal": [
+          0.798165,
+          0.792408
+        ]
+      },
+      {
+        "before": [
+          0.858844,
+          0.884021
+        ],
+        "candidate": [
+          0.864774,
+          0.866955
+        ],
+        "internal": [
+          0.750014,
+          0.760901
+        ]
+      },
+      {
+        "before": [
+          0.87928,
+          0.890422
+        ],
+        "candidate": [
+          0.873656,
+          0.859772
+        ],
+        "internal": [
+          0.787467,
+          0.767501
+        ]
+      },
+      {
+        "before": [
+          0.884416,
+          0.880749
+        ],
+        "candidate": [
+          0.882288,
+          0.8714
+        ],
+        "internal": [
+          0.782538,
+          0.77328
+        ]
+      },
+      {
+        "before": [
+          0.869646,
+          0.858056
+        ],
+        "candidate": [
+          0.872861,
+          0.879179
+        ],
+        "internal": [
+          0.757408,
+          0.793119
+        ]
+      },
+      {
+        "before": [
+          0.880135,
+          0.864859
+        ],
+        "candidate": [
+          0.846196,
+          0.885708
+        ],
+        "internal": [
+          0.766901,
+          0.758932
+        ]
+      },
+      {
+        "before": [
+          0.890007,
+          0.876195
+        ],
+        "candidate": [
+          0.869798,
+          0.857938
+        ],
+        "internal": [
+          0.768911,
+          0.790469
+        ]
+      },
+      {
+        "before": [
+          0.902924,
+          0.895322
+        ],
+        "candidate": [
+          0.886687,
+          0.869841
+        ],
+        "internal": [
+          0.775592,
+          0.754291
+        ]
+      },
+      {
+        "before": [
+          0.904468,
+          0.880239
+        ],
+        "candidate": [
+          0.884567,
+          0.868562
+        ],
+        "internal": [
+          0.78312,
+          0.76844
+        ]
+      },
+      {
+        "before": [
+          0.887126,
+          0.901137
+        ],
+        "candidate": [
+          0.859758,
+          0.866659
+        ],
+        "internal": [
+          0.760048,
+          0.77296
+        ]
+      },
+      {
+        "before": [
+          0.883889,
+          0.885648
+        ],
+        "candidate": [
+          0.884052,
+          0.879819
+        ],
+        "internal": [
+          0.781345,
+          0.792224
+        ]
+      },
+      {
+        "before": [
+          0.893449,
+          0.888862
+        ],
+        "candidate": [
+          0.897041,
+          0.882211
+        ],
+        "internal": [
+          0.776535,
+          0.775467
+        ]
+      },
+      {
+        "before": [
+          0.875723,
+          0.884253
+        ],
+        "candidate": [
+          0.879235,
+          0.890363
+        ],
+        "internal": [
+          0.786927,
+          0.752209
+        ]
+      },
+      {
+        "before": [
+          0.889495,
+          0.877463
+        ],
+        "candidate": [
+          0.87357,
+          0.90496
+        ],
+        "internal": [
+          0.756759,
+          0.773853
+        ]
+      },
+      {
+        "before": [
+          0.913592,
+          0.88683
+        ],
+        "candidate": [
+          0.883725,
+          0.877536
+        ],
+        "internal": [
+          0.79485,
+          0.783796
+        ]
+      },
+      {
+        "before": [
+          0.880468,
+          0.872273
+        ],
+        "candidate": [
+          0.886782,
+          0.867483
+        ],
+        "internal": [
+          0.800437,
+          0.767073
+        ]
+      },
+      {
+        "before": [
+          0.89302,
+          0.89146
+        ],
+        "candidate": [
+          0.866351,
+          0.857895
+        ],
+        "internal": [
+          0.770661,
+          0.768946
+        ]
+      },
+      {
+        "before": [
+          0.867461,
+          0.871602
+        ],
+        "candidate": [
+          0.863389,
+          0.863621
+        ],
+        "internal": [
+          0.785653,
+          0.789275
+        ]
+      },
+      {
+        "before": [
+          0.8756,
+          0.881474
+        ],
+        "candidate": [
+          0.886963,
+          0.869351
+        ],
+        "internal": [
+          0.805741,
+          0.782786
+        ]
+      },
+      {
+        "before": [
+          0.893016,
+          0.868925
+        ],
+        "candidate": [
+          0.869112,
+          0.861162
+        ],
+        "internal": [
+          0.773214,
+          0.774882
+        ]
+      },
+      {
+        "before": [
+          0.874489,
+          0.876741
+        ],
+        "candidate": [
+          0.881626,
+          0.880132
+        ],
+        "internal": [
+          0.756061,
+          0.784657
+        ]
+      },
+      {
+        "before": [
+          0.869879,
+          0.8833
+        ],
+        "candidate": [
+          0.859891,
+          0.868326
+        ],
+        "internal": [
+          0.768807,
+          0.784334
+        ]
+      },
+      {
+        "before": [
+          0.889926,
+          0.880355
+        ],
+        "candidate": [
+          0.883238,
+          0.876921
+        ],
+        "internal": [
+          0.790588,
+          0.779955
+        ]
+      },
+      {
+        "before": [
+          0.883889,
+          0.896403
+        ],
+        "candidate": [
+          0.860617,
+          0.875549
+        ],
+        "internal": [
+          0.791818,
+          0.775594
+        ]
+      },
+      {
+        "before": [
+          0.872318,
+          0.896676
+        ],
+        "candidate": [
+          0.869117,
+          0.847981
+        ],
+        "internal": [
+          0.791284,
+          0.7837
+        ]
+      }
+    ],
+    "samples_ms": {
+      "before": [
+        0.964135,
+        0.950509,
+        0.940958,
+        0.900947,
+        0.933842,
+        0.885072,
+        0.949834,
+        0.913127,
+        0.934298,
+        0.889675,
+        0.906358,
+        0.894097,
+        0.904424,
+        0.92052,
+        0.89504,
+        0.911754,
+        0.895761,
+        0.895529,
+        0.93944,
+        0.953139,
+        0.918403,
+        0.910326,
+        0.930485,
+        0.956319,
+        1.15318,
+        0.922417,
+        0.910769,
+        0.921829,
+        0.959211,
+        0.911287,
+        0.915896,
+        0.918662,
+        0.901657,
+        0.90272,
+        0.894785,
+        0.915366,
+        0.876682,
+        0.890879,
+        0.892352,
+        0.886594,
+        0.922368,
+        0.851412,
+        0.866796,
+        0.872892,
+        0.899163,
+        0.85832,
+        0.909381,
+        0.884734,
+        0.877457,
+        0.875749,
+        0.866037,
+        0.911265,
+        0.884923,
+        0.900337,
+        0.879262,
+        0.894403,
+        0.863209,
+        0.870547,
+        0.983903,
+        0.896039,
+        0.880293,
+        0.881646,
+        0.897666,
+        0.866083,
+        0.872601,
+        0.910809,
+        0.898889,
+        0.867427,
+        0.896847,
+        0.883172,
+        0.885312,
+        0.879781,
+        0.887087,
+        0.879723,
+        0.87532,
+        0.917628,
+        0.886384,
+        0.895314,
+        0.902838,
+        0.896436,
+        0.869713,
+        0.88206,
+        0.878108,
+        0.906401,
+        0.897866,
+        0.904238,
+        0.881199,
+        0.911531,
+        0.897447,
+        0.892895,
+        0.875304,
+        0.860759,
+        0.868278,
+        0.87734,
+        0.868135,
+        0.871546,
+        0.897175,
+        0.869526,
+        0.856916,
+        0.89787,
+        0.894764,
+        0.863086,
+        0.868744,
+        0.859303,
+        1.12335,
+        0.880574,
+        0.878968,
+        0.862476,
+        0.896735,
+        0.894736,
+        0.891038,
+        0.891703,
+        0.873139,
+        0.893177,
+        0.881516,
+        0.872721,
+        0.898111,
+        0.886655,
+        0.876001,
+        0.851934,
+        0.866533,
+        0.894915,
+        0.892432,
+        0.888947,
+        0.893407,
+        0.872369,
+        0.857605,
+        0.860219,
+        0.890832,
+        0.852752,
+        0.855815,
+        0.866814,
+        0.861976,
+        0.859756,
+        0.879075,
+        0.895431,
+        0.899423,
+        0.894226,
+        0.902189,
+        0.879426,
+        0.865477,
+        0.869353,
+        0.896217,
+        0.870788,
+        0.892203,
+        0.865777,
+        0.869482,
+        0.864612,
+        0.939935,
+        0.904687,
+        0.89771,
+        0.885052,
+        0.858844,
+        0.884021,
+        0.87928,
+        0.890422,
+        0.884416,
+        0.880749,
+        0.869646,
+        0.858056,
+        0.880135,
+        0.864859,
+        0.890007,
+        0.876195,
+        0.902924,
+        0.895322,
+        0.904468,
+        0.880239,
+        0.887126,
+        0.901137,
+        0.883889,
+        0.885648,
+        0.893449,
+        0.888862,
+        0.875723,
+        0.884253,
+        0.889495,
+        0.877463,
+        0.913592,
+        0.88683,
+        0.880468,
+        0.872273,
+        0.89302,
+        0.89146,
+        0.867461,
+        0.871602,
+        0.8756,
+        0.881474,
+        0.893016,
+        0.868925,
+        0.874489,
+        0.876741,
+        0.869879,
+        0.8833,
+        0.889926,
+        0.880355,
+        0.883889,
+        0.896403,
+        0.872318,
+        0.896676
+      ],
+      "candidate": [
+        0.932579,
+        0.992897,
+        0.896213,
+        0.884418,
+        0.898871,
+        0.884778,
+        0.886912,
+        0.915717,
+        0.876362,
+        0.883682,
+        0.895721,
+        0.883511,
+        0.894345,
+        0.916737,
+        0.89022,
+        0.89321,
+        0.93106,
+        0.895241,
+        0.924903,
+        0.92364,
+        0.929384,
+        0.915661,
+        0.896703,
+        0.937764,
+        0.927229,
+        0.885444,
+        0.916959,
+        0.909327,
+        0.931865,
+        0.904598,
+        0.920637,
+        0.927446,
+        0.859979,
+        0.869459,
+        0.878149,
+        0.883077,
+        0.885816,
+        0.868726,
+        0.887806,
+        0.870581,
+        0.87752,
+        0.873174,
+        0.859762,
+        0.866367,
+        0.875568,
+        0.883416,
+        0.869546,
+        0.841579,
+        0.853113,
+        0.862503,
+        0.847393,
+        0.870905,
+        0.878399,
+        0.870576,
+        0.884464,
+        0.875919,
+        0.888718,
+        0.892151,
+        0.896328,
+        0.885008,
+        0.868027,
+        0.897252,
+        0.884818,
+        0.86432,
+        0.863659,
+        0.868853,
+        0.887364,
+        0.870436,
+        0.902484,
+        0.887244,
+        0.893472,
+        0.866896,
+        0.88279,
+        0.874963,
+        0.880653,
+        0.865648,
+        0.862834,
+        0.873812,
+        0.888304,
+        0.884596,
+        0.912674,
+        0.908845,
+        0.878,
+        0.876067,
+        0.882676,
+        0.905685,
+        0.876609,
+        0.871645,
+        0.865564,
+        0.880492,
+        0.858538,
+        0.839727,
+        0.887929,
+        0.870112,
+        0.861038,
+        0.846309,
+        0.858125,
+        0.864287,
+        0.901112,
+        0.896937,
+        0.847732,
+        0.846256,
+        0.874061,
+        0.851292,
+        0.871595,
+        0.862796,
+        0.87876,
+        0.897991,
+        0.873167,
+        0.869215,
+        0.858194,
+        0.87251,
+        0.866208,
+        0.864353,
+        0.877861,
+        0.869817,
+        0.89313,
+        0.911419,
+        0.871065,
+        0.866646,
+        0.87711,
+        0.85494,
+        0.876857,
+        0.877495,
+        0.899858,
+        0.865953,
+        0.858964,
+        0.848083,
+        0.874467,
+        0.880247,
+        0.866671,
+        0.866455,
+        0.863038,
+        0.866184,
+        0.878178,
+        0.856146,
+        0.85818,
+        0.849388,
+        0.90991,
+        0.879891,
+        0.855523,
+        0.865511,
+        0.868927,
+        0.880053,
+        0.879009,
+        0.891381,
+        0.912388,
+        0.865203,
+        0.901788,
+        0.873788,
+        0.892221,
+        0.851392,
+        0.864774,
+        0.866955,
+        0.873656,
+        0.859772,
+        0.882288,
+        0.8714,
+        0.872861,
+        0.879179,
+        0.846196,
+        0.885708,
+        0.869798,
+        0.857938,
+        0.886687,
+        0.869841,
+        0.884567,
+        0.868562,
+        0.859758,
+        0.866659,
+        0.884052,
+        0.879819,
+        0.897041,
+        0.882211,
+        0.879235,
+        0.890363,
+        0.87357,
+        0.90496,
+        0.883725,
+        0.877536,
+        0.886782,
+        0.867483,
+        0.866351,
+        0.857895,
+        0.863389,
+        0.863621,
+        0.886963,
+        0.869351,
+        0.869112,
+        0.861162,
+        0.881626,
+        0.880132,
+        0.859891,
+        0.868326,
+        0.883238,
+        0.876921,
+        0.860617,
+        0.875549,
+        0.869117,
+        0.847981
+      ],
+      "internal": [
+        2.251009,
+        0.854164,
+        0.80889,
+        0.820488,
+        0.831609,
+        0.792786,
+        0.781279,
+        0.835106,
+        0.814827,
+        0.818827,
+        0.80336,
+        0.79908,
+        0.78016,
+        0.781024,
+        0.800863,
+        0.806893,
+        0.80725,
+        0.919876,
+        0.796184,
+        0.818432,
+        0.837801,
+        0.841409,
+        0.808389,
+        0.821394,
+        0.836995,
+        0.81393,
+        0.795926,
+        0.798529,
+        0.808228,
+        0.810334,
+        0.846375,
+        0.796676,
+        0.757611,
+        0.785777,
+        0.765033,
+        0.777507,
+        0.803318,
+        0.824163,
+        0.800877,
+        0.766569,
+        0.771495,
+        0.768416,
+        0.76941,
+        0.768886,
+        0.796921,
+        0.753943,
+        0.791716,
+        0.76301,
+        0.771271,
+        0.79084,
+        0.765434,
+        0.769914,
+        0.786214,
+        0.779096,
+        0.790744,
+        0.784897,
+        0.774041,
+        0.774635,
+        0.782812,
+        0.778824,
+        0.772264,
+        0.796222,
+        0.801543,
+        0.793875,
+        0.80062,
+        0.769218,
+        0.766416,
+        0.777145,
+        0.787709,
+        0.762772,
+        0.775443,
+        0.778222,
+        0.796702,
+        0.784085,
+        0.787447,
+        0.798249,
+        0.788335,
+        0.767674,
+        0.759635,
+        0.7731,
+        0.792254,
+        0.77176,
+        0.794782,
+        0.784167,
+        0.780656,
+        0.784488,
+        0.778417,
+        0.780036,
+        0.79441,
+        0.7892,
+        0.766188,
+        0.758292,
+        0.762474,
+        0.751123,
+        0.773116,
+        0.764232,
+        0.758767,
+        0.794602,
+        0.778581,
+        0.781104,
+        0.770095,
+        0.77569,
+        0.767836,
+        0.74802,
+        0.767381,
+        0.780665,
+        0.795496,
+        0.784212,
+        0.816613,
+        0.793828,
+        0.800372,
+        0.778799,
+        0.776437,
+        0.780994,
+        0.763151,
+        0.796857,
+        0.798337,
+        0.787051,
+        0.781044,
+        0.775449,
+        0.754056,
+        0.777756,
+        0.774927,
+        0.790436,
+        0.786439,
+        0.758098,
+        0.769896,
+        0.775165,
+        0.766916,
+        0.778039,
+        0.767146,
+        0.751124,
+        0.745968,
+        0.774498,
+        0.768192,
+        0.747969,
+        0.822533,
+        0.760509,
+        0.771692,
+        0.762582,
+        0.783552,
+        0.774522,
+        0.782819,
+        0.781336,
+        0.779406,
+        0.775921,
+        0.778686,
+        0.773092,
+        0.792852,
+        0.775254,
+        0.798165,
+        0.792408,
+        0.750014,
+        0.760901,
+        0.787467,
+        0.767501,
+        0.782538,
+        0.77328,
+        0.757408,
+        0.793119,
+        0.766901,
+        0.758932,
+        0.768911,
+        0.790469,
+        0.775592,
+        0.754291,
+        0.78312,
+        0.76844,
+        0.760048,
+        0.77296,
+        0.781345,
+        0.792224,
+        0.776535,
+        0.775467,
+        0.786927,
+        0.752209,
+        0.756759,
+        0.773853,
+        0.79485,
+        0.783796,
+        0.800437,
+        0.767073,
+        0.770661,
+        0.768946,
+        0.785653,
+        0.789275,
+        0.805741,
+        0.782786,
+        0.773214,
+        0.774882,
+        0.756061,
+        0.784657,
+        0.768807,
+        0.784334,
+        0.790588,
+        0.779955,
+        0.791818,
+        0.775594,
+        0.791284,
+        0.7837
+      ]
+    },
+    "medians_ms": {
+      "before": 0.8871065,
+      "candidate": 0.876889,
+      "internal": 0.7808295000000001
+    },
+    "paired_mean_difference_ms": -0.012589059999999996,
+    "paired_mean_difference_bootstrap95_ms": [
+      -0.017473335999999996,
+      -0.008375430124999991
+    ]
+  },
+  "device_profiles": [
+    {
+      "group": "cp-before_workspace-10",
+      "case": "cp4_normal",
+      "mode": "full",
+      "max_rank_module_us": [
+        676.566777,
+        607.204081,
+        465.420243,
+        451.266431,
+        457.107893,
+        447.52461,
+        455.606243,
+        444.064751,
+        451.805673,
+        443.578482,
+        462.619373,
+        449.429772,
+        458.916041,
+        443.8116,
+        447.660264,
+        447.409439,
+        443.133403,
+        458.779111,
+        447.42362,
+        443.290441
+      ],
+      "median_us": 450.3481015,
+      "ranks": [
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 0,
+          "cp": 4,
+          "module_us": [
+            418.784063,
+            583.456257,
+            443.349265,
+            425.505402,
+            417.931573,
+            425.334859,
+            431.273785,
+            431.139105,
+            421.28669,
+            418.989196,
+            440.17542,
+            424.085309,
+            436.663715,
+            420.525735,
+            420.564151,
+            435.938851,
+            425.139181,
+            436.039316,
+            425.643308,
+            418.17527
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 1,
+          "cp": 4,
+          "module_us": [
+            434.055072,
+            607.204081,
+            418.972314,
+            420.104516,
+            457.107893,
+            419.451456,
+            455.606243,
+            424.618248,
+            445.64961,
+            443.578482,
+            462.619373,
+            439.210084,
+            458.916041,
+            442.633854,
+            425.831858,
+            420.115171,
+            430.877626,
+            458.779111,
+            447.42362,
+            423.392557
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 2,
+          "cp": 4,
+          "module_us": [
+            576.930297,
+            421.133253,
+            465.420243,
+            421.983193,
+            428.367197,
+            424.339736,
+            420.909889,
+            420.952055,
+            420.468187,
+            441.158463,
+            445.51133,
+            420.188476,
+            420.853617,
+            420.208884,
+            447.660264,
+            447.409439,
+            443.133403,
+            421.130852,
+            420.667542,
+            421.396158
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 3,
+          "cp": 4,
+          "module_us": [
+            676.566777,
+            605.051546,
+            440.468037,
+            451.266431,
+            433.621999,
+            447.52461,
+            445.269058,
+            444.064751,
+            451.805673,
+            435.289391,
+            420.570229,
+            449.429772,
+            440.836884,
+            443.8116,
+            420.247299,
+            424.380553,
+            420.243548,
+            444.986795,
+            442.660489,
+            443.290441
+          ]
+        }
+      ]
+    },
+    {
+      "group": "cp-before_workspace-10",
+      "case": "cp8_long",
+      "mode": "full",
+      "max_rank_module_us": [
+        2811.384003,
+        2461.233943,
+        2460.523334,
+        2473.834484,
+        2444.544942,
+        2443.535339,
+        2449.733493,
+        2447.216012,
+        2471.691552,
+        2446.446728,
+        2434.145408,
+        2463.791041,
+        2457.89796,
+        2439.305972,
+        2456.471638,
+        2445.835534,
+        2425.088686,
+        2462.889406,
+        2466.043068,
+        2454.066102
+      ],
+      "median_us": 2455.26887,
+      "ranks": [
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 0,
+          "cp": 8,
+          "module_us": [
+            2416.65081,
+            2433.972389,
+            2436.561824,
+            2455.107969,
+            2439.618248,
+            2416.785114,
+            2417.685474,
+            2413.399685,
+            2450.272659,
+            2420.358869,
+            2406.622975,
+            2441.859394,
+            2431.16214,
+            2439.305972,
+            2421.375675,
+            2413.154862,
+            2410.235144,
+            2450.344538,
+            2419.16199,
+            2454.066102
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 1,
+          "cp": 8,
+          "module_us": [
+            2438.278587,
+            2461.233943,
+            2460.523334,
+            2438.797193,
+            2424.654337,
+            2443.535339,
+            2449.733493,
+            2436.026185,
+            2471.691552,
+            2444.703256,
+            2429.53894,
+            2463.791041,
+            2453.83666,
+            2423.335984,
+            2445.72389,
+            2445.835534,
+            2425.088686,
+            2434.918143,
+            2450.621999,
+            2403.164391
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 2,
+          "cp": 8,
+          "module_us": [
+            2378.72629,
+            2418.4381,
+            2423.644658,
+            2437.427446,
+            2386.985745,
+            2399.781513,
+            2399.743023,
+            2409.542542,
+            2423.484844,
+            2402.160939,
+            2402.402236,
+            2425.289316,
+            2405.387905,
+            2403.790891,
+            2401.478991,
+            2401.519883,
+            2400.744297,
+            2429.42602,
+            2429.906288,
+            2420.441851
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 3,
+          "cp": 8,
+          "module_us": [
+            2528.483718,
+            2395.680822,
+            2446.202731,
+            2473.834484,
+            2414.386555,
+            2376.918442,
+            2384.569028,
+            2447.216012,
+            2457.152536,
+            2378.479217,
+            2377.97599,
+            2380.458433,
+            2457.89796,
+            2379.256978,
+            2376.244748,
+            2379.147584,
+            2377.901485,
+            2462.889406,
+            2466.043068,
+            2397.569103
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 4,
+          "cp": 8,
+          "module_us": [
+            2811.384003,
+            2421.285489,
+            2434.731018,
+            2443.941177,
+            2419.226966,
+            2397.219988,
+            2425.655688,
+            2396.199055,
+            2426.105567,
+            2418.30012,
+            2406.189676,
+            2412.555822,
+            2428.577431,
+            2405.649384,
+            2416.34934,
+            2400.246098,
+            2399.385354,
+            2444.916117,
+            2442.608718,
+            2420.498049
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 5,
+          "cp": 8,
+          "module_us": [
+            2746.689376,
+            2391.847464,
+            2440.489796,
+            2473.145333,
+            2444.430898,
+            2411.625525,
+            2401.469463,
+            2430.947254,
+            2440.10069,
+            2440.077957,
+            2411.278512,
+            2436.890831,
+            2412.20048,
+            2428.779337,
+            2437.347089,
+            2422.312275,
+            2421.45033,
+            2422.475391,
+            2417.602416,
+            2435.34814
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 6,
+          "cp": 8,
+          "module_us": [
+            2437.042167,
+            2425.540216,
+            2379.178797,
+            2386.096038,
+            2444.544942,
+            2378.273785,
+            2380.260279,
+            2386.304997,
+            2402.487245,
+            2446.446728,
+            2434.145408,
+            2377.642257,
+            2378.817452,
+            2384.320528,
+            2456.471638,
+            2425.314376,
+            2384.608643,
+            2403.476591,
+            2382.118847,
+            2379.417767
+          ]
+        },
+        {
+          "group": "cp-before_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 7,
+          "cp": 8,
+          "module_us": [
+            2623.648335,
+            2377.560775,
+            2403.332533,
+            2380.200405,
+            2378.149985,
+            2423.693952,
+            2432.954381,
+            2380.842812,
+            2379.360219,
+            2379.128526,
+            2393.611045,
+            2449.433298,
+            2403.588385,
+            2378.09964,
+            2379.057848,
+            2385.869147,
+            2389.34934,
+            2381.11172,
+            2403.227041,
+            2437.913565
+          ]
+        }
+      ]
+    },
+    {
+      "group": "cp-candidate_workspace-10",
+      "case": "cp4_normal",
+      "mode": "full",
+      "max_rank_module_us": [
+        848.563025,
+        441.146458,
+        438.046819,
+        436.875225,
+        446.391282,
+        440.404712,
+        435.984318,
+        442.720213,
+        434.418818,
+        438.336134,
+        433.152461,
+        427.039691,
+        438.410564,
+        447.606318,
+        442.193277,
+        432.437125,
+        442.813776,
+        440.494748,
+        436.494747,
+        438.191026
+      ],
+      "median_us": 438.373349,
+      "ranks": [
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 0,
+          "cp": 4,
+          "module_us": [
+            762.007353,
+            414.702356,
+            422.735744,
+            414.813926,
+            424.529337,
+            435.402161,
+            409.42497,
+            420.169268,
+            418.451381,
+            408.944778,
+            408.543818,
+            425.980792,
+            438.410564,
+            424.1872,
+            417.77431,
+            420.48972,
+            421.063775,
+            440.494748,
+            414.242572,
+            438.191026
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 1,
+          "cp": 4,
+          "module_us": [
+            848.563025,
+            436.731168,
+            438.046819,
+            436.875225,
+            446.391282,
+            440.404712,
+            431.296369,
+            442.720213,
+            412.774159,
+            436.417617,
+            432.714586,
+            410.477941,
+            410.633853,
+            447.606318,
+            442.193277,
+            414.697479,
+            442.813776,
+            417.726365,
+            436.494747,
+            413.200405
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 2,
+          "cp": 4,
+          "module_us": [
+            411.207608,
+            411.427521,
+            426.655387,
+            411.820003,
+            410.385579,
+            411.208808,
+            413.366071,
+            411.444103,
+            410.430897,
+            414.49925,
+            411.044418,
+            412.121173,
+            411.758779,
+            411.691551,
+            410.507953,
+            410.399685,
+            411.398559,
+            411.781512,
+            410.787365,
+            412.070753
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 3,
+          "cp": 4,
+          "module_us": [
+            603.927971,
+            441.146458,
+            410.738295,
+            416.996323,
+            434.836735,
+            435.579832,
+            435.984318,
+            435.595288,
+            434.418818,
+            438.336134,
+            433.152461,
+            427.039691,
+            437.120123,
+            435.528286,
+            433.727491,
+            432.437125,
+            433.609769,
+            435.857293,
+            425.805523,
+            434.137906
+          ]
+        }
+      ]
+    },
+    {
+      "group": "cp-candidate_workspace-10",
+      "case": "cp8_long",
+      "mode": "full",
+      "max_rank_module_us": [
+        2617.522209,
+        2350.832233,
+        2337.15006,
+        2337.759754,
+        2333.660414,
+        2336.228091,
+        2334.343187,
+        2334.617122,
+        2324.506602,
+        2338.915891,
+        2328.218638,
+        2358.112845,
+        2339.660264,
+        2348.779187,
+        2322.877551,
+        2328.993922,
+        2340.623049,
+        2333.565501,
+        2356.736045,
+        2348.966462
+      ],
+      "median_us": 2337.4549070000003,
+      "ranks": [
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 0,
+          "cp": 8,
+          "module_us": [
+            2439.267858,
+            2350.832233,
+            2337.15006,
+            2337.759754,
+            2333.660414,
+            2301.452431,
+            2334.343187,
+            2310.581108,
+            2321.069628,
+            2330.585759,
+            2314.249775,
+            2358.112845,
+            2315.504051,
+            2325.118923,
+            2282.333659,
+            2306.808073,
+            2340.623049,
+            2318.033539,
+            2318.290516,
+            2330.379502
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 1,
+          "cp": 8,
+          "module_us": [
+            2433.437875,
+            2314.535414,
+            2314.235144,
+            2321.972539,
+            2311.407113,
+            2325.787365,
+            2308.873874,
+            2334.617122,
+            2267.006078,
+            2303.765906,
+            2294.716537,
+            2323.116371,
+            2339.660264,
+            2348.779187,
+            2306.665066,
+            2282.085234,
+            2317.362695,
+            2302.386555,
+            2356.736045,
+            2305.476441
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 2,
+          "cp": 8,
+          "module_us": [
+            2270.646909,
+            2291.788565,
+            2293.530613,
+            2268.548845,
+            2267.460009,
+            2281.634979,
+            2268.488521,
+            2271.246099,
+            2297.613446,
+            2293.223289,
+            2273.446654,
+            2294.384079,
+            2272.553121,
+            2268.134379,
+            2276.463311,
+            2281.759904,
+            2268.914841,
+            2292.973739,
+            2293.615846,
+            2269.865546
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 3,
+          "cp": 8,
+          "module_us": [
+            2512.802821,
+            2269.548619,
+            2268.009604,
+            2292.524685,
+            2304.983194,
+            2306.212335,
+            2283.387755,
+            2285.267707,
+            2274.391657,
+            2270.923169,
+            2279.32278,
+            2289.08771,
+            2287.283313,
+            2272.990321,
+            2271.009604,
+            2275.522284,
+            2292.576306,
+            2268.33711,
+            2267.928121,
+            2294.104367
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 4,
+          "cp": 8,
+          "module_us": [
+            2521.967887,
+            2322.622975,
+            2304.600316,
+            2321.176471,
+            2312.584483,
+            2315.345588,
+            2294.265156,
+            2298.412965,
+            2308.309723,
+            2311.997524,
+            2301.100991,
+            2345.947029,
+            2319.882353,
+            2328.201456,
+            2297.753827,
+            2302.6878,
+            2324.092587,
+            2300.014331,
+            2317.021683,
+            2329.677071
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 5,
+          "cp": 8,
+          "module_us": [
+            2386.766056,
+            2306.956932,
+            2309.167992,
+            2306.339661,
+            2306.638655,
+            2290.391506,
+            2308.981017,
+            2303.666267,
+            2284.408163,
+            2288.637455,
+            2295.046819,
+            2339.931498,
+            2304.342137,
+            2304.702206,
+            2281.509154,
+            2277.992647,
+            2300.602792,
+            2283.519883,
+            2331.398409,
+            2304.542617
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 6,
+          "cp": 8,
+          "module_us": [
+            2507.635954,
+            2318.797269,
+            2285.383103,
+            2275.704907,
+            2297.589436,
+            2268.801696,
+            2279.444177,
+            2275.593037,
+            2279.129802,
+            2284.665066,
+            2267.51253,
+            2269.337485,
+            2270.103092,
+            2303.615847,
+            2269.797269,
+            2269.480192,
+            2275.872599,
+            2270.234094,
+            2285.826006,
+            2309.956858
+          ]
+        },
+        {
+          "group": "cp-candidate_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 7,
+          "cp": 8,
+          "module_us": [
+            2617.522209,
+            2293.896683,
+            2328.997599,
+            2327.183748,
+            2271.016657,
+            2336.228091,
+            2329.101891,
+            2334.546068,
+            2324.506602,
+            2338.915891,
+            2328.218638,
+            2355.042017,
+            2336.996473,
+            2344.291792,
+            2322.877551,
+            2328.993922,
+            2329.464586,
+            2333.565501,
+            2346.841762,
+            2348.966462
+          ]
+        }
+      ]
+    },
+    {
+      "group": "cp-internal_workspace-10",
+      "case": "cp4_normal",
+      "mode": "full",
+      "max_rank_module_us": [
+        761.354067,
+        331.881227,
+        326.153586,
+        338.287966,
+        326.954307,
+        330.809199,
+        329.357668,
+        345.454832,
+        335.830732,
+        331.328932,
+        331.036089,
+        329.277461,
+        330.955582,
+        345.072029,
+        332.917242,
+        327.509004,
+        342.797119,
+        328.067227,
+        326.994223,
+        326.937575
+      ],
+      "median_us": 330.9958355,
+      "ranks": [
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 0,
+          "cp": 4,
+          "module_us": [
+            615.933973,
+            327.695153,
+            303.948304,
+            338.287966,
+            320.432098,
+            330.809199,
+            325.966462,
+            339.414091,
+            321.944778,
+            329.695078,
+            327.428571,
+            316.541492,
+            328.921894,
+            304.169043,
+            310.073079,
+            327.154787,
+            303.515081,
+            312.079231,
+            319.441627,
+            303.696279
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 1,
+          "cp": 4,
+          "module_us": [
+            761.354067,
+            303.925721,
+            326.153586,
+            331.285714,
+            313.33861,
+            303.457458,
+            329.357668,
+            315.741972,
+            335.830732,
+            303.785264,
+            303.948454,
+            320.911089,
+            302.848815,
+            327.110519,
+            332.917242,
+            303.106918,
+            317.224414,
+            316.356468,
+            312.789841,
+            326.937575
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 2,
+          "cp": 4,
+          "module_us": [
+            306.915892,
+            309.798169,
+            306.292017,
+            307.044268,
+            307.031213,
+            306.557173,
+            306.021609,
+            306.755027,
+            306.162215,
+            307.7482,
+            331.036089,
+            329.277461,
+            309.506752,
+            314.211285,
+            305.968787,
+            306.828631,
+            342.797119,
+            307.614496,
+            306.726291,
+            306.895558
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp4_normal",
+          "mode": "full",
+          "rank": 3,
+          "cp": 4,
+          "module_us": [
+            440.657788,
+            331.881227,
+            319.141581,
+            329.280912,
+            326.954307,
+            322.356617,
+            319.453632,
+            345.454832,
+            328.109243,
+            331.328932,
+            304.414241,
+            304.190877,
+            330.955582,
+            345.072029,
+            329.144132,
+            327.509004,
+            305.539165,
+            328.067227,
+            326.994223,
+            319.494598
+          ]
+        }
+      ]
+    },
+    {
+      "group": "cp-internal_workspace-10",
+      "case": "cp8_long",
+      "mode": "full",
+      "max_rank_module_us": [
+        1888.530612,
+        1646.290516,
+        1624.948304,
+        1690.785039,
+        1642.883704,
+        1694.121324,
+        1625.939826,
+        1650.340937,
+        1625.450331,
+        1640.437275,
+        1635.416642,
+        1597.180072,
+        1633.830732,
+        1642.493472,
+        1653.517482,
+        1626.0,
+        1641.349264,
+        1623.855942,
+        1634.459634,
+        1653.470588
+      ],
+      "median_us": 1640.8932694999999,
+      "ranks": [
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 0,
+          "cp": 8,
+          "module_us": [
+            1722.396009,
+            1608.029937,
+            1577.094913,
+            1670.518532,
+            1589.375526,
+            1652.773035,
+            1579.569027,
+            1641.653137,
+            1565.800795,
+            1599.319478,
+            1554.815126,
+            1555.391431,
+            1566.751426,
+            1569.258103,
+            1582.703482,
+            1557.702131,
+            1566.26178,
+            1554.576155,
+            1586.045468,
+            1576.13813
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 1,
+          "cp": 8,
+          "module_us": [
+            1757.043218,
+            1605.680522,
+            1614.179021,
+            1658.115171,
+            1606.911014,
+            1640.948454,
+            1566.548619,
+            1637.62545,
+            1593.26418,
+            1604.583433,
+            1591.275811,
+            1561.640006,
+            1553.181197,
+            1575.384004,
+            1600.979742,
+            1565.084034,
+            1573.145334,
+            1591.370874,
+            1583.541642,
+            1594.097389
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 2,
+          "cp": 8,
+          "module_us": [
+            1639.782713,
+            1600.081708,
+            1583.690351,
+            1642.088836,
+            1577.77311,
+            1643.719088,
+            1567.997674,
+            1641.22689,
+            1574.902761,
+            1532.004577,
+            1576.620648,
+            1547.655387,
+            1549.151336,
+            1577.272434,
+            1591.746699,
+            1569.017932,
+            1556.716762,
+            1566.223064,
+            1587.605042,
+            1574.006078
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 3,
+          "cp": 8,
+          "module_us": [
+            1888.530612,
+            1544.360219,
+            1619.064826,
+            1680.615921,
+            1543.889631,
+            1631.538941,
+            1544.298994,
+            1623.296294,
+            1563.153736,
+            1567.860745,
+            1545.004726,
+            1544.759904,
+            1546.215936,
+            1544.315726,
+            1543.284589,
+            1550.254577,
+            1543.884754,
+            1543.839286,
+            1543.335084,
+            1544.675795
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 4,
+          "cp": 8,
+          "module_us": [
+            1549.109318,
+            1608.147584,
+            1588.336135,
+            1637.084033,
+            1571.057548,
+            1657.170468,
+            1574.118773,
+            1650.340937,
+            1625.450331,
+            1619.334859,
+            1564.816402,
+            1572.117648,
+            1570.761104,
+            1576.58696,
+            1584.441926,
+            1551.361194,
+            1594.315726,
+            1553.811525,
+            1574.459784,
+            1583.22329
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 5,
+          "cp": 8,
+          "module_us": [
+            1587.138055,
+            1646.290516,
+            1624.948304,
+            1690.785039,
+            1626.607443,
+            1694.121324,
+            1591.924369,
+            1637.823454,
+            1622.205207,
+            1615.70093,
+            1598.767107,
+            1589.65066,
+            1608.678196,
+            1613.063701,
+            1623.034889,
+            1585.351591,
+            1600.246098,
+            1580.692602,
+            1611.008479,
+            1622.045543
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 6,
+          "cp": 8,
+          "module_us": [
+            1567.91109,
+            1622.039466,
+            1598.69988,
+            1615.425271,
+            1622.190951,
+            1562.373349,
+            1582.459934,
+            1563.464511,
+            1588.410414,
+            1620.033763,
+            1587.034814,
+            1573.344612,
+            1590.207533,
+            1599.214811,
+            1580.89931,
+            1582.712035,
+            1599.546294,
+            1571.938851,
+            1579.535414,
+            1610.31355
+          ]
+        },
+        {
+          "group": "cp-internal_workspace-10",
+          "case": "cp8_long",
+          "mode": "full",
+          "rank": 7,
+          "cp": 8,
+          "module_us": [
+            1633.708283,
+            1625.792317,
+            1561.469463,
+            1563.147659,
+            1642.883704,
+            1657.815126,
+            1625.939826,
+            1626.602641,
+            1562.30012,
+            1640.437275,
+            1635.416642,
+            1597.180072,
+            1633.830732,
+            1642.493472,
+            1653.517482,
+            1626.0,
+            1641.349264,
+            1623.855942,
+            1634.459634,
+            1653.470588
+          ]
+        }
+      ]
+    }
+  ],
+  "trace_input_placement_checks": [
+    {
+      "path": "/workspace/prepared/cp-before_workspace-10/profile-cp4_normal-full/plugins/profile/2026_11_15_07_21_43/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    },
+    {
+      "path": "/workspace/prepared/cp-before_workspace-10/profile-cp8_long-full/plugins/profile/2026_11_15_07_21_30/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    },
+    {
+      "path": "/workspace/prepared/cp-candidate_workspace-10/profile-cp4_normal-full/plugins/profile/2026_11_15_07_22_27/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    },
+    {
+      "path": "/workspace/prepared/cp-candidate_workspace-10/profile-cp8_long-full/plugins/profile/2026_11_15_07_22_14/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    },
+    {
+      "path": "/workspace/prepared/cp-internal_workspace-10/profile-cp4_normal-full/plugins/profile/2026_11_15_07_23_22/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    },
+    {
+      "path": "/workspace/prepared/cp-internal_workspace-10/profile-cp8_long-full/plugins/profile/2026_11_15_07_23_08/kda-cp-ablation-1115.xplane.pb",
+      "multi_slice_events": 0
+    }
+  ],
+  "operator_arithmetic_changed": false
+}
