@@ -1,6 +1,18 @@
-# KDA forward: final-source review validation
+# KDA forward: pinned-source review validation
 
 PR #1688. Tested calculation commit `1160af2a995129a5e6fd6d0a231f632e3d0d086f`; baseline upstream main `0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18`. Measurements were collected on 2026-11-16 (Asia/Shanghai).
+
+## Report provenance and corrections
+
+This is a historical measurement record, not a live validation status for an
+arbitrary future PR head. It measures calculation commit `1160af2a` against frozen
+upstream main `0d3e82b4`. The implementation and tests restored in #1688 commit
+`649506c6` are identical to the measured `7425d00b` snapshot; only report/data
+artifacts were moved out of the code PR. Later implementation changes require
+new source comparison or validation before reusing these results.
+
+This correction changes labels and scope explanations only. Raw samples,
+performance numbers, numerical bounds and source/data files are unchanged.
 
 ## Scope
 
@@ -14,27 +26,27 @@ All prior reference modules and numerical thresholds are unchanged. Default form
 
 ## Formal operator coverage and method
 
-- All 15 official ArgSpecs, comprising 15 forward and three full forward/VJP execution points. Serialized primals are reused byte-for-byte; seed619, beta=0.5, with logical-input hashes in the manifest.
+- All 15 official ArgSpecs, comprising 15 forward and three full forward/VJP execution points. Serialized primals are reused byte-for-byte; seed 619, beta explicitly overridden to the legal constant 0.5, with logical-input hashes in the manifest.
 - `tokamax.standardize_function(..., seed=None)` supplies the modes. Its full forward/VJP uses the output itself as cotangent, behind an optimization barrier. Cotangents are consequently output-derived; this is not a fixed external-dY experiment.
-- Dedicated TPU7x allocation: four physical chips / eight JAX devices; single-device timing on logical device0. JAX/jaxlib0.12.0, libtpu0.0.50.1. Complete observed versions and flags are in environments.json.
+- Dedicated TPU7x allocation: four physical chips / eight JAX devices; single-device timing on logical device0. JAX/jaxlib 0.12.0, libtpu 0.0.50.1. Complete observed versions and flags are in environments.json.
 - Two fresh-process sweeps reverse implementation order. Inputs are prepared once using compiled input Formats. Ten warmups precede thirty blocking host-wall samples per cell per sweep; the table uses the median of all sixty samples.
 - Each formal execution point has two independent five-call XPlane captures. Device time is the complete jit_invoke module, including metadata, copies and all forward/reverse stages. Every capture has zero input-reshard modules.
 
 ### Shapes
 
-Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate parameters and initial/final states use FP32. All formal shapes enable Q/K normalization. Stateful cases include width-4 convolution.
+Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate parameters and initial/final states use FP32. All formal shapes enable Q/K normalization. Stateful cases include width-4 convolution. For unsegmented prefill, N=1 is the initial-state slot count (max_num_segments is unset and segment_ids is absent). Fixed training rows have no explicit segment-ID table.
 
 | Official case | H | T | N | Gate width | State | Modes |
 |---|---:|---:|---:|---:|---|---|
 | fixed_training_b1_t8192_bf16 | 32 | 8192 | fixed | 128 | none | F, F+VJP |
 | packed_training_b1_t8192_n25_bf16 | 32 | 8192 | 25 | 128 | none | F, F+VJP |
 | gdn_fixed_training_b1_t8192_bf16 | 32 | 8192 | fixed | 1 | none | F, F+VJP |
-| tp32_prefill_b1_t128_bf16 | 3 | 128 | fixed | 128 | FP32 | F |
-| tp32_prefill_b1_t512_bf16 | 3 | 512 | fixed | 128 | FP32 | F |
-| tp32_prefill_b1_t1024_bf16 | 3 | 1024 | fixed | 128 | FP32 | F |
+| tp32_prefill_b1_t128_bf16 | 3 | 128 | 1 | 128 | FP32 | F |
+| tp32_prefill_b1_t512_bf16 | 3 | 512 | 1 | 128 | FP32 | F |
+| tp32_prefill_b1_t1024_bf16 | 3 | 1024 | 1 | 128 | FP32 | F |
 | tp32_verify_b1_t64_n8_bf16 | 3 | 64 | 8 | 128 | FP32 | F |
-| tp16_prefill_b1_t1024_bf16 | 6 | 1024 | fixed | 128 | FP32 | F |
-| tp8_prefill_b1_t2048_bf16 | 12 | 2048 | fixed | 128 | FP32 | F |
+| tp16_prefill_b1_t1024_bf16 | 6 | 1024 | 1 | 128 | FP32 | F |
+| tp8_prefill_b1_t2048_bf16 | 12 | 2048 | 1 | 128 | FP32 | F |
 | tp32_decode_b1_t1_n1_bf16 | 3 | 1 | 1 | 128 | FP32 | F |
 | tp32_dspark_decode_b1_t8_n1_bf16 | 3 | 8 | 1 | 128 | FP32 | F |
 | tp32_dspark_decode_b1_t64_n16_bf16 | 3 | 64 | 16 | 128 | FP32 | F |
@@ -44,7 +56,7 @@ Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate paramet
 
 ### Complete formal wall/device matrix
 
-Times are milliseconds. Each row explicitly identifies the default or opt-in path; no universal speedup is claimed. Compiler temporary bytes are provided in the CSV/JSON and are not model/allocator peak memory.
+All wall/device times in both performance tables are milliseconds. Change = (PR wall / main wall - 1) * 100%; positive values mean longer latency. Speedup = main wall / PR wall. Each row explicitly identifies the default or opt-in path; no universal speedup is claimed. Compiler temporary bytes are provided in the CSV/JSON and are not model/allocator peak memory.
 
 | Case / mode | Path | Main wall | PR wall | Change | Main device | PR device |
 |---|---|---:|---:|---:|---:|---:|
@@ -91,7 +103,7 @@ Formal opt-in flags: `fuse_forward=True`, `packed_forward=True`, `packed_output=
 
 These additional profiles use identical Gaussian inputs and a fixed external Gaussian cotangent (where applicable), seed619. BF16 Q/K/V have std0.05, raw gate std0.1, beta is sigmoid of Gaussian logits with std0.1; A_log is uniform[-1,0] and bias uniform[-4,-3]. Lower bound is -5, scale is 128**-0.5. Both implementations use matching Q/K normalization options. Two reversed fresh-process sweeps retain sixty host-wall samples per cell. Five-call complete-device captures in each sweep contain zero input-reshard modules.
 
-Pure VJP prepares residuals before timing and supplies them as runtime inputs. The harness rejects a largest closed-over constant of 1MiB or more. Full forward+VJP includes preparation and its seven operand/parameter gradients.
+All eight profiles in this section time forward execution only. No VJP or backward-residual preparation is included. Full forward/VJP points appear separately in the formal matrix above.
 
 | Case / mode | B/T/H/N | Norm | Path | Main wall | PR wall | Speedup | Main device | PR device |
 |---|---|---|---|---:|---:|---:|---:|---:|
@@ -104,12 +116,12 @@ Pure VJP prepares residuals before timing and supplies them as runtime inputs. T
 | long64k / forward | 1/65536/8/64 | False | aligned | 8.011243 | 5.842321 | 1.37x | 7.813831 | 5.645061 |
 | batch2 / forward | 2/8192/64/25 | False | aligned | 14.993448 | 10.850404 | 1.38x | 14.190504 | 10.156752 |
 
-The compact rows disable in-kernel Q/K normalization in both implementations. Forward-only improvements are the feature target of this PR. Optimized training VJP is supplied separately by #1689; the full formal table retains the effects of pairing these forward flags with the original backward.
+The compact rows disable in-kernel Q/K normalization in both implementations. Their Gaussian inputs were not separately L2-normalized; this is a normalization-disabled comparison, not a measurement of external normalization plus KDA. Forward-only improvements are the feature target of this PR. Optimized training VJP is supplied separately by #1689; the full formal table retains the effects of pairing these forward flags with the original backward.
 
 ## Raw evidence and reproduction
 
 [Data, full samples and per-leaf errors](benchmarks/review_20261116/) include the formal manifest, both-run samples, complete device-module durations, input hashes, environment and memory records. Original legacy feature-report headers inherited stale warmup/sample constants; derived records correct them to the executed loops and preserve the original header. No timing or output was changed.
 
-The exact runtime harness is under `benchmarks/review_20261116/harness/`. Place pinned source trees under `/workspace/ready/main` and `/workspace/ready/forward`, generate or restore the serialized `/workspace/ready/inputs`, then run `python worker.py forward-default 0` (and the opt-in counterpart where available), followed by the reversed order in a fresh process. `feature_worker.py --suite forward --variant compact --round 0 --output-root /workspace/ready/features` runs the additional matrix. Set `JAX_PLATFORMS=tpu,cpu` and `LIBTPU_INIT_ARGS=--xla_tpu_impure_enable_large_2nd_minor_layout=true`.
+The reproducible harness is under `benchmarks/review_20261116/harness/`. Place pinned source trees under `/workspace/ready/main` and `/workspace/ready/forward`, generate or restore the serialized `/workspace/ready/inputs`, then run `python worker.py forward-default 0` (and the opt-in counterpart where available), followed by the reversed order in a fresh process. `feature_worker.py --suite forward --variant compact --round 0 --output-root /workspace/ready/features` runs the additional matrix. Set `JAX_PLATFORMS=tpu,cpu` and `LIBTPU_INIT_ARGS=--xla_tpu_impure_enable_large_2nd_minor_layout=true`.
 
 Protective raw archive: `gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/formal-stage1-raw.tgz#1794770854263763`. Final forward/inference feature archive: `gs://data_ant/diagnostics/kda-ready-review-20261116/95c92169-545d-4130-99bb-f6e0b88fad08/2c3c43fd3857/forward-inference-final-raw.tgz#1794775402685712`. It includes the feature traces, arrays, acceptance and pinned source trees. Immutable objects have verified size/CRC32C/SHA256 metadata; see archive-index.json. These forensic archives require internal GCS access; the manifest, methods, samples and kernels are public in this branch.
