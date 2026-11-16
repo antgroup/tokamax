@@ -169,3 +169,8 @@ to exhaust the maximum padding allowance, so the final allocated row is padding.
 Large-capacity allocation reserves an additional guard chunk. Arbitrary callers
 of `_unalign_output` do not carry this guarantee and retain explicit masking.
 The guarantee is static residual metadata, not a device-side conditional.
+
+Packed-output compaction forwards the same guard guarantee to its fallback,
+including the actual KDA chunk size. Unsupported head/width/VMEM configurations
+retain the generic gather algorithm with guarded restoration when proven;
+the dedicated packed-output kernel and its existing eligibility rules remain.

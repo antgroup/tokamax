@@ -30,8 +30,9 @@ interpret_on_cpu = forward_tests.interpret_on_cpu
 
 @pytest.mark.parametrize("dtype", [jnp.float32, jnp.bfloat16])
 @pytest.mark.parametrize("fallback", [False, True])
+@pytest.mark.parametrize("zero_guard", [False, True])
 def test_compaction_poisoned_tails_and_empty_batch(
-    dtype, fallback, monkeypatch
+    dtype, fallback, zero_guard, monkeypatch
 ):
   # Multiple head groups; unequal boundaries; a middle empty sequence;
   # no trailing guard at the maximum aligned end; non-eight-aligned output.
@@ -49,14 +50,8 @@ def test_compaction_poisoned_tails_and_empty_batch(
       for seq in range(4):
         start, end = map(int, original[batch, seq : seq + 2])
         aligned_start = int(aligned[batch, seq])
-        values = (
-            head * 0.125
-            + batch * 0.25
-            + np.arange(start, end)[:, None] * 0.0625
-        )
-        source[head, batch, aligned_start : aligned_start + end - start] = (
-            values
-        )
+        values = head * 0.125 + batch * 0.25 + np.arange(start, end)[:, None] * 0.0625
+        source[head, batch, aligned_start : aligned_start + end - start] = values
         expected[head, batch, start:end] = values
   if fallback:
     monkeypatch.setattr(
@@ -75,7 +70,7 @@ def test_compaction_poisoned_tails_and_empty_batch(
   # Hardware limits are read at trace time; recompile after changing them.
   output_kernel.compact_output.clear_cache()
   actual = output_kernel.compact_output(
-      jnp.asarray(source, dtype), original, aligned, 23
+      jnp.asarray(source, dtype), original, aligned, 23, zero_guard=zero_guard
   )
   assert bool(calls) == (not fallback)
   forward_tests._assert_close(actual, jnp.asarray(expected, dtype), tolerance=0)
@@ -93,7 +88,9 @@ def test_compaction_forward(dtype):
   results = []
   for compact in (False, True):
     op = mosaic.PallasMosaicTpuKimiDeltaAttention(
-        config=mosaic.Config(fuse_forward=True, packed_output=compact, packed_forward=True)
+        config=mosaic.Config(
+            fuse_forward=True, packed_output=compact, packed_forward=True
+        )
     )
     call = functools.partial(forward_tests._call, op, kwargs)
     results.append(jax.jit(call)(*args))
@@ -116,3 +113,26 @@ def test_unsupported_shapes_keep_gather(heads, width, monkeypatch):
       [jnp.ones((heads, 1, 3, width)), jnp.zeros((heads, 1, 4, width))], axis=2
   )
   forward_tests._assert_close(actual, expected, tolerance=0)
+
+
+@pytest.mark.parametrize("chunk_size", [16, 32, 64])
+def test_scalar_gate_compaction_uses_actual_chunk_alignment(chunk_size):
+  args, kwargs = forward_tests._inputs(jnp.bfloat16, True, heads=8)
+  args = list(args)
+  args[3] = -jnp.ones(args[3].shape[:-1] + (1,), jnp.bfloat16) * 0.01
+  args[6] = args[7] = None
+  kwargs = dict(
+      kwargs, per_channel_gate=False, use_gate_in_kernel=False, lower_bound=None
+  )
+  results = []
+  for packed_output in (False, True):
+    op = mosaic.PallasMosaicTpuKimiDeltaAttention(
+        config=mosaic.Config(
+            chunk_size=chunk_size,
+            fuse_forward=True,
+            packed_forward=True,
+            packed_output=packed_output,
+        )
+    )
+    results.append(jax.jit(functools.partial(forward_tests._call, op, kwargs))(*args))
+  forward_tests._assert_close(results[1], results[0], tolerance=0.002)

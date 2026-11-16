@@ -66,8 +66,10 @@ def _compact_output_kernel(
   output_ref[:, 0] = values
 
 
-@functools.partial(jax.jit, static_argnames=("tokens", "chunk_size"))
-def compact_output(output, original_cu, aligned_cu, tokens, *, chunk_size=64):
+@functools.partial(jax.jit, static_argnames=("tokens", "chunk_size", "zero_guard"))
+def compact_output(
+    output, original_cu, aligned_cu, tokens, *, chunk_size=64, zero_guard=False
+):
   """Compact [H,B,T_aligned,V] while preserving dtype and zero padding.
 
   The aligned input remains an HBM buffer. Each program compacts complete
@@ -95,9 +97,11 @@ def compact_output(output, original_cu, aligned_cu, tokens, *, chunk_size=64):
       or heads % mini_batch
       or per_head * mini_batch > limits.vmem_limit_bytes
   ):
-    result = utils._unalign_output(output, original_cu, aligned_cu, tokens)
-    valid = jnp.arange(tokens)[None, :] < original_cu[:, -1:]
-    return jnp.where(valid[None, :, :, None], result, 0)
+    # The fallback already masks padding; preserve the adapter's guard proof
+    # instead of adding a second full-sized floating-point selection.
+    return utils._unalign_output(
+        output, original_cu, aligned_cu, tokens, zero_guard=zero_guard
+    )
   result = pl.pallas_call(
       functools.partial(_compact_output_kernel, chunk_size=chunk_size),
       out_shape=jax.ShapeDtypeStruct(

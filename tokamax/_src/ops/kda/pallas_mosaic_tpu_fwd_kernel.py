@@ -2693,7 +2693,9 @@ def chunk_kda_fwd_custom(
     if segment_ids is None:
       raise ValueError("Aligned varlen metadata requires `segment_ids`.")
     unalign = (
-        compact_output
+        functools.partial(
+            compact_output, chunk_size=chunk_size, zero_guard=padding_guard
+        )
         if packed_output and not _cp_active
         else functools.partial(_unalign_output, zero_guard=padding_guard)
     )
