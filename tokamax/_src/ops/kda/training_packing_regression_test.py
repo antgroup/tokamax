@@ -25,19 +25,19 @@ from tokamax._src.ops.kda import pallas_mosaic_tpu_fwd_fused_test as shared
 interpret_on_cpu = shared.interpret_on_cpu
 
 
+@pytest.mark.parametrize("zero_guard", [False, True])
 @pytest.mark.parametrize("capacity", [2, 8, 9, 25, 8193])
 @pytest.mark.parametrize("scalar", [False, True])
 @pytest.mark.parametrize("permuted", [False, True])
-def test_unalignment_masks_unwritten_padding(capacity, scalar, permuted):
+def test_unalignment_masks_unwritten_padding(capacity, scalar, permuted, zero_guard):
   lengths = jnp.array([0, 2, 3] + [3] * (capacity - 2), jnp.int32)
   aligned = jnp.array([0, 4, 8] + [8] * (capacity - 2), jnp.int32)
   x = jnp.array([1, 2, np.nan, np.nan, 3] + [np.nan] * 7)[None, None]
   if not scalar:
     x = x[..., None]
   order = jnp.array([3, 1, 0, 2]) if permuted else None
-  actual = jax.jit(utils._unalign_output, static_argnums=3)(
-      x, lengths, aligned, 4, order
-  )
+  fn = functools.partial(utils._unalign_output, zero_guard=zero_guard)
+  actual = jax.jit(fn, static_argnums=3)(x, lengths, aligned, 4, order)
   expected = jnp.array([1, 2, 3, 0])[None, None]
   if permuted:
     expected = expected[:, :, order]
@@ -80,9 +80,7 @@ def test_runtime_packed_training(layout, heads, normalize):
   ):
 
     def run(ids, *xs):
-      call = functools.partial(
-          shared._call, fn, {**options, "segment_ids": ids}
-      )
+      call = functools.partial(shared._call, fn, {**options, "segment_ids": ids})
       y, pb = jax.vjp(call, *xs)
       return y, pb(jax.tree.map(lambda x: jnp.full_like(x, 0.1), y))
 
@@ -95,3 +93,30 @@ def test_runtime_packed_training(layout, heads, normalize):
       mask = mask[..., None]
     mask = jnp.broadcast_to(mask, grad.shape)
     np.testing.assert_array_equal(np.asarray(grad)[np.asarray(mask)], 0)
+
+
+@pytest.mark.parametrize("lengths", [(1, 1, 1), (4, 4, 4), (0, 0, 0), (1, 0, 3)])
+@pytest.mark.parametrize("extra", [0, 1])
+@pytest.mark.parametrize("scalar", [False, True])
+def test_zero_guard_preserves_valid_rows_and_padding_gradients(lengths, extra, scalar):
+  tokens = max(1, sum(lengths)) + extra
+  cu = jnp.array((0,) + tuple(np.cumsum(lengths)), jnp.int32)
+  padded = jnp.array(
+      (0,) + tuple(np.cumsum([(x + 3) // 4 * 4 for x in lengths])), jnp.int32
+  )
+  allocated = utils._aligned_token_bound(tokens, len(lengths), 4)
+  shape = (2, 1, allocated) + (() if scalar else (3,))
+  raw = jnp.arange(np.prod(shape), dtype=jnp.float32).reshape(shape)
+  expected_fn = functools.partial(utils._unalign_output, T_out=tokens)
+  expected = expected_fn(raw, cu, padded)
+  valid = jnp.zeros(allocated, dtype=bool)
+  for i, length in enumerate(lengths):
+    start = int(padded[i])
+    valid = valid.at[start : start + length].set(True)
+  mask = valid.reshape((1, 1, allocated) + (() if scalar else (1,)))
+  poisoned = jnp.where(mask, raw, jnp.nan)
+  fn = functools.partial(utils._unalign_output, T_out=tokens, zero_guard=True)
+  actual, pullback = jax.vjp(lambda x: fn(x, cu, padded), poisoned)
+  np.testing.assert_array_equal(actual, expected)
+  grad = pullback(jnp.ones_like(actual))[0]
+  np.testing.assert_array_equal(jnp.where(mask, 0, grad), jnp.zeros_like(grad))

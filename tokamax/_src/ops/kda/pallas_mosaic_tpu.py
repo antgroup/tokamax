@@ -663,6 +663,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         fuse_forward=config.fuse_forward,
         packed_inputs=packed_inputs,
         token_unpermute=inverse_order,
+        padding_guard=prepared.cu_seqlens is not None and chunk_size > 1,
         packed_output=config.packed_output,
         context_parallel_metadata=prepared.context_parallel_metadata,
         chunk_size=chunk_size,

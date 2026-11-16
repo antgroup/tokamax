@@ -2924,6 +2924,7 @@ def chunk_kda_bwd_custom(
         aligned_cu,
         T_orig,
         token_order=residuals.token_unpermute,
+        zero_guard=residuals.padding_guard,
     )
     dk = _unalign_output(
         dk,
@@ -2931,6 +2932,7 @@ def chunk_kda_bwd_custom(
         aligned_cu,
         T_orig,
         token_order=residuals.token_unpermute,
+        zero_guard=residuals.padding_guard,
     )
     dv = _unalign_output(
         dv,
@@ -2938,6 +2940,7 @@ def chunk_kda_bwd_custom(
         aligned_cu,
         T_orig,
         token_order=residuals.token_unpermute,
+        zero_guard=residuals.padding_guard,
     )
     dg = _unalign_output(
         dg,
@@ -2945,6 +2948,7 @@ def chunk_kda_bwd_custom(
         aligned_cu,
         T_orig,
         token_order=residuals.token_unpermute,
+        zero_guard=residuals.padding_guard,
     )
     db = _unalign_output(
         db,
@@ -2952,6 +2956,7 @@ def chunk_kda_bwd_custom(
         aligned_cu,
         T_orig,
         token_order=residuals.token_unpermute,
+        zero_guard=residuals.padding_guard,
     )
 
   if dh0 is not None and dh0.ndim == 4 and has_initial_state:

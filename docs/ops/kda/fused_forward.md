@@ -151,3 +151,21 @@ products and their precision remain unchanged; this map is used only when
 the CP summary must reconstruct missing gated inputs. The non-CP pipeline,
 packing fallback and padding/gate-gradient protections are retained. The
 existing failing CP test is the regression test; its tolerances are unchanged.
+
+### Guarded padding restoration
+
+The adapter marks only buffers allocated by `_align_seqs` with alignment greater
+than one as having a zeroable guard row. Unalignment can then clear one guard
+row and redirect invalid indices to it, instead of selecting zeros across an
+entire floating-point output. XLA may update that dead input buffer in place
+when its liveness permits. This also preserves zero outputs when unwritten
+padding contains NaNs; gate-parameter reduction and convolution protections
+remain unchanged.
+
+For ordinary capacities the allocation bound is
+`align_up(T + N * (chunk_size - 1), chunk_size)`. The aligned end is outside all
+valid rows. If it equals the allocation bound, equality requires every sequence
+to exhaust the maximum padding allowance, so the final allocated row is padding.
+Large-capacity allocation reserves an additional guard chunk. Arbitrary callers
+of `_unalign_output` do not carry this guarantee and retain explicit masking.
+The guarantee is static residual metadata, not a device-side conditional.

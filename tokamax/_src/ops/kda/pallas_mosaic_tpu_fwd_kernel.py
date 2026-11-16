@@ -2444,6 +2444,7 @@ def chunk_kda_fwd_custom(
     packed_output: bool = False,
     packed_inputs: tuple[jax.Array, ...] | None = None,
     token_unpermute: jax.Array | None = None,
+    padding_guard: bool = False,
 ) -> tuple[
     tuple[
         Float[Array, "H B T V"],
@@ -2692,7 +2693,9 @@ def chunk_kda_fwd_custom(
     if segment_ids is None:
       raise ValueError("Aligned varlen metadata requires `segment_ids`.")
     unalign = (
-        compact_output if packed_output and not _cp_active else _unalign_output
+        compact_output
+        if packed_output and not _cp_active
+        else functools.partial(_unalign_output, zero_guard=padding_guard)
     )
     if token_unpermute is not None:
       output = _unalign_output(
@@ -2701,6 +2704,7 @@ def chunk_kda_fwd_custom(
           aligned_cu_seqlens,
           segment_ids.shape[1],
           token_order=token_unpermute,
+          zero_guard=padding_guard,
       )
     else:
       output = unalign(
@@ -2717,6 +2721,7 @@ def chunk_kda_fwd_custom(
   # arguments, but these copies may be varlen-aligned and L2-normalized.
   assert q_res is not None and k_res is not None and v_res is not None
   residuals = KdaResiduals(
+      padding_guard=padding_guard,
       q=q_res,
       k=k_res,
       v=v_res,

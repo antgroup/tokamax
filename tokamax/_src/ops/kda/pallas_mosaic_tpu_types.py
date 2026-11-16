@@ -70,3 +70,5 @@ class KdaResiduals:
 
   token_order: Int[Array, "B T_ORIG"] | None = None
   token_unpermute: Int[Array, "B T_ORIG"] | None = None
+
+  padding_guard: bool = dataclasses.field(default=False, metadata={"static": True})

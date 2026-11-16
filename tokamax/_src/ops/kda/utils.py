@@ -319,13 +319,37 @@ def _align_seqs(
   )
 
 
+def _gather_unaligned_rows(o, source, valid, guard_end, *, zero_guard):
+  if zero_guard:
+    # _align_seqs reserves a zeroable row beyond the valid content. If its
+    # allocation bound is tight, the last allocated row is final-chunk padding.
+    # Clear only that row, allowing XLA to update the dead input buffer in place
+    # instead of materializing a full output-sized floating-point selection.
+    guard = jnp.minimum(guard_end, o.shape[2] - 1)
+    o = jax.lax.dynamic_update_slice_in_dim(
+        o, jnp.zeros_like(o[:, :, :1]), guard, axis=2
+    )
+    return o[:, :, jnp.where(valid, source, guard)]
+  values = o[:, :, source]
+  mask = valid.reshape((1, 1, valid.shape[0]) + (1,) * (o.ndim - 3))
+  return jnp.where(mask, values, 0)
+
+
 def _unalign_output(
-    o, orig_cu_seqlens, aligned_cu_seqlens, T_out, token_order=None
+    o,
+    orig_cu_seqlens,
+    aligned_cu_seqlens,
+    T_out,
+    token_order=None,
+    *,
+    zero_guard=False,
 ):
   """Reverse _align_seqs: scatter aligned output back to original positions.
 
   Supports batched cu_seqlens [B, N+1] — processes each batch element
-  independently.
+  independently. ``zero_guard`` is private to buffers allocated by
+  ``_align_seqs`` with alignment greater than one; arbitrary inputs retain
+  explicit masking.
   """
   if orig_cu_seqlens.ndim == 2:
     B = orig_cu_seqlens.shape[0]
@@ -339,6 +363,7 @@ def _unalign_output(
           aligned_cu_seqlens[b],
           T_out,
           token_order=None if token_order is None else token_order[b],
+          zero_guard=zero_guard,
       )
       per_batch.append(ob)
     return jnp.concatenate(per_batch, axis=1)
@@ -357,9 +382,13 @@ def _unalign_output(
     )
     source = aligned_cu_seqlens[seq] + positions - orig_cu_seqlens[seq]
     valid = positions < orig_cu_seqlens[-1]
-    values = o[:, :, jnp.where(valid, source, 0)]
-    mask = valid.reshape((1, 1, T_out) + (1,) * (o.ndim - 3))
-    return jnp.where(mask, values, 0)
+    return _gather_unaligned_rows(
+        o,
+        source if zero_guard else jnp.where(valid, source, 0),
+        valid,
+        aligned_cu_seqlens[-1],
+        zero_guard=zero_guard,
+    )
   orig_seg_lens = orig_cu_seqlens[1:] - orig_cu_seqlens[:-1]
 
   def _build_gather(i, gather_idx):
@@ -381,8 +410,9 @@ def _unalign_output(
   )
   positions = jnp.arange(T_out) if token_order is None else token_order
   valid = positions < orig_cu_seqlens[-1]
-  mask = valid.reshape((1, 1, T_out) + (1,) * (o.ndim - 3))
-  return jnp.where(mask, o[:, :, gather_idx], 0)
+  return _gather_unaligned_rows(
+      o, gather_idx, valid, aligned_cu_seqlens[-1], zero_guard=zero_guard
+  )
 
 
 def _bounded_chunk_boundaries(boundaries, mapping):
