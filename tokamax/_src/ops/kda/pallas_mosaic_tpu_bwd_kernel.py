@@ -2592,7 +2592,8 @@ def chunk_kda_bwd_custom(
 
   if disable_recompute:
     # Path A: save-h fast path.
-    if use_gate_in_kernel:
+    # Reuse the FP32 prefix saved by forward; rematerialize only if absent.
+    if use_gate_in_kernel and g_cumsum is None:
       if a_log is None:
         raise ValueError("a_log is required when use_gate_in_kernel=True")
       assert g_org is not None
@@ -2637,7 +2638,8 @@ def chunk_kda_bwd_custom(
       )
   else:
     # Path B: full recompute fallback.
-    if use_gate_in_kernel:
+    # Reuse the FP32 prefix saved by forward; rematerialize only if absent.
+    if use_gate_in_kernel and g_cumsum is None:
       if a_log is None:
         raise ValueError("a_log is required when use_gate_in_kernel=True")
       assert g_org is not None
