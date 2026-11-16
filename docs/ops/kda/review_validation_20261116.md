@@ -1,4 +1,15 @@
-# KDA backward: final-source review validation
+# KDA backward: pinned-source review validation
+
+## Provenance and audit correction
+
+This is a pinned historical measurement record, not live PR status or a new
+measurement of an arbitrary future main/head. The audit checked table values
+against the retained JSON/CSV, units, shape/static options and baseline scope.
+This correction changes explanations and labels only; measured values, raw
+samples and numerical thresholds are unchanged. All evidence remains on this
+separate branch rather than in the implementation PR.
+
+The restored KDA implementation/tests at `ad9153f73c3255340c8295718d202f3bdb5a1385` match the original report snapshot `921c3554c129577b22c5ed00482cf8dc558ca4ec`. Changes to those files in future require renewed validation.
 
 PR #1689. Tested calculation commit `5adb7a493e918ba27e6180bb9d274a6f0ac3fcfb`; baseline upstream main `0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18`. Measurements were collected on 2026-11-16 (Asia/Shanghai).
 
@@ -14,7 +25,7 @@ All prior reference modules and numerical thresholds are unchanged. Default form
 
 ## Formal operator coverage and method
 
-- All 15 official ArgSpecs, comprising 15 forward and three full forward/VJP execution points. Serialized primals are reused byte-for-byte; seed619, beta=0.5, with logical-input hashes in the manifest.
+- All 15 official ArgSpecs, comprising 15 forward and three full forward/VJP execution points. Serialized primals are reused byte-for-byte; seed 619, beta explicitly overridden to the legal constant 0.5, with logical-input hashes in the manifest.
 - `tokamax.standardize_function(..., seed=None)` supplies the modes. Its full forward/VJP uses the output itself as cotangent, behind an optimization barrier. Cotangents are consequently output-derived; this is not a fixed external-dY experiment.
 - Dedicated TPU7x allocation: four physical chips / eight JAX devices; single-device timing on logical device0. JAX/jaxlib 0.12.0, libtpu 0.0.50.1. Complete observed versions and flags are in environments.json.
 - Two fresh-process sweeps reverse implementation order. Inputs are prepared once using compiled input Formats. Ten warmups precede thirty blocking host-wall samples per cell per sweep; the table uses the median of all sixty samples.
@@ -22,19 +33,19 @@ All prior reference modules and numerical thresholds are unchanged. Default form
 
 ### Shapes
 
-Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate parameters and initial/final states use FP32. All formal shapes enable Q/K normalization. Stateful cases include width-4 convolution.
+Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate parameters and initial/final states use FP32. All formal shapes enable Q/K normalization. Stateful cases include width-4 convolution. Unsegmented prefill has one FP32 state slot (N=1), with segment_ids absent and max_num_segments unset; fixed training has no explicit segment-ID table.
 
 | Official case | H | T | N | Gate width | State | Modes |
 |---|---:|---:|---:|---:|---|---|
 | fixed_training_b1_t8192_bf16 | 32 | 8192 | fixed | 128 | none | F, F+VJP |
 | packed_training_b1_t8192_n25_bf16 | 32 | 8192 | 25 | 128 | none | F, F+VJP |
 | gdn_fixed_training_b1_t8192_bf16 | 32 | 8192 | fixed | 1 | none | F, F+VJP |
-| tp32_prefill_b1_t128_bf16 | 3 | 128 | fixed | 128 | FP32 | F |
-| tp32_prefill_b1_t512_bf16 | 3 | 512 | fixed | 128 | FP32 | F |
-| tp32_prefill_b1_t1024_bf16 | 3 | 1024 | fixed | 128 | FP32 | F |
+| tp32_prefill_b1_t128_bf16 | 3 | 128 | 1 | 128 | FP32 | F |
+| tp32_prefill_b1_t512_bf16 | 3 | 512 | 1 | 128 | FP32 | F |
+| tp32_prefill_b1_t1024_bf16 | 3 | 1024 | 1 | 128 | FP32 | F |
 | tp32_verify_b1_t64_n8_bf16 | 3 | 64 | 8 | 128 | FP32 | F |
-| tp16_prefill_b1_t1024_bf16 | 6 | 1024 | fixed | 128 | FP32 | F |
-| tp8_prefill_b1_t2048_bf16 | 12 | 2048 | fixed | 128 | FP32 | F |
+| tp16_prefill_b1_t1024_bf16 | 6 | 1024 | 1 | 128 | FP32 | F |
+| tp8_prefill_b1_t2048_bf16 | 12 | 2048 | 1 | 128 | FP32 | F |
 | tp32_decode_b1_t1_n1_bf16 | 3 | 1 | 1 | 128 | FP32 | F |
 | tp32_dspark_decode_b1_t8_n1_bf16 | 3 | 8 | 1 | 128 | FP32 | F |
 | tp32_dspark_decode_b1_t64_n16_bf16 | 3 | 64 | 16 | 128 | FP32 | F |
@@ -44,7 +55,7 @@ Layout is [H,B,T,K/V]; B=1 and K=V=128. Tokens/gates/beta use BF16; gate paramet
 
 ### Complete formal wall/device matrix
 
-Times are milliseconds. Each row explicitly identifies the default or opt-in path; no universal speedup is claimed. Compiler temporary bytes are provided in the CSV/JSON and are not model/allocator peak memory.
+All wall/device values in both performance tables are milliseconds. Change = (PR wall / main wall - 1) * 100%; positive means longer latency. Speedup = main wall / PR wall. Each row explicitly identifies the default or opt-in path; no universal speedup is claimed. Compiler temporary bytes are provided in the CSV/JSON and are not model/allocator peak memory.
 
 | Case / mode | Path | Main wall | PR wall | Change | Main device | PR device |
 |---|---|---:|---:|---:|---:|---:|
@@ -89,9 +100,9 @@ Formal opt-in flags select fused/packed forward and backward; compact feature ro
 
 ## Feature-specific comparison
 
-These additional profiles use identical Gaussian inputs and a fixed external Gaussian cotangent (where applicable), seed619. BF16 Q/K/V have std0.05, raw gate std0.1, beta is sigmoid of Gaussian logits with std0.1; A_log is uniform[-1,0] and bias uniform[-4,-3]. Lower bound is -5, scale is 128**-0.5. Both implementations use matching Q/K normalization options. Two reversed fresh-process sweeps retain sixty host-wall samples per cell. Five-call complete-device captures in each sweep contain zero input-reshard modules.
+These additional profiles use identical Gaussian inputs and a fixed external Gaussian cotangent (where applicable), seed 619. BF16 Q/K/V have std0.05, raw gate std0.1, beta is sigmoid of Gaussian logits with std0.1; A_log is uniform[-1,0] and bias uniform[-4,-3]. Lower bound is -5, scale is 128**-0.5. Both implementations use matching Q/K normalization options. Norm=False means normalization is disabled; the Gaussian Q/K inputs were not separately L2-normalized. Compact and optimized are different flag configurations, not interchangeable speedup labels. Two reversed fresh-process sweeps retain sixty host-wall samples per cell. Five-call complete-device captures in each sweep contain zero input-reshard modules.
 
-Pure VJP prepares residuals before timing and supplies them as runtime inputs. The harness rejects a largest closed-over constant of 1MiB or more. Full forward+VJP includes preparation and its seven operand/parameter gradients.
+Full means forward plus seven-gradient VJP, using a fixed external dO. Pure VJP prepares residuals before timing and supplies them as runtime inputs. The harness rejects a largest closed-over constant of 1MiB or more. Full forward+VJP includes preparation and its seven operand/parameter gradients.
 
 | Case / mode | B/T/H/N | Norm | Path | Main wall | PR wall | Speedup | Main device | PR device |
 |---|---|---|---|---:|---:|---:|---:|---:|
