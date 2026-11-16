@@ -1,0 +1,10 @@
+{
+  "cells_verified": 108,
+  "device_captures": 432,
+  "wall_samples_each": 60,
+  "device_samples_each": 20,
+  "input_shapes_dtypes_identity_verified": true,
+  "independent_numpy_medians_match": true,
+  "source": "7b3102e462a9baca278ba5dbb2db2268a6560d60",
+  "baseline": "9d65d382dfa59324d2707c5bfc71b7d7719ac34f"
+}

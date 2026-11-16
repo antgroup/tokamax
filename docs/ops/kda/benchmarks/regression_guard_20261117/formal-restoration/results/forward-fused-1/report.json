@@ -1,0 +1,4151 @@
+{
+  "variant": "forward-fused",
+  "round": 1,
+  "source": "fallback-final",
+  "cases": {
+    "fixed_training_b1_t8192_bf16": {
+      "spec": {
+        "name": "fixed_training_b1_t8192_bf16",
+        "tags": [
+          "primary"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": false,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              32
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              32,
+              1,
+              8192
+            ],
+            "dtype": "bfloat16"
+          },
+          "delta_time_bias": {
+            "shape": [
+              4096
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "key": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "26be1a7dc4c17714c5a8e3fdade2584dd3eb872d0dbba41dc48c21683e6f774f"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "26be1a7dc4c17714c5a8e3fdade2584dd3eb872d0dbba41dc48c21683e6f774f",
+          "samples_ms": [
+            1.658254,
+            1.675508,
+            1.674822,
+            1.666205,
+            1.669153,
+            1.670917,
+            1.669581,
+            1.675976,
+            1.670813,
+            1.660907,
+            1.661264,
+            1.66036,
+            1.656012,
+            1.661549,
+            1.663677,
+            1.668292,
+            1.666736,
+            1.66905,
+            1.666339,
+            1.668036,
+            1.669909,
+            1.663818,
+            1.66373,
+            1.662709,
+            1.656952,
+            1.659912,
+            1.672718,
+            1.673975,
+            1.677476,
+            1.684529
+          ],
+          "median_ms": 1.667386,
+          "compile_s": 2.7599545191042125,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192
+            ],
+            [
+              32
+            ],
+            [
+              4096
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 335642528,
+          "argument_bytes": 268976640,
+          "output_bytes": 67108864,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "a132fcb168d66cdf09b1e59ea942f6f592b08774f82d959c7e0b5f90f19ce932",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16"
+          ]
+        },
+        "forward_and_vjp": {
+          "input_sha256": "26be1a7dc4c17714c5a8e3fdade2584dd3eb872d0dbba41dc48c21683e6f774f",
+          "samples_ms": [
+            3.509856,
+            3.52735,
+            3.53776,
+            3.515569,
+            3.52394,
+            3.530654,
+            3.557811,
+            3.535799,
+            3.51773,
+            3.515342,
+            3.523232,
+            3.509208,
+            3.528576,
+            3.532588,
+            3.513139,
+            3.603656,
+            3.535136,
+            3.553439,
+            3.518085,
+            3.510033,
+            3.530699,
+            3.541973,
+            3.517774,
+            3.522724,
+            3.528947,
+            3.526882,
+            3.512335,
+            3.531037,
+            3.526313,
+            3.52753
+          ],
+          "median_ms": 3.5271160000000004,
+          "compile_s": 2.9702706546522677,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192
+            ],
+            [
+              32
+            ],
+            [
+              4096
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 1204289024,
+          "argument_bytes": 268976640,
+          "output_bytes": 336085536,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "b99e564da3b864f959a06a058d805c09825dc6e3a978d8daa9d467cca99a20d7",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32"
+          ]
+        }
+      }
+    },
+    "packed_training_b1_t8192_n25_bf16": {
+      "spec": {
+        "name": "packed_training_b1_t8192_n25_bf16",
+        "tags": [
+          "primary"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 25,
+          "output_final_state": false,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              32
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              32,
+              1,
+              8192
+            ],
+            "dtype": "bfloat16"
+          },
+          "delta_time_bias": {
+            "shape": [
+              4096
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "key": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              8192
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "b9a769c7351fe0ca061d94b92cb8dab50ca96697dfbc143a531b43720d7350fe"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "b9a769c7351fe0ca061d94b92cb8dab50ca96697dfbc143a531b43720d7350fe",
+          "samples_ms": [
+            3.61107,
+            3.609788,
+            3.6128,
+            3.614895,
+            3.607365,
+            3.597107,
+            3.61802,
+            3.608161,
+            3.592206,
+            3.604379,
+            3.617239,
+            3.624606,
+            3.658614,
+            3.629385,
+            3.636218,
+            3.613497,
+            3.674413,
+            3.611294,
+            3.624827,
+            3.618884,
+            3.620917,
+            3.612178,
+            3.625424,
+            3.600232,
+            3.639429,
+            3.627192,
+            3.66111,
+            3.697702,
+            3.652878,
+            3.633284
+          ],
+          "median_ms": 3.618452,
+          "compile_s": 3.9109575701877475,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192
+            ],
+            [
+              32
+            ],
+            [
+              4096
+            ],
+            [
+              1,
+              8192
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 997586208,
+          "argument_bytes": 269009408,
+          "output_bytes": 67108864,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "55125ce725f82ee5b0434b6458b15d7a546e4ce172804ddc9e3934f472e1e045",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16"
+          ]
+        },
+        "forward_and_vjp": {
+          "input_sha256": "b9a769c7351fe0ca061d94b92cb8dab50ca96697dfbc143a531b43720d7350fe",
+          "samples_ms": [
+            7.372185,
+            7.33606,
+            7.343193,
+            7.331346,
+            7.329438,
+            7.335952,
+            7.368053,
+            7.351417,
+            7.371113,
+            7.333477,
+            7.342986,
+            7.349743,
+            7.330709,
+            7.338155,
+            7.386623,
+            7.330352,
+            7.353661,
+            7.35757,
+            7.338778,
+            7.333296,
+            7.348913,
+            7.328352,
+            7.336259,
+            7.369359,
+            7.342237,
+            7.33416,
+            7.332588,
+            7.37727,
+            7.39302,
+            7.381881
+          ],
+          "median_ms": 7.3426115,
+          "compile_s": 4.777037727180868,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192
+            ],
+            [
+              32
+            ],
+            [
+              4096
+            ],
+            [
+              1,
+              8192
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 1883651584,
+          "argument_bytes": 269009408,
+          "output_bytes": 336118336,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "765f1fa960a4e350d533562b8db673ad7b97b1d0d8eeec6849f9abf16dbabc00",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "[('float0', 'V')]"
+          ]
+        }
+      }
+    },
+    "gdn_fixed_training_b1_t8192_bf16": {
+      "spec": {
+        "name": "gdn_fixed_training_b1_t8192_bf16",
+        "tags": [
+          "primary"
+        ],
+        "static": {
+          "output_final_state": false,
+          "per_channel_gate": false,
+          "use_gate_in_kernel": false,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "beta": {
+            "shape": [
+              32,
+              1,
+              8192
+            ],
+            "dtype": "bfloat16"
+          },
+          "gate": {
+            "shape": [
+              32,
+              1,
+              8192,
+              1
+            ],
+            "dtype": "bfloat16"
+          },
+          "key": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              32,
+              1,
+              8192,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "deb544b372876e772306c93fe00b4a5695eb9c6bb5d58f9eb7eed541c80bba44"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "deb544b372876e772306c93fe00b4a5695eb9c6bb5d58f9eb7eed541c80bba44",
+          "samples_ms": [
+            1.693492,
+            1.688599,
+            1.685527,
+            1.689712,
+            1.68676,
+            1.696918,
+            1.691639,
+            1.684138,
+            1.706821,
+            1.707082,
+            1.697255,
+            1.687045,
+            1.687033,
+            1.690569,
+            1.690794,
+            1.7009,
+            1.703794,
+            1.706428,
+            1.706922,
+            1.699717,
+            1.705254,
+            1.709838,
+            1.69917,
+            1.694804,
+            1.691559,
+            1.690226,
+            1.694637,
+            1.682223,
+            1.684172,
+            1.698237
+          ],
+          "median_ms": 1.6940645,
+          "compile_s": 0.8554319660179317,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 3, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              1
+            ],
+            [
+              32,
+              1,
+              8192
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 805470048,
+          "argument_bytes": 202375168,
+          "output_bytes": 67108864,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "50b836492c94e44f67cd11f08a7a48ad349dd3296b920696d912d311541f54e7",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16"
+          ]
+        },
+        "forward_and_vjp": {
+          "input_sha256": "deb544b372876e772306c93fe00b4a5695eb9c6bb5d58f9eb7eed541c80bba44",
+          "samples_ms": [
+            3.177063,
+            3.176307,
+            3.179432,
+            3.176353,
+            3.159176,
+            3.158445,
+            3.168222,
+            3.185713,
+            3.165318,
+            3.160657,
+            3.153244,
+            3.154439,
+            3.154357,
+            3.167117,
+            3.155382,
+            3.14856,
+            3.146739,
+            3.151096,
+            3.150891,
+            3.155997,
+            3.175781,
+            3.168439,
+            3.159662,
+            3.160399,
+            3.158811,
+            3.163525,
+            3.180257,
+            3.184874,
+            3.194501,
+            3.199421
+          ],
+          "median_ms": 3.162091,
+          "compile_s": 1.438486637081951,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 3, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              128
+            ],
+            [
+              32,
+              1,
+              8192,
+              1
+            ],
+            [
+              32,
+              1,
+              8192
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 948207328,
+          "argument_bytes": 202375168,
+          "output_bytes": 269484064,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "5f245817cb4b2df5d6cf754f9cfa5537c47c1dfa7b59cdd7d9bffbaafb0d7a5b",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16"
+          ]
+        }
+      }
+    },
+    "tp32_prefill_b1_t128_bf16": {
+      "spec": {
+        "name": "tp32_prefill_b1_t128_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              128,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              128,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              128,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              128,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "834701531a57e8d8fb0abda3b85d7da49942a5f64134aaf14e1ad835ebae100d"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "834701531a57e8d8fb0abda3b85d7da49942a5f64134aaf14e1ad835ebae100d",
+          "samples_ms": [
+            0.239012,
+            0.251483,
+            0.235103,
+            0.233499,
+            0.234244,
+            0.239848,
+            0.227922,
+            0.227482,
+            0.235076,
+            0.236108,
+            0.231881,
+            0.22986,
+            0.223429,
+            0.234568,
+            0.23022,
+            0.227996,
+            0.224955,
+            0.228972,
+            0.231446,
+            0.234951,
+            0.227943,
+            0.229633,
+            0.232026,
+            0.227918,
+            0.244267,
+            0.231236,
+            0.236193,
+            0.224731,
+            0.229604,
+            0.232626
+          ],
+          "median_ms": 0.23166350000000002,
+          "compile_s": 0.34137947857379913,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              128,
+              128
+            ],
+            [
+              3,
+              1,
+              128,
+              128
+            ],
+            [
+              3,
+              1,
+              128,
+              128
+            ],
+            [
+              3,
+              1,
+              128,
+              128
+            ],
+            [
+              3,
+              1,
+              128
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              1,
+              3,
+              128,
+              128
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 687744,
+          "argument_bytes": 611840,
+          "output_bytes": 294944,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "d989100e46dbb6cba879a982a1a48d5b150f9f59a2cd23f03a1da4339ead53d4",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_prefill_b1_t512_bf16": {
+      "spec": {
+        "name": "tp32_prefill_b1_t512_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              512
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              512,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              512,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              512,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              512,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "3b9c810f6f333f1677c9e305737faeda44e62895e3b0b8116ab203f760dc6e3e"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "3b9c810f6f333f1677c9e305737faeda44e62895e3b0b8116ab203f760dc6e3e",
+          "samples_ms": [
+            0.252104,
+            0.253655,
+            0.253869,
+            0.250372,
+            0.253842,
+            0.268535,
+            0.25781,
+            0.253431,
+            0.251787,
+            0.26313,
+            0.25858,
+            0.251006,
+            0.243487,
+            0.247327,
+            0.259747,
+            0.252096,
+            0.253634,
+            0.265188,
+            0.266515,
+            0.264868,
+            0.266098,
+            0.26831,
+            0.277857,
+            0.265081,
+            0.263613,
+            0.276615,
+            0.275025,
+            0.271445,
+            0.263898,
+            0.275429
+          ],
+          "median_ms": 0.2614385,
+          "compile_s": 0.3377879410982132,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              512,
+              128
+            ],
+            [
+              3,
+              1,
+              512,
+              128
+            ],
+            [
+              3,
+              1,
+              512,
+              128
+            ],
+            [
+              3,
+              1,
+              512,
+              128
+            ],
+            [
+              3,
+              1,
+              512
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              1,
+              3,
+              128,
+              128
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 1474272,
+          "argument_bytes": 1794560,
+          "output_bytes": 589856,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "aceda9c8cb6cfae0e6e0ddf17339799b0ecbbde2831e60fe06bf282d022b4398",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_prefill_b1_t1024_bf16": {
+      "spec": {
+        "name": "tp32_prefill_b1_t1024_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              1024
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "15c14fdce422bcd88fced117ba623493e483c791c870adba323bbf10d9f4818a"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "15c14fdce422bcd88fced117ba623493e483c791c870adba323bbf10d9f4818a",
+          "samples_ms": [
+            0.384868,
+            0.389755,
+            0.338312,
+            0.293497,
+            0.286683,
+            0.279868,
+            0.291756,
+            0.287184,
+            0.286786,
+            0.285433,
+            0.278505,
+            0.278332,
+            0.282647,
+            0.282751,
+            0.29129,
+            0.293865,
+            0.278657,
+            0.2906,
+            0.292788,
+            0.280253,
+            0.277821,
+            0.28461,
+            0.294195,
+            0.288586,
+            0.298638,
+            0.295086,
+            0.280559,
+            0.284131,
+            0.282478,
+            0.290273
+          ],
+          "median_ms": 0.286985,
+          "compile_s": 0.34062415082007647,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              1024,
+              128
+            ],
+            [
+              3,
+              1,
+              1024,
+              128
+            ],
+            [
+              3,
+              1,
+              1024,
+              128
+            ],
+            [
+              3,
+              1,
+              1024,
+              128
+            ],
+            [
+              3,
+              1,
+              1024
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              1,
+              3,
+              128,
+              128
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 2653920,
+          "argument_bytes": 3371520,
+          "output_bytes": 983072,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "5a0b604f5ecd30b8b63060c2ab98b8d9ea33310f2b5a4f1d2d21dacbda874fac",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_verify_b1_t64_n8_bf16": {
+      "spec": {
+        "name": "tp32_verify_b1_t64_n8_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 8,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              64
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              8,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              64
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "900037c9f7ee416a2573844a6333c5f36bf2348109fc5793b08e7dcf94dd9370"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "900037c9f7ee416a2573844a6333c5f36bf2348109fc5793b08e7dcf94dd9370",
+          "samples_ms": [
+            0.365598,
+            0.400779,
+            0.372511,
+            0.382209,
+            0.359153,
+            0.368528,
+            0.361298,
+            0.360704,
+            0.371941,
+            0.368385,
+            0.364015,
+            0.372853,
+            0.367419,
+            0.359957,
+            0.363405,
+            0.363151,
+            0.360664,
+            0.361295,
+            0.362155,
+            0.359725,
+            0.376924,
+            0.363021,
+            0.371979,
+            0.378809,
+            0.369234,
+            0.372234,
+            0.361285,
+            0.381481,
+            0.366767,
+            0.367878
+          ],
+          "median_ms": 0.367093,
+          "compile_s": 1.1451682280749083,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              8,
+              3,
+              128,
+              128
+            ],
+            [
+              1,
+              64
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 2946496,
+          "argument_bytes": 1792000,
+          "output_bytes": 1622048,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "43807d56fa3779a0278422234e20716141aa74df4430a94d7b17724bda228f33",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp16_prefill_b1_t1024_bf16": {
+      "spec": {
+        "name": "tp16_prefill_b1_t1024_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              6
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              6,
+              1,
+              1024
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              768
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              6,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              6,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              6,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              6,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              6,
+              1,
+              1024,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "167e50dc778ccda98e95a8dec0bc4a65bcf1cc061e0e8f3d4df30d7f75fe4c74"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "167e50dc778ccda98e95a8dec0bc4a65bcf1cc061e0e8f3d4df30d7f75fe4c74",
+          "samples_ms": [
+            0.290033,
+            0.297378,
+            0.2877,
+            0.294232,
+            0.296793,
+            0.294704,
+            0.303647,
+            0.299379,
+            0.292236,
+            0.289841,
+            0.299147,
+            0.297906,
+            0.294327,
+            0.288278,
+            0.29368,
+            0.291581,
+            0.311342,
+            0.301823,
+            0.295281,
+            0.299837,
+            0.288983,
+            0.299164,
+            0.294745,
+            0.293506,
+            0.296609,
+            0.293274,
+            0.286283,
+            0.295904,
+            0.311325,
+            0.291625
+          ],
+          "median_ms": 0.2947245,
+          "compile_s": 0.5497401328757405,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              6,
+              1,
+              1024,
+              128
+            ],
+            [
+              6,
+              1,
+              1024,
+              128
+            ],
+            [
+              6,
+              1,
+              1024,
+              128
+            ],
+            [
+              6,
+              1,
+              1024,
+              128
+            ],
+            [
+              6,
+              1,
+              1024
+            ],
+            [
+              6
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              768
+            ],
+            [
+              1,
+              1,
+              6,
+              128,
+              128
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 5013216,
+          "argument_bytes": 6742528,
+          "output_bytes": 1966112,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "767e6e95afac454ec43bd8699f1a1b42c9cd07311a1c53921b71efb3601b24fe",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp8_prefill_b1_t2048_bf16": {
+      "spec": {
+        "name": "tp8_prefill_b1_t2048_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              12
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              12,
+              1,
+              2048
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              12,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              12,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              12,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              1536
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              12,
+              1,
+              2048,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              12,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              12,
+              1,
+              2048,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              12,
+              1,
+              2048,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "value": {
+            "shape": [
+              12,
+              1,
+              2048,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "b84b4798fb0f06085ffefe012c15bb04ef51da6099a9937edc771f32ab3b347f"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "b84b4798fb0f06085ffefe012c15bb04ef51da6099a9937edc771f32ab3b347f",
+          "samples_ms": [
+            0.424373,
+            0.420249,
+            0.418754,
+            0.420352,
+            0.418935,
+            0.422501,
+            0.427277,
+            0.418075,
+            0.423444,
+            0.419028,
+            0.420751,
+            0.428925,
+            0.416285,
+            0.414431,
+            0.420674,
+            0.410705,
+            0.412829,
+            0.421341,
+            0.421403,
+            0.41879,
+            0.419791,
+            0.417524,
+            0.421632,
+            0.420939,
+            0.416129,
+            0.417948,
+            0.410136,
+            0.412173,
+            0.414079,
+            0.429293
+          ],
+          "median_ms": 0.4194095,
+          "compile_s": 0.8482589721679688,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              12,
+              1,
+              2048,
+              128
+            ],
+            [
+              12,
+              1,
+              2048,
+              128
+            ],
+            [
+              12,
+              1,
+              2048,
+              128
+            ],
+            [
+              12,
+              1,
+              2048,
+              128
+            ],
+            [
+              12,
+              1,
+              2048
+            ],
+            [
+              12
+            ],
+            [
+              12,
+              4,
+              128
+            ],
+            [
+              12,
+              4,
+              128
+            ],
+            [
+              12,
+              4,
+              128
+            ],
+            [
+              1536
+            ],
+            [
+              1,
+              1,
+              12,
+              128,
+              128
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 63110976,
+          "argument_bytes": 26100224,
+          "output_bytes": 7077920,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "4afc8827c2a2fc0f1c26c158829974acfa411b04df1e781427a6a70b2308c42f",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_decode_b1_t1_n1_bf16": {
+      "spec": {
+        "name": "tp32_decode_b1_t1_n1_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 1,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              1
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              1,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              1,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              1,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              1
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              1,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "02ec0e166228b306b33b7b1de07d3d5670d7f03140f1a68b394b72d078523a27"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "02ec0e166228b306b33b7b1de07d3d5670d7f03140f1a68b394b72d078523a27",
+          "samples_ms": [
+            0.247128,
+            0.25077,
+            0.252594,
+            0.244473,
+            0.239923,
+            0.249032,
+            0.241693,
+            0.248746,
+            0.243853,
+            0.246577,
+            0.24149,
+            0.257674,
+            0.250999,
+            0.24804,
+            0.240842,
+            0.244786,
+            0.236212,
+            0.244128,
+            0.244141,
+            0.238674,
+            0.240896,
+            0.25179,
+            0.241002,
+            0.248945,
+            0.239195,
+            0.241839,
+            0.244257,
+            0.235044,
+            0.231097,
+            0.23242
+          ],
+          "median_ms": 0.2441345,
+          "compile_s": 0.799856664147228,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(1, 2, 0, 3), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 2, 0, 3), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 2, 0, 3), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 2, 0, 3), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 2, 0), tiling=((2, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              1,
+              128
+            ],
+            [
+              3,
+              1,
+              1,
+              128
+            ],
+            [
+              3,
+              1,
+              1,
+              128
+            ],
+            [
+              3,
+              1,
+              1,
+              128
+            ],
+            [
+              3,
+              1,
+              1
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            [
+              1,
+              1
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 1421760,
+          "argument_bytes": 222720,
+          "output_bytes": 197664,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "f24712b9311ef2f0a2ca73ec99e087118ef2b987c7e2eb426f80a7952415ce7c",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_dspark_decode_b1_t8_n1_bf16": {
+      "spec": {
+        "name": "tp32_dspark_decode_b1_t8_n1_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 1,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              8
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              8,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              8,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              8,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              8
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              8,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "e54276c3d9c60af959dce97bfc199080837decd4614c1fa2543290812bcd9fdb"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "e54276c3d9c60af959dce97bfc199080837decd4614c1fa2543290812bcd9fdb",
+          "samples_ms": [
+            0.27368,
+            0.265356,
+            0.268846,
+            0.265729,
+            0.279159,
+            0.268056,
+            0.269076,
+            0.265992,
+            0.265009,
+            0.26254,
+            0.255255,
+            0.25761,
+            0.255249,
+            0.263065,
+            0.259962,
+            0.272208,
+            0.256567,
+            0.264044,
+            0.264498,
+            0.270769,
+            0.265844,
+            0.2593,
+            0.271777,
+            0.259857,
+            0.263371,
+            0.257407,
+            0.264597,
+            0.261355,
+            0.2537,
+            0.257604
+          ],
+          "median_ms": 0.26427100000000003,
+          "compile_s": 1.0557234361767769,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              8,
+              128
+            ],
+            [
+              3,
+              1,
+              8,
+              128
+            ],
+            [
+              3,
+              1,
+              8,
+              128
+            ],
+            [
+              3,
+              1,
+              8,
+              128
+            ],
+            [
+              3,
+              1,
+              8
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              1,
+              3,
+              128,
+              128
+            ],
+            [
+              1,
+              8
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 2418848,
+          "argument_bytes": 243712,
+          "output_bytes": 202784,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "f9b00bbdf48357ed41faf3f8f0292f7b328f507ce8f6ed36f152581ff502c167",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_dspark_decode_b1_t64_n16_bf16": {
+      "spec": {
+        "name": "tp32_dspark_decode_b1_t64_n16_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 16,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              64
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              16,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              64
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "d0055ff88d6c1b3cfb3defbaccbdf6f1e1c217a91f7c5ce5e99e0263df43c775"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "d0055ff88d6c1b3cfb3defbaccbdf6f1e1c217a91f7c5ce5e99e0263df43c775",
+          "samples_ms": [
+            0.494596,
+            0.492249,
+            0.50053,
+            0.491912,
+            0.483745,
+            0.491732,
+            0.495624,
+            0.485099,
+            0.484213,
+            0.479295,
+            0.481515,
+            0.482153,
+            0.481645,
+            0.506113,
+            0.490923,
+            0.486013,
+            0.495152,
+            0.503259,
+            0.498104,
+            0.499795,
+            0.49609,
+            0.502825,
+            0.503661,
+            0.502206,
+            0.49841,
+            0.500614,
+            0.503197,
+            0.497546,
+            0.492986,
+            0.515676
+          ],
+          "median_ms": 0.495388,
+          "compile_s": 1.4012904851697385,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              16,
+              3,
+              128,
+              128
+            ],
+            [
+              1,
+              64
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 3305536,
+          "argument_bytes": 3364864,
+          "output_bytes": 3194912,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "fa487b170f71417b9ef372abea214e3830cf63d1453bf2af54826efb564636d3",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp32_decode_b1_t64_n64_bf16": {
+      "spec": {
+        "name": "tp32_decode_b1_t64_n64_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 64,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              3
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              3,
+              1,
+              64
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              3,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              384
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              64,
+              3,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              64
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              3,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "ebe851dffdfc656864a70e61b166464c7ae8211f14e4b45bbc6e73999b97430b"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "ebe851dffdfc656864a70e61b166464c7ae8211f14e4b45bbc6e73999b97430b",
+          "samples_ms": [
+            1.021986,
+            1.023152,
+            1.035387,
+            1.033266,
+            1.027198,
+            1.028751,
+            1.034618,
+            1.030243,
+            1.025739,
+            1.02717,
+            1.024407,
+            1.034321,
+            1.026188,
+            1.021113,
+            1.020167,
+            1.020832,
+            1.017568,
+            1.021304,
+            1.021375,
+            1.019594,
+            1.016849,
+            1.029421,
+            1.020859,
+            1.017646,
+            1.033383,
+            1.024649,
+            1.03987,
+            1.02593,
+            1.026238,
+            1.037545
+          ],
+          "median_ms": 1.0258345,
+          "compile_s": 1.6443350529298186,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((4, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((512,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64,
+              128
+            ],
+            [
+              3,
+              1,
+              64
+            ],
+            [
+              3
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              3,
+              4,
+              128
+            ],
+            [
+              384
+            ],
+            [
+              1,
+              64,
+              3,
+              128,
+              128
+            ],
+            [
+              1,
+              64
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 41170976,
+          "argument_bytes": 12802048,
+          "output_bytes": 12632096,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "f3a43eb2843cfabad515eae609bb67bf9143e786eb2407379d92db98dfc57a9e",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp16_dp2_dspark_decode_b1_t64_n16_bf16": {
+      "spec": {
+        "name": "tp16_dp2_dspark_decode_b1_t64_n16_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 16,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              6
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              6,
+              1,
+              64
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              768
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              16,
+              6,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              64
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "c02635f177060ad3bc745fb037e97de9b204341a51a88f76fac16a69f38aeb1d"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "c02635f177060ad3bc745fb037e97de9b204341a51a88f76fac16a69f38aeb1d",
+          "samples_ms": [
+            0.493448,
+            0.499584,
+            0.501763,
+            0.501454,
+            0.498781,
+            0.514716,
+            0.497977,
+            0.490775,
+            0.492838,
+            0.501524,
+            0.496767,
+            0.498279,
+            0.503969,
+            0.499672,
+            0.497762,
+            0.493512,
+            0.494301,
+            0.486215,
+            0.497111,
+            0.490593,
+            0.494983,
+            0.498949,
+            0.519221,
+            0.506668,
+            0.50734,
+            0.496417,
+            0.496412,
+            0.485484,
+            0.495396,
+            0.501133
+          ],
+          "median_ms": 0.49786949999999996,
+          "compile_s": 1.356097738724202,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64
+            ],
+            [
+              6
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              768
+            ],
+            [
+              1,
+              16,
+              6,
+              128,
+              128
+            ],
+            [
+              1,
+              64
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 5682720,
+          "argument_bytes": 6728704,
+          "output_bytes": 6389792,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "3a82b09f4cabd01b35c3c6fe1ab5114364c90ae47e0be66ac88d1217e28c264f",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    },
+    "tp16_dp2_decode_b1_t64_n64_bf16": {
+      "spec": {
+        "name": "tp16_dp2_decode_b1_t64_n64_bf16",
+        "tags": [
+          "primary",
+          "forward_only"
+        ],
+        "static": {
+          "lower_bound": -5.0,
+          "max_num_segments": 64,
+          "output_final_state": true,
+          "use_conv1d_in_kernel": true,
+          "use_gate_in_kernel": true,
+          "use_qk_l2norm": true
+        },
+        "arrays": {
+          "a_log": {
+            "shape": [
+              6
+            ],
+            "dtype": "float32"
+          },
+          "beta": {
+            "shape": [
+              6,
+              1,
+              64
+            ],
+            "dtype": "bfloat16"
+          },
+          "conv_weight_k": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_q": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "conv_weight_v": {
+            "shape": [
+              6,
+              4,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "delta_time_bias": {
+            "shape": [
+              768
+            ],
+            "dtype": "float32"
+          },
+          "gate": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "initial_state": {
+            "shape": [
+              1,
+              64,
+              6,
+              128,
+              128
+            ],
+            "dtype": "float32"
+          },
+          "key": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "query": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          },
+          "segment_ids": {
+            "shape": [
+              1,
+              64
+            ],
+            "dtype": "int32"
+          },
+          "value": {
+            "shape": [
+              6,
+              1,
+              64,
+              128
+            ],
+            "dtype": "bfloat16"
+          }
+        },
+        "input_sha256": "d819a7a9efce910d150f2b2ad91657cbcc452dbb542ac0ecf2ff2d107d5ef45e"
+      },
+      "modes": {
+        "forward": {
+          "input_sha256": "d819a7a9efce910d150f2b2ad91657cbcc452dbb542ac0ecf2ff2d107d5ef45e",
+          "samples_ms": [
+            1.146923,
+            1.174175,
+            1.151917,
+            1.141128,
+            1.138695,
+            1.135183,
+            1.136294,
+            1.139535,
+            1.164154,
+            1.146117,
+            1.134899,
+            1.141878,
+            1.147011,
+            1.135826,
+            1.1357,
+            1.148356,
+            1.135086,
+            1.135348,
+            1.137501,
+            1.161308,
+            1.141582,
+            1.125178,
+            1.136135,
+            1.130728,
+            1.139164,
+            1.143211,
+            1.132546,
+            1.136365,
+            1.145106,
+            1.166228
+          ],
+          "median_ms": 1.1393495,
+          "compile_s": 1.3749340558424592,
+          "input_formats": [
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(1, 0, 2), tiling=((8, 128), (2, 1)), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((128,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2), tiling=((4, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0,), tiling=((1024,),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1, 2, 3, 4), tiling=((8, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))",
+            "Format(layout=Layout(major_to_minor=(0, 1), tiling=((1, 128),), sub_byte_element_size_in_bits=0), sharding=SingleDeviceSharding(device=TpuDevice(id=0, process_index=0, coords=(0,0,0), core_on_chip=0), memory_kind=device))"
+          ],
+          "array_shapes": [
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64,
+              128
+            ],
+            [
+              6,
+              1,
+              64
+            ],
+            [
+              6
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              6,
+              4,
+              128
+            ],
+            [
+              768
+            ],
+            [
+              1,
+              64,
+              6,
+              128,
+              128
+            ],
+            [
+              1,
+              64
+            ]
+          ],
+          "array_dtypes": [
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "bfloat16",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "float32",
+            "int32"
+          ],
+          "standardized_signature": "query,key,value,gate,beta,**kwargs",
+          "cotangent_contract": "official standardize_function uses forward output as cotangent; independent-cotangent correctness is tested separately",
+          "temp_bytes": 112223776,
+          "argument_bytes": 25603072,
+          "output_bytes": 25264160,
+          "applied_config": {
+            "canonicalize_packed_inputs": true,
+            "chunk_size": 64,
+            "mini_batch": null,
+            "safe_gate": null,
+            "rematerialize_for_backward": false,
+            "fuse_forward": true,
+            "packed_forward": false,
+            "packed_output": false,
+            "compact_forward": false,
+            "compact_sorted_segments": false
+          },
+          "output_sha256": "2120806feab7f38f63f958fd5e30eccc63c162c1929b8633789f0bf12942ec18",
+          "finite": true,
+          "output_dtypes": [
+            "bfloat16",
+            "float32"
+          ]
+        }
+      }
+    }
+  },
+  "device": "TPU_0(process=0,(0,0,0,0))",
+  "device_kind": "TPU7x",
+  "versions": {
+    "jax": "0.12.0",
+    "jaxlib": "0.12.0",
+    "libtpu": "0.0.50.1",
+    "numpy": "2.5.4",
+    "flax": "0.12.12",
+    "qwix": "0.1.10",
+    "xprof": "2.24.2"
+  },
+  "python": "3.12.14 (main, Sep 19 2026, 03:35:30) [GCC 14.2.0]",
+  "flags": {
+    "LIBTPU_INIT_ARGS": "--xla_tpu_impure_enable_large_2nd_minor_layout=true --xla_tpu_use_enhanced_launch_barrier=true",
+    "XLA_FLAGS": null,
+    "PALLAS_INTERPRET": null
+  },
+  "source_hashes": {
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_output_test.py": "3b3c671263dd97704f84cce85b9ce005975a5d9cc3597549e9e330c9874266d1",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_kernel.py": "27b6756ffc388e5cefb80d84f067d0b1cbe2d27399700689e1440274de140d36",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_output.py": "994c412e26e20b5eedd8f98f254515108174e2b27ae93edc32e963f980129a85",
+    "tokamax/_src/ops/kda/packing.py": "553e5ecee5a40ff78c0554d9983bcde158ec88af1289073bfd6bdf28aa8d85c8",
+    "tokamax/_src/ops/kda/xla_chunked_test.py": "ad4974135c37f5578e892c26f5bf8d8e8e9b3cc98d4da52be355b0a079557159",
+    "tokamax/_src/ops/kda/xla_chunked_fwd_kernel.py": "f3c8e59e418176b2b766224c5fab8c6ce02abc72c561d6e07f0b9287a8601670",
+    "tokamax/_src/ops/kda/xla_chunked_bwd_kernel.py": "51e8afc378245733cc6a83d832dda41cb8160b72d65aa8946d86ba0c021559c4",
+    "tokamax/_src/ops/kda/xla_chunked.py": "2c9d68d49d6cf463d96dddb17b189eb31e4767d1418577201368001dcad99731",
+    "tokamax/_src/ops/kda/reference.py": "bd02792a3b7949231386a49121964b10f200d76a75c22c238910096b7cf98c23",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_test.py": "50ff214a0764f614df188349a57a8b35bc6a971aaace22d751044d255c981546",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_resource_test.py": "a1a21fe611c503242d8e089ca95dbdd48fbeda57b1674efd17cd5de87306a4f6",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_padding_test.py": "0c0fdab2ac27d3bbee9c4a5e5a67871529d11f2d99940b907b48bc9444995bfe",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_packed_test.py": "78785c92c2e7e0cadf306131a1455a68068752e520cc603156a2d268d59536bc",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_kernel_test.py": "40dbda93e3dbcc3ff48806e18fb6ff4aca493dd8d155cb852795537b06bb609f",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_kernel.py": "e2d9a1d879744c1a95320dfe1e68b660b9b9f75684ae3cc649f032bc7aeb2dcf",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_fwd_fused_test.py": "b75873f835b89c0aaf3ee949c9fae1106bc554d80834c69419851c65cc0cd491",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_compact_forward_test.py": "53a222a0817a81a875c8dedaf5ca911ddd49239ed135cc1b728477f54c9a0d8b",
+    "tokamax/_src/ops/kda/packing_test.py": "7973678ac7aa22630f3870ea4022ddc14cc34cb97d57dc9c3c4f3262cf8629e8",
+    "tokamax/_src/ops/kda/packing_single_call_test.py": "a8d2492e7ac70b5628422f035cc103c43cf7b25f4938fa2a08c6227d9f8ae7bd",
+    "tokamax/_src/ops/kda/native_padding_carry_test.py": "338055cfb4f3b87ff73e06d93dab829dae055c6120a0de7a01bbd3c6ff9234b4",
+    "tokamax/_src/ops/kda/cp_utils.py": "29219c2e80af455cdef5865cec767c1a35892fb6128e330fd9f52fb0b3d2ab0e",
+    "tokamax/_src/ops/kda/compact_utils.py": "8992e3b287ea204cc93ca059e959e45d1d4eda31a8e990074336e8b7b4ba1402",
+    "tokamax/_src/ops/kda/compact_segments.py": "1dd0c5246b2a26614ff110dc39c370a4677895d5d7c8ff820e12eb829c3f644d",
+    "tokamax/_src/ops/kda/compact_hardware.py": "761342fe1ce57fdf4fe649489587de300bd8dc4a9d3940e0a9cc4a85e20dec07",
+    "tokamax/_src/ops/kda/compact_forward.py": "6d571c20841aa1dc342e9039329f5acc10ffa75ccb6253fca89550755f692a86",
+    "tokamax/_src/ops/kda/compact_cost.py": "6143b6a05c432667aaecf2678794734ed38cadc6df194e1968f9b2c820503b1b",
+    "tokamax/_src/ops/kda/compact.py": "fb77b8a9812e87e79d5983aafd6be17ef29ac0d4355f20e1df9fa1ea055e2a4b",
+    "tokamax/_src/ops/kda/common.py": "08e5604097fd8e380515b5cfe3b5fed7691e64daff7d864c49f5ddf7d96df479",
+    "tokamax/_src/ops/kda/base_test.py": "9600a65c98f57f4ff60eeed11aed3d13d4513201953dcc8dc4dc19b2174e517e",
+    "tokamax/_src/ops/kda/base.py": "f37d53fdde66600f7aa6374e84bc26d792835253778e1bb714df95b0cb17a4ad",
+    "tokamax/_src/ops/kda/arg_specs.py": "b36462d7cbcbd735c0c0ea31e81db082a27ec6e2c56999e84f0333a0a98f6591",
+    "tokamax/_src/ops/kda/api.py": "15ae2fef6b011b332e40d1974e2ab0b4e66e492eb9ab474310e35c14384b035b",
+    "tokamax/_src/ops/kda/__init__.py": "21e0a027ad8fcce3bda4051e90fce2d2154644778af4b057078b5c0221386298",
+    "tokamax/_src/ops/kda/utils.py": "f04d15a28f97933f6c720eefee670ae78f3f5cb6459169075ad2eba2b6e3d36d",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu.py": "e0262306365ca2d525ac876813b91cf40b2c83de4aea59162a4c3502dc4f164f",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_types.py": "027d65638fd8c2e587b8a5c9069b85bc98a16b521d39722b2f37c382d57be411",
+    "tokamax/_src/ops/kda/pallas_mosaic_tpu_bwd_kernel.py": "1c02aec8387d6f1548ff9f4f003b681b61954380dddf363a55172e43132fbe54",
+    "tokamax/_src/ops/kda/training_packing_regression_test.py": "ae1543082b91baf0b78ed20a3dd162708933a7bde70ae503a1f1d2de5abee1ed"
+  }
+}

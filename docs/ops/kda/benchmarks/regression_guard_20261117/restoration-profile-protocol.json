@@ -1,0 +1,13 @@
+{
+  "wall_rounds": 2,
+  "wall_samples_each": 30,
+  "warmups_each": 10,
+  "device_rounds": 2,
+  "traces_each_round": 2,
+  "calls_each_trace": 5,
+  "device_samples_each_cell": 20,
+  "old_round0_capture_dirs": "plain0,1 for processes already started; these remain unchanged",
+  "new_capture_dirs": "round-capture",
+  "extension_applied_before_round1": true,
+  "reason": "assess fresh-compilation variability for microsecond-scale cases; no timing or source/precision/input change"
+}

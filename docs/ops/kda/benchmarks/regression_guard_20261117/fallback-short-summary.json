@@ -1,0 +1,58 @@
+[
+  {
+    "variant": "main-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "wall_ms": 0.25650249999999997,
+    "device_ms": 0.029246098499999998,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "main-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "wall_ms": 0.2701335,
+    "device_ms": 0.0429308975,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "wall_ms": 0.25164949999999997,
+    "device_ms": 0.0271512225,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-default",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "wall_ms": 0.27995099999999995,
+    "device_ms": 0.043086585,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "wall_ms": 0.22260649999999998,
+    "device_ms": 0.026851140500000002,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-opt",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "wall_ms": 0.24177300000000002,
+    "device_ms": 0.0431525735,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-compact",
+    "case": "tp32_decode_b1_t1_n1_bf16",
+    "wall_ms": 0.2705115,
+    "device_ms": 0.0272743095,
+    "output_bitwise_match": true
+  },
+  {
+    "variant": "forward-compact",
+    "case": "tp32_dspark_decode_b1_t8_n1_bf16",
+    "wall_ms": 0.2704655,
+    "device_ms": 0.043086359500000004,
+    "output_bitwise_match": true
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "main-default": {
+    "device_module_events": 5,
+    "module_groups": {
+      "jit_invoke(8569173586708693288)": {
+        "count": 5,
+        "median_ms": 0.042339811,
+        "samples_ms": [
+          0.042339811,
+          0.042256903,
+          0.042463311,
+          0.042053872,
+          0.042396233
+        ]
+      }
+    },
+    "input_reshard_modules": []
+  },
+  "forward-opt": {
+    "device_module_events": 5,
+    "module_groups": {
+      "jit_invoke(437174231872824125)": {
+        "count": 5,
+        "median_ms": 0.043152686,
+        "samples_ms": [
+          0.04298702,
+          0.043432248,
+          0.043134454,
+          0.043310999,
+          0.043152686
+        ]
+      }
+    },
+    "input_reshard_modules": []
+  }
+}

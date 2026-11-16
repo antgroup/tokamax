@@ -1,0 +1,83 @@
+[
+  {
+    "name": "compact_packed_gaussian_seed619",
+    "tags": [
+      "supplemental",
+      "forward_only"
+    ],
+    "static": {
+      "use_qk_l2norm": false,
+      "use_gate_in_kernel": true,
+      "lower_bound": -5.0,
+      "max_num_segments": 25,
+      "output_final_state": false
+    },
+    "arrays": {
+      "query": {
+        "shape": [
+          32,
+          1,
+          8192,
+          128
+        ],
+        "dtype": "bfloat16"
+      },
+      "key": {
+        "shape": [
+          32,
+          1,
+          8192,
+          128
+        ],
+        "dtype": "bfloat16"
+      },
+      "value": {
+        "shape": [
+          32,
+          1,
+          8192,
+          128
+        ],
+        "dtype": "bfloat16"
+      },
+      "gate": {
+        "shape": [
+          32,
+          1,
+          8192,
+          128
+        ],
+        "dtype": "bfloat16"
+      },
+      "beta": {
+        "shape": [
+          32,
+          1,
+          8192
+        ],
+        "dtype": "bfloat16"
+      },
+      "a_log": {
+        "shape": [
+          32
+        ],
+        "dtype": "float32"
+      },
+      "delta_time_bias": {
+        "shape": [
+          4096
+        ],
+        "dtype": "float32"
+      },
+      "segment_ids": {
+        "shape": [
+          1,
+          8192
+        ],
+        "dtype": "int32"
+      }
+    },
+    "input_sha256": "c5e3c012c12e596e95fd34fd97d5022d58544efd7578b3ea55023a99d750e861",
+    "recipe": "Historical feature Gaussian recipe seed619; Q/K/V std.05, raw gate std.1, sigmoid beta logits std.1, A_log uniform[-1,0], bias uniform[-4,-3]. No external L2 normalization. Distinct from official normalized ArgSpec inputs."
+  }
+]
