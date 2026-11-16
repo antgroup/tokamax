@@ -2198,7 +2198,9 @@ def chunk_kda_fwd_fused(
   if packed:
     # Additional packed input windows and aligned VMEM staging refs.
     per_head += 4 * (3 * key_dim + value_dim + 1) * (3 * chunk_size + 16)
-  mini_batch = estimate_mini_batch(per_head, heads, max_mb=16)
+  mini_batch = estimate_mini_batch(
+      per_head, heads, max_mb=16 if packed else 32
+  )
   token_shape = lambda width: (heads, batch, chunks, chunk_size, width)
   tile_shape = lambda width: (mini_batch, 1, 1, chunk_size, width)
 

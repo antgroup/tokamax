@@ -291,7 +291,9 @@ def _align_seqs(
     valid = (positions < padded_cu[-1]) & (offset < seg_lens[seq])
     gather_idx = jnp.where(valid, cu_seqlens[seq] + offset, T_old)
   else:
-    gather_idx = jax.lax.fori_loop(0, N, _build_gather, gather_idx)
+    gather_idx = jax.lax.fori_loop(
+        0, N, _build_gather, gather_idx, unroll=min(N, 8) if N <= 64 else 1
+    )
 
   if token_order is not None:
     # Compose packing with the existing alignment gather, avoiding a full
@@ -374,8 +376,13 @@ def _unalign_output(
   # index is always valid and always reads padding (zero).
   safe_default = aligned_cu_seqlens[-1]
   gather_idx = jnp.full(T_out, safe_default, dtype=jnp.int32)
-  gather_idx = jax.lax.fori_loop(0, N, _build_gather, gather_idx)
-  return o[:, :, gather_idx]
+  gather_idx = jax.lax.fori_loop(
+      0, N, _build_gather, gather_idx, unroll=min(N, 8) if N <= 64 else 1
+  )
+  positions = jnp.arange(T_out) if token_order is None else token_order
+  valid = positions < orig_cu_seqlens[-1]
+  mask = valid.reshape((1, 1, T_out) + (1,) * (o.ndim - 3))
+  return jnp.where(mask, o[:, :, gather_idx], 0)
 
 
 def _bounded_chunk_boundaries(boundaries, mapping):
@@ -454,7 +461,10 @@ def align_segment_ids(
         jnp.searchsorted(ends, apos, side="right"), max_num_segments - 1
     )
     return jnp.where(apos < ends[-1], seg_labels[seq], 0)
-  return jax.lax.fori_loop(0, max_num_segments, body, out)
+  return jax.lax.fori_loop(
+      0, max_num_segments, body, out,
+      unroll=min(max_num_segments, 8) if max_num_segments <= 64 else 1,
+  )
 
 
 def segment_ids_to_seqlens(

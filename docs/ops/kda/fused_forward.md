@@ -108,3 +108,46 @@ allocation, and staged/fused device-time measurements remain pending.
 No speedup is claimed from the CPU tests. Keep the PR in draft until these
 checks have completed; adjust the fused dispatch heuristic if measured
 performance or compiler resource limits require a narrower support set.
+
+## Training preparation and head grouping (2026-11-16)
+
+The training adapter now shares its packing order and one branch-local
+pullback between forward and backward. This avoids rebuilding two copies of
+the canonical/interleaved decision without removing the general fallback or
+changing the public state and segment-label contract. The earlier description
+of unchanged preparation refers to the original fusion increment.
+
+Saved-state training already requires aligned q/k/v for the existing backward.
+It therefore feeds those retained arrays to fused forward instead of preparing
+both packed windows and aligned residuals. Forward-only calls retain packed
+window reads. When that path normalizes packed q/k, the normalized values and
+reciprocal norms are computed once and reused during alignment.
+
+Unalignment masks padding at the token gather, including scalar beta gradients
+and nontrivial output permutations. Unwritten aligned padding cannot leak NaNs
+into public outputs. Early masking required by convolution and the independent
+gate-parameter gradient reductions remains in place. Tests cover canonical,
+interleaved, interior-hole and empty rows, H=2/32, and normalization on/off,
+using the existing numerical bounds and explicit zero-padding assertions.
+
+The aligned fused-forward schedule permits head groups up to 32, subject to
+its existing hardware VMEM budget and divisibility checks. Packed windows
+retain their extra staging allowance and cap of 16. This changes neither
+matrix precision nor the state recurrence; native correctness, allocation and
+same-input forward/full-VJP timings must validate the schedule. Performance
+results are published separately from the implementation change.
+
+### CP gated-input lowering compatibility
+
+The CP summary needs gated Q/K in HBM before its collective. With the existing
+packing conditional, libtpu 0.0.50.1 can combine their full-array broadcasts
+and BF16 conversions into an invalid rank-flattened multi-output window.
+Original PR 649506c6 and the performance candidate both abort on the existing
+CP2 single-segment BF16 backward test; unmodified upstream d68ceb9e passes.
+
+A chunk-local Pallas map computes the same q*exp2(g) and
+k*exp2(g_last-g), with the original activation-dtype stores. WY matrix
+products and their precision remain unchanged; this map is used only when
+the CP summary must reconstruct missing gated inputs. The non-CP pipeline,
+packing fallback and padding/gate-gradient protections are retained. The
+existing failing CP test is the regression test; its tolerances are unchanged.

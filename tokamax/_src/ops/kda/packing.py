@@ -108,13 +108,10 @@ def invoke(op, config, arguments):
   optimized = any(
       getattr(config, name, False)
       for name in (
-          "fuse_forward",
           "fuse_backward",
           "fuse_rematerialization",
-          "packed_forward",
           "packed_backward",
           "packed_gradients",
-          "packed_output",
       )
   )
   if (

@@ -73,8 +73,9 @@ class Config:
   residuals and manually rebuilds them in the custom backward.
   `fuse_forward=True` keeps the non-CP forward bridge tensors in VMEM for
   128-aligned K/V. Other shapes and CP retain the staged implementation.
-  `packed_forward=True` reads non-CP packed input windows directly while
-  retaining aligned outputs and backward residuals. It requires fused forward.
+  `packed_forward=True` reads non-CP packed input windows directly for
+  forward-only calls. Training reuses the aligned inputs retained for backward
+  instead of preparing both layouts. It requires fused forward.
   `packed_output=True` uses Pallas output compaction when its full head-group
   buffers fit VMEM; other shapes retain gather. It is independently opt-in.
   `compact_forward=True` selects the original-token grid for supported non-CP
@@ -142,6 +143,8 @@ class _PreparedKdaInputs:
   aligned_segment_ids: jax.Array | None
   q_rstd: jax.Array | None
   k_rstd: jax.Array | None
+  packed_q: jax.Array | None = None
+  packed_k: jax.Array | None = None
 
 
 def _requested_chunk_size(ba) -> int:
@@ -335,6 +338,7 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
       max_num_segments: int | None,
       token_order=None,
       use_conv1d_in_kernel: bool = False,
+      normalize_before_alignment: bool = False,
   ) -> _PreparedKdaInputs:
     """Canonicalizes inputs shared by the forward and backward kernels."""
     context_parallel_metadata, cu_seqlens = derive_context_parallel_metadata(
@@ -351,6 +355,12 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
           max_num_segments=max_num_segments,
       )
 
+    packed_q = packed_k = q_rstd = k_rstd = None
+    if normalize_before_alignment and use_qk_l2norm:
+      q, q_rstd = l2norm_fwd(q)
+      k, k_rstd = l2norm_fwd(k)
+      packed_q, packed_k = q, k
+
     aligned_cu_seqlens = None
     chunk_indices = None
     if cu_seqlens is None:
@@ -359,16 +369,19 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
     else:
       (
           [q_aligned, k_aligned, v_aligned, g_aligned],
-          [beta_aligned],
+          aligned_scalars,
           aligned_cu_seqlens,
           _,
       ) = _align_seqs(
           [q, k, v, g],
-          [beta],
+          [beta] if q_rstd is None else [beta, q_rstd, k_rstd],
           cu_seqlens,
           align=chunk_size,
           token_order=token_order,
       )
+      beta_aligned = aligned_scalars[0]
+      if q_rstd is not None:
+        q_rstd, k_rstd = aligned_scalars[1:]
       _, _, aligned_seq_len, _ = q_aligned.shape
       chunk_indices = prepare_chunk_indices(
           aligned_cu_seqlens,
@@ -452,12 +465,17 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
           ]
       )
 
-    if use_qk_l2norm and not use_conv1d_in_kernel:
+    if (
+        use_qk_l2norm
+        and not use_conv1d_in_kernel
+        and not normalize_before_alignment
+    ):
       q_prepared, q_rstd = l2norm_fwd(q_aligned)
       k_prepared, k_rstd = l2norm_fwd(k_aligned)
     else:
       q_prepared, k_prepared = q_aligned, k_aligned
-      q_rstd = k_rstd = None
+      if not normalize_before_alignment:
+        q_rstd = k_rstd = None
 
     return _PreparedKdaInputs(
         q=q_prepared,
@@ -473,6 +491,8 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         aligned_segment_ids=aligned_segment_ids,
         q_rstd=q_rstd,
         k_rstd=k_rstd,
+        packed_q=packed_q,
+        packed_k=packed_k,
     )
 
   @jaxtyping.jaxtyped
@@ -584,6 +604,19 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
     if config.canonicalize_packed_inputs and segment_ids is not None:
       return packing.invoke(self, config, arguments)
 
+    use_packed_inputs = (
+        config.packed_forward
+        and config.fuse_forward
+        and not return_residuals
+        and segment_ids is not None
+        and not use_conv1d_in_kernel
+        and not (
+            context_parallel_metadata is not None
+            and context_parallel_metadata.is_cp_enabled
+        )
+        and query.shape[-1] % 128 == 0
+        and value.shape[-1] % 128 == 0
+    )
     prepared = self._preprocess_inputs(
         query,
         key,
@@ -600,22 +633,13 @@ class PallasMosaicTpuKimiDeltaAttention(base.KimiDeltaAttention[Config, Any]):
         max_num_segments=max_num_segments,
         token_order=None if _packing_order is None else _packing_order[0],
         use_conv1d_in_kernel=use_conv1d_in_kernel,
+        normalize_before_alignment=use_packed_inputs,
     )
 
     packed_inputs = None
-    if (
-        config.packed_forward
-        and config.fuse_forward
-        and prepared.cu_seqlens is not None
-        and not (
-            prepared.context_parallel_metadata is not None
-            and prepared.context_parallel_metadata.is_cp_enabled
-        )
-        and query.shape[-1] % 128 == 0
-        and value.shape[-1] % 128 == 0
-    ):
-      packed_q = l2norm_fwd(query)[0] if use_qk_l2norm else query
-      packed_k = l2norm_fwd(key)[0] if use_qk_l2norm else key
+    if use_packed_inputs and prepared.cu_seqlens is not None:
+      packed_q = prepared.packed_q if use_qk_l2norm else query
+      packed_k = prepared.packed_k if use_qk_l2norm else key
       packed_inputs = (packed_q, packed_k, value, gate, beta)
 
     inverse_order = None if _packing_order is None else _packing_order[1]
