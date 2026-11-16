@@ -1,6 +1,25 @@
 # Default packing single-core refactor (2026-11-16)
 
-Calculation commit: `16c5afa11b6ace187fafd746b912d6e1dae6eabc`. Baseline latest upstream main: `0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18` (verified before and after the sweep). Serialized input bytes are reused from the preceding complete sweep.
+## Provenance and audit correction
+
+This is a pinned historical measurement record, not live PR status or a new
+measurement of an arbitrary future main/head. The audit checked table values
+against the retained JSON/CSV, units, shape/static options and baseline scope.
+This correction changes explanations and labels only; measured values, raw
+samples and numerical thresholds are unchanged. All evidence remains on this
+separate branch rather than in the implementation PR.
+
+Calculation commit `16c5afa1` identifies the packing changes. The executed
+candidate was integrated with upstream main `0d3e82b4`; the retained source-hash
+checks cover the measured calculation files. It is not a claim that the literal
+16c5afa1 checkout alone contains all fifteen current ArgSpecs. The serialized
+15-spec manifest comes from the frozen upstream main. The later restored branch
+contains main's ArgSpec additions, short-convolution reference correction and
+base tests; its calculation-kernel files are unchanged. Reference-file identity
+must therefore be interpreted relative to that integrated main, not the older
+standalone branch snapshot.
+
+Calculation commit: `16c5afa11b6ace187fafd746b912d6e1dae6eabc`. Frozen upstream-main baseline: `0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18` (verified before and after the sweep). Serialized input bytes are reused from the preceding complete sweep.
 
 ## Changes
 
@@ -59,11 +78,11 @@ All Q/K/V dimensions and static options are in the unchanged official input mani
 
 Default is bitwise equal to main at 15/18 execution points. Remaining differences are in short multi-state convolution profiles; maximum per-leaf relative RMS is below 1.4e-5 and maximum absolute difference is below 0.000275. Opt-in numerical behavior is unchanged (packed fused profiles retain their documented BF16 rounding differences). Full errors are in output-comparison.json. Model LM/MTP loss and end-to-end MaxText throughput are separate validations.
 
-Opt-in paths retain the prior implementations. Their complete rows remain visible; no universal speedup across configurations is claimed. Current MaxText uses TOPS KDA rather than this Tokamax adapter. Existing Ready-for-Review status is preserved; upstream maintainers can assess the remaining approximately 1% training metadata cost and decode memory tradeoff.
+Opt-in paths retain the prior implementations. Their complete rows remain visible; no universal speedup across configurations is claimed. The recorded consumer audit at MaxText commit fd1446d5 routed KDA through TOPS; this is not a live claim about all later MaxText revisions. Review status is managed separately; this report asserts no live Ready status. The measured training metadata cost and decode memory tradeoff remain in the complete table.
 
 ## Reproduction and raw evidence
 
-Data and full samples: `benchmarks/packing_single_call_20261116/`. The original complete-sweep input manifest and exact input hashes remain under `benchmarks/official_argspec_sync_20261115/manifest.json`. Scripts execute the standardizer forward/forward_and_vjp modes; beta=0.5 and seed619 are unchanged. JAX/jaxlib0.12.0, libtpu0.0.50.1, TPU7x allocation of four chips/eight logical devices, timing on logical device0. Complete observed flags and versions are retained in environment.json.
+Data and full samples: `benchmarks/packing_single_call_20261116/`. The original complete-sweep input manifest and exact input hashes remain under `benchmarks/official_argspec_sync_20261115/manifest.json`. Scripts execute the standardizer forward/forward_and_vjp modes; full VJP uses the output as cotangent, whereas the separate paired control retains its own timing method. All matrix times are milliseconds; percentage deltas=(candidate/main-1)*100. Positive is longer latency.  beta=0.5 and seed 619 are unchanged. JAX/jaxlib 0.12.0, libtpu 0.0.50.1, TPU7x allocation of four chips/eight logical devices, timing on logical device0. Complete observed flags and versions are retained in environment.json.
 
 Immutable raw evidence: `gs://data_ant/diagnostics/kda-packing-singlecall-20261116/7e64b520-0f78-4d90-b6a6-ce39fb8b40a4/evidence-16c5afa1-main0d3e82b4.tgz#1794765685858753`.
 Bytes `4050423500`, SHA256 `cbfef06988b9124d7ccc23ce5fb79470f22fb88092c02128a9dbbf30ff4dcbd0`, CRC32C `nxcq4g==`. Streamed size, server CRC and SHA metadata verified. Raw accepted XPlanes/HLO, serialized inputs, final source and failed-experiment records are retained. Rejected-prototype tensor NPZ/profile payloads are excluded where their sample/HLO records suffice; accepted raw captures are complete.

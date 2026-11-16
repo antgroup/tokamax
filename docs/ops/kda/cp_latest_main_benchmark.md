@@ -5,12 +5,27 @@
 > [the input-placement investigation](cp_workspace_input_placement_20261115.md).
 > Historical values and their original scope are retained.
 
+## Provenance and audit correction
+
+This is a pinned historical measurement record, not live PR status or a new
+measurement of an arbitrary future main/head. The audit checked table values
+against the retained JSON/CSV, units, shape/static options and baseline scope.
+This correction changes explanations and labels only; measured values, raw
+samples and numerical thresholds are unchanged. All evidence remains on this
+separate branch rather than in the implementation PR.
+
+This historical CP table compares main `4eeb302c` and candidate `2379bd5b`
+using JAX 0.11.2 / libtpu 0.0.48. It includes per-call input reshards. Its wall
+speedups cannot be described as current-main resident-kernel speedups or combined
+with November's JAX 0.12.0 / libtpu 0.0.50.1 results. The device evidence is a
+separate max-rank module measurement in microseconds; the wall table is milliseconds.
+
 > Compatibility update (2026-11-11): this branch now includes upstream main
 > `9827bb1860e7feab372bb553bcd3f9f6273cc4c9`. The measurements below remain
 > pinned to the October 27 revisions. They are not timings or native TPU
 > acceptance results for the compatibility update; benchmark again after CI.
 
-# CP: latest-main benchmark (2026-10-27)
+# CP: historical pinned-main benchmark (2026-10-27)
 
 All timings cover the complete public CP operator plus VJP, including input
 reshards. Parent control is PR #1689 (`e333c798`) with no CP-specific fusion or
