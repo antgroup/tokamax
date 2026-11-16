@@ -1,4 +1,15 @@
-# Compact all-gather CP: final-source review validation
+# Compact all-gather CP: pinned-source review validation
+
+## Provenance and audit correction
+
+This is a pinned historical measurement record, not live PR status or a new
+measurement of an arbitrary future main/head. The audit checked table values
+against the retained JSON/CSV, units, shape/static options and baseline scope.
+This correction changes explanations and labels only; measured values, raw
+samples and numerical thresholds are unchanged. All evidence remains on this
+separate branch rather than in the implementation PR.
+
+The restored KDA implementation/tests at `3f18fc01bd1fea7e51caef6fb312fc59dc0fb861` match the original report snapshot `9b67d57c482c0cdb621b54d9162c82de5daf62f8`. Changes to those files in future require renewed validation.
 
 Tested calculation commit `b2a3df47ff42f4f787a0e6e691efce2ad28db4ab`. Formal operator baseline: upstream main `0d3e82b41ddc63e5fdd5d9c02c76894377cc9a18`.
 
@@ -19,9 +30,9 @@ Depends on the shared compact core in #1688/#1689 and aligned CP support in #169
 
 ## H64/256K performance and compiler memory
 
-Dedicated TPU7x allocation: eight physical chips / sixteen JAX devices across two processes. B1/H64/globalT262144/localT16384/K=V128. BF16 tokens/raw gate, FP32 A_log=-0.5 and bias=-3.5, beta=0.5, raw-gate lower_bound=-5, Q/K normalization disabled. NumPy seed619 and fixed Gaussian dO. Labels exceed262100; the middle rank is padding. The same input tuple is reused across each comparison.
+Dedicated TPU7x allocation: eight physical chips / sixteen JAX devices across two processes. B1/H64/globalT262144/localT16384/K=V128. BF16 tokens/raw gate, FP32 A_log=-0.5 and bias=-3.5, beta=0.5, raw-gate lower_bound=-5, Q/K normalization disabled. NumPy seed 619 and fixed Gaussian dO. Labels exceed262100; the middle rank is padding. Identical logical primals and dO are reused across routes; each route is placed into its own compiled input Formats before timing.
 
-Ten warmups and thirty blocking calls per implementation. Host time is the median of the per-call maximum across hosts. Two independent five-call captures give complete-module device time, taking the slowest of all sixteen ranks per call; zero input reshards. These whole-call operator measurements include forward and all seven gradients.
+Ten warmups and thirty blocking calls per implementation. Host time is the median of thirty per-call maxima across the two hosts; it is not the maximum of two host medians. Two independent five-call captures give complete-module device time, taking the slowest of all sixteen ranks per call; zero input reshards. These whole-call operator measurements include forward and all seven gradients.
 
 | Profile | Route | Host wall ms | Full-device max-rank ms | Compiler temporary GiB |
 |---|---|---:|---:|---:|
@@ -30,11 +41,11 @@ Ten warmups and thirty blocking calls per implementation. Host time is the media
 | default entry, cap64 | reference_capacity | 54.788780 | 53.047394 | 10.8654 |
 | default entry, cap64 | compact | 77.737208 | 75.718477 | 13.1809 |
 
-The reference route is a manually bounded aligned parent using local capacity32, not a full-global-capacity upstream-main measurement. This comparison shows the extra work of the compact composition against an already bounded fast control. The feature provides capacity-independent coverage and memory fit; it is not claimed to be universally faster than a hand-sized aligned route. Compiler temporary bytes are not allocator/model training peak memory. Earlier lower_bound=-1 probes are retained as separate validation and are not substituted for the -5 table above.
+The reference route is a manually bounded aligned parent using local capacity32, not a full-global-capacity upstream-main measurement. Neither CP route in this table establishes a speedup against upstream main. The 0d3e82b4 baseline applies only to the separate formal default-operator sweep. This comparison shows the extra work of the compact composition against an already bounded fast control. The feature provides capacity-independent coverage and memory fit; it is not claimed to be universally faster than a hand-sized aligned route. Compiler temporary bytes are not allocator/model training peak memory. Earlier lower_bound=-1 probes are retained as separate validation and are not substituted for the -5 table above.
 
 ## Complete formal default-operator sweep
 
-All 15 official ArgSpecs /18 execution points use identical serialized primals, seed619 and beta=0.5. Full-VJP cotangents follow the standardizer output-derived convention. Two reversed fresh-process sweeps retain sixty wall samples per point; each has two five-call complete jit_invoke captures. This sweep checks the shared default API separately from the explicit compact CP entry.
+All 15 official ArgSpecs /18 execution points use identical serialized primals, seed 619 and beta=0.5. Full-VJP cotangents follow the standardizer output-derived convention. Two reversed fresh-process sweeps retain sixty wall samples per point; each has two five-call complete jit_invoke captures. This sweep checks the shared default API separately from the explicit compact CP entry. Formal wall/device values are milliseconds; Change=(PR wall/main wall-1)*100%, positive means longer latency. CP compiler memory uses GiB (2**30 bytes) and is not allocator/model peak memory.
 
 | Case / mode | Main wall | PR wall | Change | Main device | PR device |
 |---|---:|---:|---:|---:|---:|
