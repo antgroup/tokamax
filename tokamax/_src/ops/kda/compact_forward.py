@@ -31,6 +31,7 @@ from tokamax._src.ops.kda.compact_cost import (
     kda_intra_fwd_cost,
     resolve_cost_estimate,
 )
+from tokamax._src.ops.kda.utils import _align_seqs, _unalign_output
 from tokamax._src.ops.kda.pallas_mosaic_tpu_fwd_kernel import _solve_unit_lower_triangular_batched
 from tokamax._src.ops.kda.compact_segments import (
     fixed_width_prefix_sum,
@@ -201,8 +202,31 @@ def _fwd_mega_kernel_native_segids(
 ):
   """Native segment_ids mega kernel body."""
   i_b = pl.program_id(1)
-  i_c = pl.program_id(2)
-  chain_start = i_c == 0
+  if SEGMENT_LOCAL:
+    i_s = pl.program_id(2)
+    i_c_local = pl.program_id(3)
+    seg_start_chunk = chunk_kind_meta_ref[i_b, i_s]
+    seg_chunk_count = seg_first_meta_ref[i_b, i_s]
+    packed_segment_tail = seg_last_meta_ref[i_b, i_s]
+    seg_last_tokens = packed_segment_tail & jnp.int32(0xFF)
+    raw_segment_start = packed_segment_tail >> jnp.int32(8)
+    i_c = jnp.minimum(seg_start_chunk + i_c_local, NT - 1)
+    first_seg = i_s + 1
+    last_seg = first_seg
+    is_last_real = i_c_local == (seg_chunk_count - 1)
+    kind = jnp.where(
+        i_c_local >= seg_chunk_count,
+        jnp.int32(CHUNK_KIND_ALL_PAD),
+        jnp.where(
+            is_last_real & (seg_last_tokens < BT),
+            jnp.int32(CHUNK_KIND_PARTIAL_PAD),
+            jnp.int32(CHUNK_KIND_FULL_IN_SEGMENT),
+        ),
+    )
+    chain_start = i_c_local == 0
+  else:
+    i_c = pl.program_id(2)
+    chain_start = i_c == 0
 
   # A shard may begin with all-padding chunks, which do not enter a state
   # branch. Initialize the carry before reading any later real chunk.
@@ -214,6 +238,12 @@ def _fwd_mega_kernel_native_segids(
   t0 = i_c * BT
 
   def _load_token_segment_ids():
+    if DIRECT_INPUT_DMA:
+      return jnp.where(
+          jnp.arange(BT, dtype=jnp.int32) < seg_last_tokens,
+          first_seg,
+          jnp.int32(0),
+      )
     seg_full = seg_ids_ref[i_b, :].astype(jnp.int32)  # [128]
     if BT == 128:
       return seg_full
@@ -222,7 +252,9 @@ def _fwd_mega_kernel_native_segids(
     use_second = ((i_c * BT) % 128) >= BT
     return jnp.where(use_second, seg_second_half, seg_first_half)
 
-  if PACKED_METADATA:
+  if SEGMENT_LOCAL:
+    pass
+  elif PACKED_METADATA:
     packed_metadata = chunk_kind_meta_ref[i_b, i_c]
     encoded_kind = packed_metadata
     first_seg = (packed_metadata >> jnp.int32(3)) & jnp.int32(0x3FFF)
@@ -231,9 +263,72 @@ def _fwd_mega_kernel_native_segids(
     encoded_kind = chunk_kind_meta_ref[i_b, i_c]
     first_seg = seg_first_meta_ref[i_b, i_c]
     last_seg = seg_last_meta_ref[i_b, i_c]
-  kind = encoded_kind & jnp.int32(0x3)
-  is_last_real = (encoded_kind & jnp.int32(CHUNK_FLAG_LAST_REAL)) != 0
-  is_general_boundary = encoded_kind < 0
+  if not SEGMENT_LOCAL:
+    kind = encoded_kind & jnp.int32(0x3)
+    is_last_real = (encoded_kind & jnp.int32(CHUNK_FLAG_LAST_REAL)) != 0
+    is_general_boundary = encoded_kind < 0
+  else:
+    is_general_boundary = jnp.bool_(False)
+
+  if DIRECT_INPUT_DMA:
+
+    @pl.when(kind != CHUNK_KIND_ALL_PAD)
+    def _load_direct_inputs():
+      h_start = pl.program_id(0) * MB
+      raw_t = raw_segment_start + i_c_local * BT
+      copies = (
+          pltpu.make_async_copy(
+              q_ref.at[
+                  pl.ds(i_b, 1),
+                  pl.ds(raw_t, BT),
+                  pl.ds(h_start, MB),
+                  pl.ds(None),
+              ],
+              q_dma_ref,
+              input_dma_sems.at[0],
+          ),
+          pltpu.make_async_copy(
+              k_ref.at[
+                  pl.ds(i_b, 1),
+                  pl.ds(raw_t, BT),
+                  pl.ds(h_start, MB),
+                  pl.ds(None),
+              ],
+              k_dma_ref,
+              input_dma_sems.at[1],
+          ),
+          pltpu.make_async_copy(
+              v_ref.at[
+                  pl.ds(i_b, 1),
+                  pl.ds(raw_t, BT),
+                  pl.ds(h_start, MB),
+                  pl.ds(None),
+              ],
+              v_dma_ref,
+              input_dma_sems.at[2],
+          ),
+          pltpu.make_async_copy(
+              g_ref.at[
+                  pl.ds(i_b, 1),
+                  pl.ds(raw_t, BT),
+                  pl.ds(h_start, MB),
+                  pl.ds(None),
+              ],
+              g_dma_ref,
+              input_dma_sems.at[3],
+          ),
+          pltpu.make_async_copy(
+              beta_ref.at[
+                  pl.ds(i_b, 1), pl.ds(raw_t, BT), pl.ds(0, 1), pl.ds(None)
+              ],
+              beta_dma_ref,
+              input_dma_sems.at[4],
+          ),
+      )
+      for copy in copies:
+        copy.start()
+      for copy in copies:
+        copy.wait()
 
   def _dma_state_to_ht(src_ref, segment_id):
     h_start = pl.program_id(0) * MB
@@ -259,22 +354,26 @@ def _fwd_mega_kernel_native_segids(
   def _all_pad():
     # Segment-local uses a rectangular grid. Idle programs may map to a
     # chunk owned by another segment, so they must not write that block.
-    o_ref[0] = jnp.zeros([BT, MB, V_PAD], dtype=o_ref.dtype)
-    if STORE_RESIDUALS:
-      if RESIDUAL_CHUNK_LAYOUT:
-        Aqk_ref[:, 0, 0] = jnp.zeros([MB, BT, BT], dtype=Aqk_ref.dtype)
-        Akk_ref[:, 0, 0] = jnp.zeros([MB, BT, BT], dtype=Akk_ref.dtype)
+    if not SEGMENT_LOCAL:
+      if BATCH_FIRST:
+        o_ref[0] = jnp.zeros([BT, MB, V_PAD], dtype=o_ref.dtype)
       else:
-        Aqk_ref[:, 0] = jnp.zeros([MB, BT, BT], dtype=Aqk_ref.dtype)
-        Akk_ref[:, 0] = jnp.zeros([MB, BT, BT], dtype=Akk_ref.dtype)
+        o_ref[:, 0] = jnp.zeros([MB, BT, V_PAD], dtype=o_ref.dtype)
+      if STORE_RESIDUALS:
+        if RESIDUAL_CHUNK_LAYOUT:
+          Aqk_ref[:, 0, 0] = jnp.zeros([MB, BT, BT], dtype=Aqk_ref.dtype)
+          Akk_ref[:, 0, 0] = jnp.zeros([MB, BT, BT], dtype=Akk_ref.dtype)
+        else:
+          Aqk_ref[:, 0] = jnp.zeros([MB, BT, BT], dtype=Aqk_ref.dtype)
+          Akk_ref[:, 0] = jnp.zeros([MB, BT, BT], dtype=Akk_ref.dtype)
 
-      g_cumsum_out_ref[:, 0] = jnp.zeros(
-          [MB, BT, K_PAD], dtype=g_cumsum_out_ref.dtype
-      )
-      if STORE_H:
-        chunk_h_out_ref[:, 0, 0] = jnp.zeros(
-            [MB, K_PAD, V_PAD], chunk_h_out_ref.dtype
+        g_cumsum_out_ref[:, 0] = jnp.zeros(
+            [MB, BT, K_PAD], dtype=g_cumsum_out_ref.dtype
         )
+        if STORE_H:
+          chunk_h_out_ref[:, 0, 0] = jnp.zeros(
+              [MB, K_PAD, V_PAD], chunk_h_out_ref.dtype
+          )
 
   # FULL_IN_SEGMENT fast path ---------------------------------------
   @pl.when(kind == CHUNK_KIND_FULL_IN_SEGMENT)
@@ -282,22 +381,75 @@ def _fwd_mega_kernel_native_segids(
     prev_seg = prev_seg_ref[0]
     seg_changed = (first_seg != prev_seg) | chain_start
 
+    if STORE_FINAL_STATE:
+
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
+      def _save_prev():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, prev_seg)
+        else:
+          ht_ref[prev_seg - 1, ...] = scratch_ref[...].astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
+
     @pl.when(seg_changed)
     def _init():
       scratch_ref[...] = jnp.zeros([MB, K_PAD, V_PAD], dtype=jnp.float32)
 
+    if HAS_H0:
+
+      @pl.when(seg_changed)
+      def _load_h0():
+        if MANUAL_H0_DMA:
+          h_start = pl.program_id(0) * MB
+          cp = pltpu.make_async_copy(
+              h0_ref.at[
+                  first_seg - 1,
+                  pl.ds(h_start, MB),
+                  i_b,
+                  pl.ds(None),
+                  pl.ds(None),
+              ],
+              scratch_ref,
+              state_dma_sem,
+          )
+          cp.start()
+          cp.wait()
+        else:
+          scratch_ref[...] = _read_h0(first_seg)
+
     # --- Stage 1: Gate cumsum ---
-    q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    g_raw = g_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    if DIRECT_INPUT_DMA:
+      q = q_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      k = k_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      v = v_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      g_raw = g_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    elif BATCH_FIRST:
+      q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      g_raw = g_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    else:
+      q = q_ref[:, 0, :, :].astype(jnp.float32)
+      k = k_ref[:, 0, :, :].astype(jnp.float32)
+      v = v_ref[:, 0, :, :].astype(jnp.float32)
+      g_raw = g_ref[:, 0, :, :].astype(jnp.float32)
     beta = (
-        beta_ref[0, 0].transpose(1, 0).astype(jnp.float32)
-        if BATCH_FIRST and beta_ref.ndim == 4
-        else beta_ref[:, 0, 0, 0, :].astype(jnp.float32)
+        beta_dma_ref[0, :, 0, :MB].transpose(1, 0).astype(jnp.float32)
+        if DIRECT_INPUT_DMA
+        else (
+            beta_ref[0, 0].transpose(1, 0).astype(jnp.float32)
+            if BATCH_FIRST and beta_ref.ndim == 4
+            else beta_ref[:, 0, 0, 0, :].astype(jnp.float32)
+        )
     )
     if CLIP_BETA_IN_KERNEL:
       beta = jnp.clip(beta, 0, 1)
+    if NORMALIZE_QK:
+      q *= jax.lax.rsqrt(jnp.sum(q * q, axis=-1, keepdims=True) + 1e-6)
+      k *= jax.lax.rsqrt(jnp.sum(k * k, axis=-1, keepdims=True) + 1e-6)
+      q = q.astype(jnp.bfloat16).astype(jnp.float32)
+      k = k.astype(jnp.bfloat16).astype(jnp.float32)
 
     # Gate activation (matches cu_seqlens kernel)
     g_f32 = g_raw
@@ -396,81 +548,88 @@ def _fwd_mega_kernel_native_segids(
         preferred_element_type=jnp.float32,
     )
 
-    BC_inv = INV_BC
-    NC_inv = BT // BC_inv
-    inv_dt = jnp.float32
-    L_inv = L.astype(inv_dt)
-    solve_bt = BT
-    solve_I = I_bt
-    if PACK_HEAD_INV:
-      # Pair independent heads in the MXU matrix dimensions. A
-      # 64x64 batched dot occupies a physical 128x128 tile, so two
-      # heads can share that tile without changing either BC8
-      # triangular system.
-      pair_mb = MB // 2
-      L_pair = L_inv.reshape(pair_mb, 2, BT, BT)
-      z = jnp.zeros_like(L_pair[:, 0])
-      L_inv = jnp.concatenate(
-          [
-              jnp.concatenate([L_pair[:, 0], z], axis=2),
-              jnp.concatenate([z, L_pair[:, 1]], axis=2),
-          ],
-          axis=1,
+    if USE_NEUMANN:
+      BC_inv = INV_BC
+      NC_inv = BT // BC_inv
+      inv_dt = jnp.float32
+      L_inv = L.astype(inv_dt)
+      solve_bt = BT
+      solve_I = I_bt
+      if PACK_HEAD_INV:
+        # Pair independent heads in the MXU matrix dimensions. A
+        # 64x64 batched dot occupies a physical 128x128 tile, so two
+        # heads can share that tile without changing either BC8
+        # triangular system.
+        pair_mb = MB // 2
+        L_pair = L_inv.reshape(pair_mb, 2, BT, BT)
+        z = jnp.zeros_like(L_pair[:, 0])
+        L_inv = jnp.concatenate(
+            [
+                jnp.concatenate([L_pair[:, 0], z], axis=2),
+                jnp.concatenate([z, L_pair[:, 1]], axis=2),
+            ],
+            axis=1,
+        )
+        solve_bt = 2 * BT
+        solve_I = jnp.eye(solve_bt, dtype=inv_dt)
+      _idx = jnp.arange(solve_bt, dtype=jnp.int32)
+      _blk = _idx // BC_inv
+      _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
+      L_diag = L_inv * _same[None]
+      F = L_inv - L_diag
+      neg_Ld = -L_diag
+      S = solve_I[None] + neg_Ld
+      Mk = neg_Ld
+      num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
+      for _ in range(num_diag_steps):
+        Mk = _dot(Mk, Mk)
+        S = _dot(S, solve_I[None] + Mk)
+      P = S
+      rhs = jnp.concatenate(
+          [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
       )
-      solve_bt = 2 * BT
-      solve_I = jnp.eye(solve_bt, dtype=inv_dt)
-    _idx = jnp.arange(solve_bt, dtype=jnp.int32)
-    _blk = _idx // BC_inv
-    _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
-    L_diag = L_inv * _same[None]
-    F = L_inv - L_diag
-    neg_Ld = -L_diag
-    S = solve_I[None] + neg_Ld
-    Mk = neg_Ld
-    num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
-    for _ in range(num_diag_steps):
-      Mk = _dot(Mk, Mk)
-      S = _dot(S, solve_I[None] + Mk)
-    P = S
-    rhs = jnp.concatenate(
-        [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
-    )
-    if PACK_HEAD_INV:
-      rhs = rhs.reshape(MB // 2, 2 * BT, V_PAD + K_PAD)
-    if NC_inv == 1:
-      result = _dot(P, rhs)
-    else:
-      F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
-      P_merged = _dot(P, F_and_rhs)
-      G = P_merged[:, :, :solve_bt]
-      P_rhs = P_merged[:, :, solve_bt:]
-      H_mat = -G
-      inv_I_G = solve_I[None] + H_mat
-      Hk = H_mat
-      log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
-      num_horner_steps = log2_NC_inv - 1
-      if num_horner_steps > 0:
-        Hk = _dot(Hk, Hk)
-        for _ in range(num_horner_steps - 1):
-          merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
-          merged_products = _dot(merged_lhs, Hk)
-          inv_I_G = inv_I_G + merged_products[:, :solve_bt]
-          Hk = merged_products[:, solve_bt:]
-        inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
-      if STORE_RESIDUALS:
-        rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
-        result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
-
-        result = result_and_inverse[:, :, : V_PAD + K_PAD]
-        A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+      if PACK_HEAD_INV:
+        rhs = rhs.reshape(MB // 2, 2 * BT, V_PAD + K_PAD)
+      if NC_inv == 1:
+        result = _dot(P, rhs)
       else:
-        result = _dot(inv_I_G, P_rhs)
-    if PACK_HEAD_INV:
-      result = result.reshape(MB, BT, V_PAD + K_PAD)
-    u = result[:, :, :V_PAD]
-    w = result[:, :, V_PAD : V_PAD + K_PAD]
-    if NC_inv == 1:
-      A_inv = P
+        F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
+        P_merged = _dot(P, F_and_rhs)
+        G = P_merged[:, :, :solve_bt]
+        P_rhs = P_merged[:, :, solve_bt:]
+        H_mat = -G
+        inv_I_G = solve_I[None] + H_mat
+        Hk = H_mat
+        log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
+        num_horner_steps = log2_NC_inv - 1
+        if num_horner_steps > 0:
+          Hk = _dot(Hk, Hk)
+          for _ in range(num_horner_steps - 1):
+            merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
+            merged_products = _dot(merged_lhs, Hk)
+            inv_I_G = inv_I_G + merged_products[:, :solve_bt]
+            Hk = merged_products[:, solve_bt:]
+          inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
+        if STORE_RESIDUALS:
+          rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
+          result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
+
+          result = result_and_inverse[:, :, : V_PAD + K_PAD]
+          A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+        else:
+          result = _dot(inv_I_G, P_rhs)
+      if PACK_HEAD_INV:
+        result = result.reshape(MB, BT, V_PAD + K_PAD)
+      u = result[:, :, :V_PAD]
+      w = result[:, :, V_PAD : V_PAD + K_PAD]
+      if NC_inv == 1:
+        A_inv = P
+    else:
+      A_inv = _solve_unit_lower_triangular_batched(
+          L, jnp.broadcast_to(I_bt[None], L.shape)
+      )
+      u = _dot(A_inv, v_beta)
+      w = _dot(A_inv, k_eg_beta)
 
     # --- Stage 3+4: State + Output ---
     b_h = scratch_ref[...]
@@ -499,7 +658,10 @@ def _fwd_mega_kernel_native_segids(
         preferred_element_type=jnp.float32,
     )
     b_o += b_o_h[:, :BT]
-    o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    if BATCH_FIRST:
+      o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    else:
+      o_ref[:, 0] = b_o.astype(o_ref.dtype)
 
     b_gk_last = g_cumsum[:, BT - 1, :]
     b_h_new = b_h * jnp.exp2(b_gk_last)[:, :, None] + b_o_h[:, BT:]
@@ -514,6 +676,17 @@ def _fwd_mega_kernel_native_segids(
       g_cumsum_out_ref[:, 0] = g_cumsum.astype(g_cumsum_out_ref.dtype)
     prev_seg_ref[...] = jnp.broadcast_to(first_seg, (128,))
 
+    if STORE_FINAL_STATE:
+
+      @pl.when(is_last_real)
+      def _final():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, first_seg)
+        else:
+          ht_ref[first_seg - 1, ...] = b_h_new.astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
+
   # PARTIAL_PAD ------------------------------------------------------
   @pl.when(kind == CHUNK_KIND_PARTIAL_PAD)
   def _partial():
@@ -521,17 +694,77 @@ def _fwd_mega_kernel_native_segids(
     prev_seg = prev_seg_ref[0]
     seg_changed = (first_seg != prev_seg) | chain_start
 
+    if STORE_FINAL_STATE:
+
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
+      def _save_prev():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, prev_seg)
+        else:
+          ht_ref[prev_seg - 1, ...] = scratch_ref[...].astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
+
     @pl.when(seg_changed)
     def _init():
       scratch_ref[...] = jnp.zeros([MB, K_PAD, V_PAD], dtype=jnp.float32)
 
+    if HAS_H0:
+
+      @pl.when(seg_changed)
+      def _load_h0():
+        if MANUAL_H0_DMA:
+          h_start = pl.program_id(0) * MB
+          cp = pltpu.make_async_copy(
+              h0_ref.at[
+                  first_seg - 1,
+                  pl.ds(h_start, MB),
+                  i_b,
+                  pl.ds(None),
+                  pl.ds(None),
+              ],
+              scratch_ref,
+              state_dma_sem,
+          )
+          cp.start()
+          cp.wait()
+        else:
+          scratch_ref[...] = _read_h0(first_seg)
+
     vm = (seg > 0).astype(jnp.float32)  # [BT] valid mask
-    q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
-    k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
-    v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
-    g_raw = g_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
+    if DIRECT_INPUT_DMA:
+      q = (
+          q_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+          * vm[None, :, None]
+      )
+      k = (
+          k_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+          * vm[None, :, None]
+      )
+      v = (
+          v_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+          * vm[None, :, None]
+      )
+      g_raw = (
+          g_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+          * vm[None, :, None]
+      )
+    elif BATCH_FIRST:
+      q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
+      k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
+      v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
+      g_raw = (
+          g_ref[0].transpose(1, 0, 2).astype(jnp.float32) * vm[None, :, None]
+      )
+    else:
+      q = q_ref[:, 0, :, :].astype(jnp.float32) * vm[None, :, None]
+      k = k_ref[:, 0, :, :].astype(jnp.float32) * vm[None, :, None]
+      v = v_ref[:, 0, :, :].astype(jnp.float32) * vm[None, :, None]
+      g_raw = g_ref[:, 0, :, :].astype(jnp.float32) * vm[None, :, None]
     beta = (
-        (
+        beta_dma_ref[0, :, 0, :MB].transpose(1, 0).astype(jnp.float32)
+        if DIRECT_INPUT_DMA
+        else (
             beta_ref[0, 0].transpose(1, 0).astype(jnp.float32)
             if BATCH_FIRST and beta_ref.ndim == 4
             else beta_ref[:, 0, 0, 0, :].astype(jnp.float32)
@@ -539,6 +772,11 @@ def _fwd_mega_kernel_native_segids(
     ) * vm[None, :]
     if CLIP_BETA_IN_KERNEL:
       beta = jnp.clip(beta, 0, 1)
+    if NORMALIZE_QK:
+      q *= jax.lax.rsqrt(jnp.sum(q * q, axis=-1, keepdims=True) + 1e-6)
+      k *= jax.lax.rsqrt(jnp.sum(k * k, axis=-1, keepdims=True) + 1e-6)
+      q = q.astype(jnp.bfloat16).astype(jnp.float32)
+      k = k.astype(jnp.bfloat16).astype(jnp.float32)
 
     # Gate activation (must match FULL chunk)
     g_f32 = g_raw
@@ -633,57 +871,64 @@ def _fwd_mega_kernel_native_segids(
         precision=OUTPUT_PRECISION,
         preferred_element_type=jnp.float32,
     )
-    BC_inv = INV_BC
-    NC_inv = BT // BC_inv
-    inv_dt = jnp.float32
-    L_inv = L.astype(inv_dt)
-    _idx = jnp.arange(BT, dtype=jnp.int32)
-    _blk = _idx // BC_inv
-    _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
-    L_diag = L_inv * _same[None]
-    F = L_inv - L_diag
-    neg_Ld = -L_diag
-    S = I_bt[None] + neg_Ld
-    Mk = neg_Ld
-    num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
-    for _ in range(num_diag_steps):
-      Mk = _dot(Mk, Mk)
-      S = _dot(S, I_bt[None] + Mk)
-    P = S
-    rhs = jnp.concatenate(
-        [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
-    )
-    if NC_inv == 1:
-      result = _dot(P, rhs)
-    else:
-      F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
-      P_merged = _dot(P, F_and_rhs)
-      G = P_merged[:, :, :BT]
-      P_rhs = P_merged[:, :, BT:]
-      H_mat = -G
-      inv_I_G = I_bt[None] + H_mat
-      Hk = H_mat
-      log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
-      num_horner_steps = log2_NC_inv - 1
-      if num_horner_steps > 0:
-        Hk = _dot(Hk, Hk)
-        for _ in range(num_horner_steps - 1):
-          merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
-          merged_products = _dot(merged_lhs, Hk)
-          inv_I_G = inv_I_G + merged_products[:, :BT]
-          Hk = merged_products[:, BT:]
-        inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
-      if STORE_RESIDUALS:
-        rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
-        result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
-        result = result_and_inverse[:, :, : V_PAD + K_PAD]
-        A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+    if USE_NEUMANN:
+      BC_inv = INV_BC
+      NC_inv = BT // BC_inv
+      inv_dt = jnp.float32
+      L_inv = L.astype(inv_dt)
+      _idx = jnp.arange(BT, dtype=jnp.int32)
+      _blk = _idx // BC_inv
+      _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
+      L_diag = L_inv * _same[None]
+      F = L_inv - L_diag
+      neg_Ld = -L_diag
+      S = I_bt[None] + neg_Ld
+      Mk = neg_Ld
+      num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
+      for _ in range(num_diag_steps):
+        Mk = _dot(Mk, Mk)
+        S = _dot(S, I_bt[None] + Mk)
+      P = S
+      rhs = jnp.concatenate(
+          [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
+      )
+      if NC_inv == 1:
+        result = _dot(P, rhs)
       else:
-        result = _dot(inv_I_G, P_rhs)
-    u = result[:, :, :V_PAD]
-    w = result[:, :, V_PAD : V_PAD + K_PAD]
-    if NC_inv == 1:
-      A_inv = P
+        F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
+        P_merged = _dot(P, F_and_rhs)
+        G = P_merged[:, :, :BT]
+        P_rhs = P_merged[:, :, BT:]
+        H_mat = -G
+        inv_I_G = I_bt[None] + H_mat
+        Hk = H_mat
+        log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
+        num_horner_steps = log2_NC_inv - 1
+        if num_horner_steps > 0:
+          Hk = _dot(Hk, Hk)
+          for _ in range(num_horner_steps - 1):
+            merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
+            merged_products = _dot(merged_lhs, Hk)
+            inv_I_G = inv_I_G + merged_products[:, :BT]
+            Hk = merged_products[:, BT:]
+          inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
+        if STORE_RESIDUALS:
+          rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
+          result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
+          result = result_and_inverse[:, :, : V_PAD + K_PAD]
+          A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+        else:
+          result = _dot(inv_I_G, P_rhs)
+      u = result[:, :, :V_PAD]
+      w = result[:, :, V_PAD : V_PAD + K_PAD]
+      if NC_inv == 1:
+        A_inv = P
+    else:
+      A_inv = _solve_unit_lower_triangular_batched(
+          L, jnp.broadcast_to(I_bt[None], L.shape)
+      )
+      u = _dot(A_inv, v_beta)
+      w = _dot(A_inv, k_eg_beta)
     g_last = (g_cumsum * vm[None, :, None]).min(axis=1, keepdims=True)
     kg = k * jnp.exp2(g_last - g_cumsum) * vm[None, :, None]
 
@@ -714,11 +959,19 @@ def _fwd_mega_kernel_native_segids(
     )
     b_o += b_o_h[:, :BT]
     b_o = b_o * vm[None, :, None]
-    o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    if BATCH_FIRST:
+      o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    else:
+      o_ref[:, 0] = b_o.astype(o_ref.dtype)
 
     b_gk_last = g_last[:, 0, :]
     b_h_new = b_h * jnp.exp2(b_gk_last)[:, :, None] + b_o_h[:, BT:]
     scratch_ref[...] = b_h_new
+    if STORE_FINAL_STATE:
+      if MANUAL_HT_DMA:
+        _dma_state_to_ht(scratch_ref, first_seg)
+      else:
+        ht_ref[first_seg - 1, ...] = b_h_new.astype(ht_ref.dtype)[:, None, :, :]
     if STORE_RESIDUALS:
       if RESIDUAL_CHUNK_LAYOUT:
         Aqk_ref[:, 0, 0] = Aqk.astype(Aqk_ref.dtype)
@@ -729,6 +982,17 @@ def _fwd_mega_kernel_native_segids(
       g_cumsum_out_ref[:, 0] = g_cumsum.astype(g_cumsum_out_ref.dtype)
     prev_seg_ref[...] = jnp.broadcast_to(first_seg, (128,))
 
+    if STORE_FINAL_STATE:
+
+      @pl.when(is_last_real)
+      def _final():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, first_seg)
+        else:
+          ht_ref[first_seg - 1, ...] = b_h_new.astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
+
   # Keep the established two-fragment body distinct from the uncommon
   # general segmented body. ``general_segments`` is a Python static value,
   # so Mosaic lowers two independent branches rather than adding selects to
@@ -738,9 +1002,57 @@ def _fwd_mega_kernel_native_segids(
     prev_seg = prev_seg_ref[0]
     seg_changed = (first_seg != prev_seg) | chain_start
 
+    if STORE_FINAL_STATE:
+
+      @pl.when(seg_changed & (~chain_start) & (prev_seg > 0))
+      def _save_prev():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, prev_seg)
+        else:
+          ht_ref[prev_seg - 1, ...] = scratch_ref[...].astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
+
     @pl.when(seg_changed)
     def _init():
       scratch_ref[...] = jnp.zeros([MB, K_PAD, V_PAD], dtype=jnp.float32)
+
+    if HAS_H0:
+
+      @pl.when(seg_changed)
+      def _load_h0():
+        if MANUAL_H0_DMA:
+          h_start = pl.program_id(0) * MB
+          cp = pltpu.make_async_copy(
+              h0_ref.at[
+                  first_seg - 1,
+                  pl.ds(h_start, MB),
+                  i_b,
+                  pl.ds(None),
+                  pl.ds(None),
+              ],
+              scratch_ref,
+              state_dma_sem,
+          )
+          cp.start()
+          cp.wait()
+        else:
+          scratch_ref[...] = _read_h0(first_seg)
+
+    if HAS_H0 and MANUAL_H0_DMA and OVERLAP_H0_DMA:
+      h_start = pl.program_id(0) * MB
+      h0_B_copy = pltpu.make_async_copy(
+          h0_ref.at[
+              last_seg - 1,
+              pl.ds(h_start, MB),
+              i_b,
+              pl.ds(None),
+              pl.ds(None),
+          ],
+          final_state_dma_ref,
+          state_dma_sem,
+      )
+      h0_B_copy.start()
 
     # Edge-fragment masks. Middle fragments are handled by the fixed-width
     # segmented operations below and never receive recurrent state from a
@@ -750,17 +1062,38 @@ def _fwd_mega_kernel_native_segids(
     seg_B_mask = (seg == last_seg).astype(jnp.float32)  # [BT]
 
     # --- FULL-style computation (backward-compatible) ---
-    q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32)
-    g_raw = g_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    if DIRECT_INPUT_DMA:
+      q = q_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      k = k_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      v = v_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      g_raw = g_dma_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    elif BATCH_FIRST:
+
+      q = q_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      k = k_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      v = v_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+      g_raw = g_ref[0].transpose(1, 0, 2).astype(jnp.float32)
+    else:
+      q = q_ref[:, 0, :, :].astype(jnp.float32)
+      k = k_ref[:, 0, :, :].astype(jnp.float32)
+      v = v_ref[:, 0, :, :].astype(jnp.float32)
+      g_raw = g_ref[:, 0, :, :].astype(jnp.float32)
     beta = (
-        beta_ref[0, 0].transpose(1, 0).astype(jnp.float32)
-        if BATCH_FIRST and beta_ref.ndim == 4
-        else beta_ref[:, 0, 0, 0, :].astype(jnp.float32)
+        beta_dma_ref[0, :, 0, :MB].transpose(1, 0).astype(jnp.float32)
+        if DIRECT_INPUT_DMA
+        else (
+            beta_ref[0, 0].transpose(1, 0).astype(jnp.float32)
+            if BATCH_FIRST and beta_ref.ndim == 4
+            else beta_ref[:, 0, 0, 0, :].astype(jnp.float32)
+        )
     )
     if CLIP_BETA_IN_KERNEL:
       beta = jnp.clip(beta, 0, 1)
+    if NORMALIZE_QK:
+      q *= jax.lax.rsqrt(jnp.sum(q * q, axis=-1, keepdims=True) + 1e-6)
+      k *= jax.lax.rsqrt(jnp.sum(k * k, axis=-1, keepdims=True) + 1e-6)
+      q = q.astype(jnp.bfloat16).astype(jnp.float32)
+      k = k.astype(jnp.bfloat16).astype(jnp.float32)
 
     # Gate activation
     g_f32 = g_raw
@@ -875,77 +1208,108 @@ def _fwd_mega_kernel_native_segids(
         a, b, (((2,), (1,)), ((0,), (0,))), preferred_element_type=jnp.float32
     )
 
-    BC_inv = INV_BC
-    NC_inv = BT // BC_inv
-    inv_dt = jnp.float32
-    L_inv = L.astype(inv_dt)
-    solve_bt = BT
-    solve_I = I_bt
-    if PACK_HEAD_INV:
-      pair_mb = MB // 2
-      L_pair = L_inv.reshape(pair_mb, 2, BT, BT)
-      z = jnp.zeros_like(L_pair[:, 0])
-      L_inv = jnp.concatenate(
-          [
-              jnp.concatenate([L_pair[:, 0], z], axis=2),
-              jnp.concatenate([z, L_pair[:, 1]], axis=2),
-          ],
-          axis=1,
+    if USE_NEUMANN:
+      BC_inv = INV_BC
+      NC_inv = BT // BC_inv
+      inv_dt = jnp.float32
+      L_inv = L.astype(inv_dt)
+      solve_bt = BT
+      solve_I = I_bt
+      if PACK_HEAD_INV:
+        pair_mb = MB // 2
+        L_pair = L_inv.reshape(pair_mb, 2, BT, BT)
+        z = jnp.zeros_like(L_pair[:, 0])
+        L_inv = jnp.concatenate(
+            [
+                jnp.concatenate([L_pair[:, 0], z], axis=2),
+                jnp.concatenate([z, L_pair[:, 1]], axis=2),
+            ],
+            axis=1,
+        )
+        solve_bt = 2 * BT
+        solve_I = jnp.eye(solve_bt, dtype=inv_dt)
+      _idx = jnp.arange(solve_bt, dtype=jnp.int32)
+      _blk = _idx // BC_inv
+      _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
+      L_diag = L_inv * _same[None]
+      F = L_inv - L_diag
+      neg_Ld = -L_diag
+      S = solve_I[None] + neg_Ld
+      Mk = neg_Ld
+      num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
+      for _ in range(num_diag_steps):
+        Mk = _dot(Mk, Mk)
+        S = _dot(S, solve_I[None] + Mk)
+      P = S
+      rhs = jnp.concatenate(
+          [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
       )
-      solve_bt = 2 * BT
-      solve_I = jnp.eye(solve_bt, dtype=inv_dt)
-    _idx = jnp.arange(solve_bt, dtype=jnp.int32)
-    _blk = _idx // BC_inv
-    _same = (_blk[:, None] == _blk[None, :]).astype(inv_dt)
-    L_diag = L_inv * _same[None]
-    F = L_inv - L_diag
-    neg_Ld = -L_diag
-    S = solve_I[None] + neg_Ld
-    Mk = neg_Ld
-    num_diag_steps = {4: 1, 8: 2, 16: 3, 32: 4, 64: 5}[BC_inv]
-    for _ in range(num_diag_steps):
-      Mk = _dot(Mk, Mk)
-      S = _dot(S, solve_I[None] + Mk)
-    P = S
-    rhs = jnp.concatenate(
-        [v_beta.astype(inv_dt), k_eg_beta.astype(inv_dt)], axis=-1
-    )
-    if PACK_HEAD_INV:
-      rhs = rhs.reshape(MB // 2, 2 * BT, V_PAD + K_PAD)
-    if NC_inv == 1:
-      result = _dot(P, rhs)
-      A_inv = P
-    else:
-      F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
-      P_merged = _dot(P, F_and_rhs)
-      G = P_merged[:, :, :solve_bt]
-      P_rhs = P_merged[:, :, solve_bt:]
-      H_mat = -G
-      inv_I_G = solve_I[None] + H_mat
-      Hk = H_mat
-      log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
-      num_horner_steps = log2_NC_inv - 1
-      if num_horner_steps > 0:
-        Hk = _dot(Hk, Hk)
-        for _ in range(num_horner_steps - 1):
-          merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
-          merged_products = _dot(merged_lhs, Hk)
-          inv_I_G = inv_I_G + merged_products[:, :solve_bt]
-          Hk = merged_products[:, solve_bt:]
-        inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
-      if STORE_RESIDUALS:
-        rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
-        result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
-        result = result_and_inverse[:, :, : V_PAD + K_PAD]
-        A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+      if PACK_HEAD_INV:
+        rhs = rhs.reshape(MB // 2, 2 * BT, V_PAD + K_PAD)
+      if NC_inv == 1:
+        result = _dot(P, rhs)
+        A_inv = P
       else:
-        result = _dot(inv_I_G, P_rhs)
-    if PACK_HEAD_INV:
-      result = result.reshape(MB, BT, V_PAD + K_PAD)
-    u = result[:, :, :V_PAD]
-    w = result[:, :, V_PAD : V_PAD + K_PAD]
+        F_and_rhs = jnp.concatenate([F, rhs], axis=-1)
+        P_merged = _dot(P, F_and_rhs)
+        G = P_merged[:, :, :solve_bt]
+        P_rhs = P_merged[:, :, solve_bt:]
+        H_mat = -G
+        inv_I_G = solve_I[None] + H_mat
+        Hk = H_mat
+        log2_NC_inv = {2: 1, 4: 2, 8: 3, 16: 4, 32: 5}[NC_inv]
+        num_horner_steps = log2_NC_inv - 1
+        if num_horner_steps > 0:
+          Hk = _dot(Hk, Hk)
+          for _ in range(num_horner_steps - 1):
+            merged_lhs = jnp.concatenate([inv_I_G, Hk], axis=1)
+            merged_products = _dot(merged_lhs, Hk)
+            inv_I_G = inv_I_G + merged_products[:, :solve_bt]
+            Hk = merged_products[:, solve_bt:]
+          inv_I_G = inv_I_G + _dot(inv_I_G, Hk)
+        if STORE_RESIDUALS:
+          rhs_and_inverse = jnp.concatenate([P_rhs, P], axis=-1)
+          result_and_inverse = _dot(inv_I_G, rhs_and_inverse)
+          result = result_and_inverse[:, :, : V_PAD + K_PAD]
+          A_inv = result_and_inverse[:, :, V_PAD + K_PAD :]
+        else:
+          result = _dot(inv_I_G, P_rhs)
+      if PACK_HEAD_INV:
+        result = result.reshape(MB, BT, V_PAD + K_PAD)
+      u = result[:, :, :V_PAD]
+      w = result[:, :, V_PAD : V_PAD + K_PAD]
+    else:
+      A_inv = _solve_unit_lower_triangular_batched(
+          L, jnp.broadcast_to(I_bt[None], L.shape)
+      )
+      u = _dot(A_inv, v_beta)
+      w = _dot(A_inv, k_eg_beta)
 
-    final_state_dma_ref[...] = jnp.zeros([MB, K_PAD, V_PAD], dtype=jnp.float32)
+    if HAS_H0:
+      if MANUAL_H0_DMA:
+        if OVERLAP_H0_DMA:
+          h0_B_copy.wait()
+        else:
+          h_start = pl.program_id(0) * MB
+          cp = pltpu.make_async_copy(
+              h0_ref.at[
+                  last_seg - 1,
+                  pl.ds(h_start, MB),
+                  i_b,
+                  pl.ds(None),
+                  pl.ds(None),
+              ],
+              final_state_dma_ref,
+              state_dma_sem,
+          )
+          cp.start()
+          cp.wait()
+      else:
+        final_state_dma_ref[...] = _read_h0(last_seg)
+    else:
+      final_state_dma_ref[...] = jnp.zeros(
+          [MB, K_PAD, V_PAD], dtype=jnp.float32
+      )
     h_B_initial = final_state_dma_ref[...]
 
     g_last = g_cumsum[:, BT - 1 : BT, :]
@@ -1009,7 +1373,10 @@ def _fwd_mega_kernel_native_segids(
       b_o = state_o * mask_A + intra_o * valid_tokens
     else:
       b_o = (state_o + intra_o) * mask_A + (state_o_B + intra_o) * mask_B
-    o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    if BATCH_FIRST:
+      o_ref[0] = b_o.transpose(1, 0, 2).astype(o_ref.dtype)
+    else:
+      o_ref[:, 0] = b_o.astype(o_ref.dtype)
 
     # State: per-segment
     g_A_total = (
@@ -1045,6 +1412,27 @@ def _fwd_mega_kernel_native_segids(
         precision=jax.lax.Precision.HIGHEST,
         preferred_element_type=jnp.float32,
     )
+    if STORE_FINAL_STATE:
+      if MANUAL_HT_DMA:
+        final_state_dma_ref[...] = h_A_new
+        if OVERLAP_HT_DMA:
+          h_start = pl.program_id(0) * MB
+          ht_A_copy = pltpu.make_async_copy(
+              final_state_dma_ref,
+              ht_ref.at[
+                  first_seg - 1,
+                  pl.ds(h_start, MB),
+                  i_b,
+                  pl.ds(None),
+                  pl.ds(None),
+              ],
+              state_dma_sem,
+          )
+          ht_A_copy.start()
+        else:
+          _dma_state_to_ht(final_state_dma_ref, first_seg)
+      else:
+        ht_ref[first_seg - 1, ...] = h_A_new.astype(ht_ref.dtype)[:, None, :, :]
 
     # seg_B starts inside this chunk and therefore uses its own h0.
     h_B_new = h_B_initial * jnp.exp2(g_B_total[:, 0, :])[
@@ -1056,6 +1444,11 @@ def _fwd_mega_kernel_native_segids(
         preferred_element_type=jnp.float32,
     )
     scratch_ref[...] = h_B_new
+    if STORE_FINAL_STATE and MANUAL_HT_DMA and OVERLAP_HT_DMA:
+      ht_A_copy.wait()
+    if STORE_FINAL_STATE:
+      if not MANUAL_HT_DMA:
+        ht_ref[last_seg - 1, ...] = h_B_new.astype(ht_ref.dtype)[:, None, :, :]
 
     if STORE_RESIDUALS:
       if RESIDUAL_CHUNK_LAYOUT:
@@ -1066,6 +1459,17 @@ def _fwd_mega_kernel_native_segids(
         Akk_ref[:, 0] = A_inv.astype(Akk_ref.dtype)
       g_cumsum_out_ref[:, 0] = g_cumsum.astype(g_cumsum_out_ref.dtype)
     prev_seg_ref[...] = jnp.broadcast_to(last_seg, (128,))
+
+    if STORE_FINAL_STATE:
+
+      @pl.when(is_last_real)
+      def _final():
+        if MANUAL_HT_DMA:
+          _dma_state_to_ht(scratch_ref, last_seg)
+        else:
+          ht_ref[last_seg - 1, ...] = h_B_new.astype(ht_ref.dtype)[
+              :, None, :, :
+          ]
 
   @pl.when((kind == CHUNK_KIND_BOUNDARY) & (~is_general_boundary))
   def _two_fragment_boundary():
@@ -1155,18 +1559,11 @@ def _chunk_kda_fwd_native_segids_impl(
     batch_first=False,
     cost_estimate_flops_fwd=-1,
 ):
-  """BF16 batch-first compact execution; stateful inference uses its own kernel."""
-  if (
-      initial_state is not None
-      or output_final_state
-      or use_qk_l2norm_in_kernel
-      or not batch_first
-      or q.dtype != jnp.bfloat16
-  ):
-    raise ValueError(
-        "Compact forward requires BF16 batch-first stateless inputs without Q/K normalization"
-    )
-  B, T, H, K = q.shape
+  """Native segment_ids mega kernel wrapper. No _align_seqs."""
+  if batch_first:
+    B, T, H, K = q.shape
+  else:
+    H, B, T, K = q.shape
   V = v.shape[-1]
   BT = chunk_size
   if only_fwd and (disable_recompute or store_h or store_v_new):
@@ -1182,11 +1579,52 @@ def _chunk_kda_fwd_native_segids_impl(
     if B > 1:
       segment_ids = jnp.broadcast_to(segment_ids, (B, T))
 
-  segment_local = False
-  direct_input_dma = False
+  segment_local = only_fwd and N_max is not None and "0" == "1"
+  direct_input_dma = (
+      segment_local and batch_first and H >= 2 and H % 2 == 0 and "0" == "1"
+  )
   original_T = T
   original_segment_ids = segment_ids
   aligned_cu = None
+  if segment_local:
+    segment_labels = jnp.arange(1, N_max + 1, dtype=jnp.int32)
+    raw_lens_from_ids = jnp.sum(
+        segment_ids[:, :, None] == segment_labels[None, None, :],
+        axis=1,
+        dtype=jnp.int32,
+    )
+    raw_cu = jnp.concatenate(
+        [
+            jnp.zeros((B, 1), dtype=jnp.int32),
+            jnp.cumsum(raw_lens_from_ids, axis=-1),
+        ],
+        axis=-1,
+    )
+    if direct_input_dma:
+      raw_lens = jnp.diff(raw_cu, axis=-1)
+      aligned_lens = ((raw_lens + BT - 1) // BT) * BT
+      aligned_cu = jnp.concatenate(
+          [
+              jnp.zeros((B, 1), dtype=jnp.int32),
+              jnp.cumsum(aligned_lens, axis=-1),
+          ],
+          axis=-1,
+      )
+      # Match align_seqs' static output allocation. The dynamic
+      # aligned_cu determines which prefix contains real segments.
+      T = ((original_T + N_max * (BT - 1) + BT - 1) // BT) * BT
+      segment_ids = jnp.zeros((B, T), dtype=jnp.int32)
+    else:
+      [q_h, k_h, v_h, g_h], [beta_h, seg_h], aligned_cu, _ = _align_seqs(
+          [x.transpose(2, 0, 1, 3) for x in (q, k, v, g)],
+          [beta.transpose(2, 0, 1), original_segment_ids[None, ...]],
+          raw_cu,
+          align=BT,
+      )
+      q, k, v, g = [x.transpose(1, 2, 0, 3) for x in (q_h, k_h, v_h, g_h)]
+      beta = beta_h.transpose(1, 2, 0)
+      segment_ids = seg_h[0]
+      T = q.shape[1]
 
   NT = T // BT
   packed_metadata = only_fwd and "1" == "1"
@@ -1231,6 +1669,16 @@ def _chunk_kda_fwd_native_segids_impl(
       _pad(v, V_ALIGNED),
       _pad(g, K_PAD),
   )
+  if direct_input_dma:
+    if original_T >= (1 << 24):
+      raise ValueError("direct segment offsets currently require T < 2**24")
+    # The final partial segment still issues one full BT DMA. A guard tile
+    # keeps that read in bounds; masked tokens never enter the recurrence.
+    token_pad = ((0, 0), (0, BT), (0, 0), (0, 0))
+    q_t = jnp.pad(q_t, token_pad)
+    k_t = jnp.pad(k_t, token_pad)
+    v_t = jnp.pad(v_t, token_pad)
+    g_t = jnp.pad(g_t, token_pad)
   # Pad segment_ids to [B, T_PAD_S] (128-aligned in T dim)
   if segment_ids.shape[-1] < T_PAD_S:
     segment_ids = jnp.pad(
@@ -1249,6 +1697,26 @@ def _chunk_kda_fwd_native_segids_impl(
   seg_first_padded = jnp.pad(seg_first, ((0, 0), (0, NT_meta_PAD - NT_meta)))
   seg_last_padded = jnp.pad(seg_last, ((0, 0), (0, NT_meta_PAD - NT_meta)))
   max_segment_chunks = None
+  if segment_local:
+    aligned_lens = jnp.diff(aligned_cu, axis=-1)
+    raw_lens = jnp.diff(raw_cu, axis=-1)
+    segment_starts = aligned_cu[:, :-1] // BT
+    segment_chunks = aligned_lens // BT
+    segment_last_tokens = jnp.where(
+        raw_lens > 0,
+        jnp.where((raw_lens % BT) == 0, BT, raw_lens % BT),
+        0,
+    )
+    segment_meta_pad = max(int(align_up(N_max, 128)), 128)
+    meta_pad = ((0, 0), (0, segment_meta_pad - N_max))
+    chunk_kind_padded = jnp.pad(segment_starts, meta_pad)
+    seg_first_padded = jnp.pad(segment_chunks, meta_pad)
+    packed_segment_tail = segment_last_tokens.astype(jnp.int32) | (
+        raw_cu[:, :-1].astype(jnp.int32) << jnp.int32(8)
+    )
+    seg_last_padded = jnp.pad(packed_segment_tail, meta_pad)
+    max_segment_chunks = jnp.max(segment_chunks)
+    packed_metadata = False
 
   env_mini_batch = None if only_fwd else None
   if mini_batch is None and env_mini_batch:
@@ -1264,18 +1732,28 @@ def _chunk_kda_fwd_native_segids_impl(
     MB = min(H, 8)
   while H % MB != 0:
     MB //= 2
+  if direct_input_dma and (MB != H or H > 128):
+    raise ValueError(
+        "direct segment input DMA currently requires one head group and H <= 128"
+    )
 
   # The batch-first beta window is copy-free when one program owns the full
   # head dimension. Smaller head groups use the head-first layout whose last
   # dimension is the complete 64-token block and therefore TPU legal.
   beta_batch_first = batch_first and only_fwd and MB == H
-  beta_t = (
-      beta.reshape(B, NT, BT, H)
-      if beta_batch_first
-      else beta.transpose(2, 0, 1).reshape(H, B, NT, 1, BT)
-  )
+  if direct_input_dma:
+    beta_t = jnp.pad(
+        beta[:, :, None, :],
+        ((0, 0), (0, BT), (0, 0), (0, 128 - H)),
+    )
+  else:
+    beta_t = (
+        beta.reshape(B, NT, BT, H)
+        if beta_batch_first
+        else beta.transpose(2, 0, 1).reshape(H, B, NT, 1, BT)
+    )
 
-  use_neumann = True
+  use_neumann = q.dtype == jnp.bfloat16
   # With gate values as low as -5, a 32-token block can form masked
   # pre-causal products near 2**155 before the mask is applied. Keeping the
   # rescaling window at 16 bounds those products below the FP32/BF16 range.
@@ -1293,20 +1771,42 @@ def _chunk_kda_fwd_native_segids_impl(
   skip_stage4_mask = only_fwd
   pack_head_inv = only_fwd and MB % 2 == 0 and "1" == "1"
   clip_beta_in_kernel = only_fwd
-  overlap_h0_dma = False
-  overlap_ht_dma = False
-  _prec = jax.lax.Precision.DEFAULT
+  overlap_h0_dma = only_fwd and "1" == "1"
+  overlap_ht_dma = only_fwd and "1" == "1"
+  _prec = (
+      jax.lax.Precision.DEFAULT if use_neumann else jax.lax.Precision.HIGHEST
+  )
 
   # Prepare h0: broadcast to [1, H, 1, K_PAD, V_ALIGNED] so each grid point
   # can read its own MB-sized block via _h0_map (avoids OOB on dim1).
-  has_h0 = False
+  has_h0 = initial_state is not None
   state_dma_override = None
   manual_state_dma = (
       N_max >= 6 if state_dma_override is None else state_dma_override == "1"
   )
   h0_dma_override = None
-  manual_h0_dma = False
-  h0_in = None
+  manual_h0_dma = (
+      only_fwd
+      and has_h0
+      and (N_max > 6 if h0_dma_override is None else h0_dma_override == "1")
+  )
+  if has_h0:
+    h0 = initial_state
+    if h0.ndim == 4:
+      h0 = h0[None, ...]  # [1, N, H, K, V]
+    if h0.shape[0] < B:
+      h0 = jnp.broadcast_to(h0, (B,) + h0.shape[1:])
+
+    # Pass ALL N_max initial states for per-segment loading
+    # h0: [B, N_max, H, K, V] -> [N_max, H, B, K, V] -> pad -> [N_max, H, B, K_PAD, V_ALIGNED]
+    h0 = h0[:, :, :, :, :].transpose(1, 2, 0, 3, 4)  # [N_max, H, B, K, V]
+    if K_PAD > K:
+      h0 = jnp.pad(h0, ((0, 0), (0, 0), (0, 0), (0, K_PAD - K), (0, 0)))
+    if V_ALIGNED > V:
+      h0 = jnp.pad(h0, ((0, 0), (0, 0), (0, 0), (0, 0), (0, V_ALIGNED - V)))
+    h0_in = h0.astype(jnp.float32)  # [N_max, H, B, K_PAD, V_ALIGNED]
+  else:
+    h0_in = None
 
   # Prepare A_log and dt_bias for gate activation inside kernel
   if use_gate_in_kernel and A_log is not None:
@@ -1355,7 +1855,7 @@ def _chunk_kda_fwd_native_segids_impl(
   def _in_map(h, b, c, *refs):
     if grouped_batch_first_input:
       return (b, c, h, 0, 0)
-    return (b, c, h, 0)
+    return (b, c, h, 0) if batch_first else (h, b, c, 0)
 
   def _h0_map(h, b, c, *refs):
     return (0, h, b, 0, 0)
@@ -1372,23 +1872,68 @@ def _chunk_kda_fwd_native_segids_impl(
   def _ht_map(h, b, c, *refs):
     return (0, h, b, 0, 0)
 
+  if segment_local:
+
+    def _global_chunk(b, s, c, refs):
+      return jnp.minimum(refs[0][b, s] + c, NT - 1)
+
+    def _seg_map(h, b, s, c, *refs):
+      return (0, (_global_chunk(b, s, c, refs) * BT) // 128)
+
+    def _in_map(h, b, s, c, *refs):
+      gc = _global_chunk(b, s, c, refs)
+      if grouped_batch_first_input:
+        return (b, gc, h, 0, 0)
+      return (b, gc, h, 0) if batch_first else (h, b, gc, 0)
+
+    def _h0_map(h, b, s, c, *refs):
+      return (0, h, b, 0, 0)
+
+    def _out_map(h, b, s, c, *refs):
+      return (h, b, _global_chunk(b, s, c, refs), 0)
+
+    def _out_chunk_map(h, b, s, c, *refs):
+      return (h, b, _global_chunk(b, s, c, refs), 0, 0)
+
+    def _beta_map(h, b, s, c, *refs):
+      gc = _global_chunk(b, s, c, refs)
+      return (b, gc, 0, h) if beta_batch_first else (h, b, gc, 0, 0)
+
+    def _ht_map(h, b, s, c, *refs):
+      return (0, h, b, 0, 0)
+
   seg_spec = pl.BlockSpec([B, 128], index_map=_seg_map)
+  if direct_input_dma:
+    q_spec = k_spec = v_spec = g_spec = pl.BlockSpec(memory_space=pl.ANY)
+    beta_spec = pl.BlockSpec(memory_space=pl.ANY)
+  else:
 
-  def _input_block(width):
-    if grouped_batch_first_input:
-      return [1, BT, None, MB, width]
-    return [1, BT, MB, width]
+    def _input_block(width):
+      if grouped_batch_first_input:
+        return [1, BT, None, MB, width]
+      return [1, BT, MB, width] if batch_first else [MB, 1, BT, width]
 
-  q_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
-  k_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
-  v_spec = pl.BlockSpec(_input_block(V_ALIGNED), index_map=_in_map)
-  g_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
-  beta_spec = (
-      pl.BlockSpec([1, 1, BT, MB], index_map=_beta_map)
-      if beta_batch_first
-      else pl.BlockSpec([MB, 1, 1, 1, BT], index_map=_beta_map)
+    q_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
+    k_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
+    v_spec = pl.BlockSpec(_input_block(V_ALIGNED), index_map=_in_map)
+    g_spec = pl.BlockSpec(_input_block(K_PAD), index_map=_in_map)
+    beta_spec = (
+        pl.BlockSpec([1, 1, BT, MB], index_map=_beta_map)
+        if beta_batch_first
+        else pl.BlockSpec([MB, 1, 1, 1, BT], index_map=_beta_map)
+    )
+  h0_spec = (
+      (
+          pl.BlockSpec(memory_space=pl.ANY)
+          if manual_h0_dma
+          else pl.BlockSpec(
+              [N_max, MB, 1, K_PAD, V_ALIGNED],
+              index_map=_h0_map,
+          )
+      )
+      if has_h0
+      else None
   )
-  h0_spec = None
 
   def _alog_map(h, b, c, *refs):
     return (h, 0, 0, 0)
@@ -1404,25 +1949,57 @@ def _chunk_kda_fwd_native_segids_impl(
   # heads at a time.  Splitting H into [H // MB, MB] makes that constraint
   # explicit without changing the kernel-local ref, DMA, or VMEM footprint.
   grouped_batch_first_output = batch_first and MB < H
+  if batch_first:
 
-  def _o_map(h, b, c, *refs):
-    return (b, c, h, 0, 0) if grouped_batch_first_output else (b, c, h, 0)
+    def _o_map(h, b, c, *refs):
+      return (b, c, h, 0, 0) if grouped_batch_first_output else (b, c, h, 0)
 
-  o_spec = pl.BlockSpec(
-      (
-          [1, BT, None, MB, V_ALIGNED]
-          if grouped_batch_first_output
-          else [1, BT, MB, V_ALIGNED]
-      ),
-      index_map=_o_map,
-  )
+    if segment_local:
+
+      def _o_map(h, b, s, c, *refs):
+        chunk = _global_chunk(b, s, c, refs)
+        return (
+            (b, chunk, h, 0, 0)
+            if grouped_batch_first_output
+            else (b, chunk, h, 0)
+        )
+
+    o_spec = pl.BlockSpec(
+        (
+            [1, BT, None, MB, V_ALIGNED]
+            if grouped_batch_first_output
+            else [1, BT, MB, V_ALIGNED]
+        ),
+        index_map=_o_map,
+    )
+  else:
+    o_spec = pl.BlockSpec([MB, 1, BT, V_ALIGNED], index_map=_out_map)
   # Chunk pre-update states have their own output and are sufficient for
   # training backward. Do not allocate an N_max-sized VMEM window for final
   # states unless requested: it can exceed VMEM for densely packed inputs.
-  store_final_state = False
+  store_final_state = output_final_state
   ht_dma_override = None
-  manual_ht_dma = False
-  ht_spec = None
+  manual_ht_dma = (
+      only_fwd
+      and store_final_state
+      and (
+          segment_local or manual_state_dma
+          if ht_dma_override is None
+          else ht_dma_override == "1"
+      )
+  )
+  ht_spec = (
+      (
+          pl.BlockSpec(memory_space=pl.ANY)
+          if manual_ht_dma
+          else pl.BlockSpec(
+              [N_max, MB, 1, K_PAD, V_ALIGNED],
+              index_map=_ht_map,
+          )
+      )
+      if store_final_state
+      else None
+  )
 
   store_residuals = not only_fwd
   store_chunk_h = store_residuals and store_h
@@ -1473,7 +2050,11 @@ def _chunk_kda_fwd_native_segids_impl(
   else:
     aqk_shape = akk_shape = g_cumsum_shape = chunk_h_shape = None
 
-  grid = (H // MB, B, NT)
+  grid = (
+      (H // MB, B, N_max, max_segment_chunks)
+      if segment_local
+      else (H // MB, B, NT)
+  )
   if packed_metadata:
     native_kernel = _fwd_mega_kernel_native_segids_packed
     scalar_prefetch_count = 1
@@ -1536,10 +2117,16 @@ def _chunk_kda_fwd_native_segids_impl(
                       if grouped_batch_first_output
                       else (B, T, H, V_ALIGNED)
                   )
+                  if batch_first
+                  else (H, B, T, V_ALIGNED)
               ),
               v.dtype,
           ),
-          ((None)),
+          (
+              jax.ShapeDtypeStruct((N_max, H, B, K_PAD, V_ALIGNED), jnp.float32)
+              if store_final_state
+              else None
+          ),
           aqk_shape,
           akk_shape,
           g_cumsum_shape,
@@ -1571,18 +2158,42 @@ def _chunk_kda_fwd_native_segids_impl(
               pltpu.VMEM((MB, K_PAD, V_ALIGNED), jnp.float32),
               pltpu.VMEM((128,), jnp.int32),
               pltpu.VMEM((MB, K_PAD, V_ALIGNED), jnp.float32),
-              ((None)),
-              ((None)),
-              ((None)),
-              ((None)),
-              ((None)),
-              (None),
+              (
+                  pltpu.VMEM((1, BT, MB, K_PAD), q.dtype)
+                  if direct_input_dma
+                  else None
+              ),
+              (
+                  pltpu.VMEM((1, BT, MB, K_PAD), k.dtype)
+                  if direct_input_dma
+                  else None
+              ),
+              (
+                  pltpu.VMEM((1, BT, MB, V_ALIGNED), v.dtype)
+                  if direct_input_dma
+                  else None
+              ),
+              (
+                  pltpu.VMEM((1, BT, MB, K_PAD), g.dtype)
+                  if direct_input_dma
+                  else None
+              ),
+              (
+                  pltpu.VMEM((1, BT, 1, 128), beta.dtype)
+                  if direct_input_dma
+                  else None
+              ),
+              pltpu.SemaphoreType.DMA((5,)) if direct_input_dma else None,
               pltpu.SemaphoreType.DMA,
           ],
       ),
       interpret=get_interpret(),
       compiler_params=pltpu.CompilerParams(
-          dimension_semantics=((("parallel", "parallel", "arbitrary"))),
+          dimension_semantics=(
+              ("parallel", "parallel", "parallel", "arbitrary")
+              if segment_local
+              else ("parallel", "parallel", "arbitrary")
+          ),
           disable_bounds_checks=True,
           vmem_limit_bytes=(60 * 1024 * 1024) if MB > 4 else None,
       ),
@@ -1615,13 +2226,21 @@ def _chunk_kda_fwd_native_segids_impl(
 
   # Match the selected contract: [B, T, H, V] or [H, B, T, V].
   o_out = o_out[..., :V]
+  if segment_local:
+    if batch_first:
+      o_head_first = o_out.transpose(2, 0, 1, 3)
+      o_out = _unalign_output(
+          o_head_first, raw_cu, aligned_cu, original_T
+      ).transpose(1, 2, 0, 3)
+    else:
+      o_out = _unalign_output(o_out, raw_cu, aligned_cu, original_T)
   # ht_out: [1, H, B, K_PAD, V_ALIGNED] -> [B, 1, H, K, V]
   if ht_out is not None:
     ht_out = ht_out[:, :, :, :K, :V].transpose(
         2, 0, 1, 3, 4
     )  # [B, N_max, H, K, V]
 
-  final_state = None
+  final_state = ht_out if store_final_state else None
 
   # Trim g_cumsum: [H, B, T, K_PAD] -> [H, B, T, K]
   if g_cumsum_out is not None and K_PAD > K:
@@ -1649,3 +2268,42 @@ _chunk_kda_fwd_native_segids = jax.jit(
     _chunk_kda_fwd_native_segids_impl,
     static_argnames=_NATIVE_SEGIDS_STATIC_ARGNAMES,
 )
+
+
+@functools.lru_cache(maxsize=None)
+def _native_residual_layout_jit_for_sharding(sharding):
+  """JIT variant whose ABI accepts the Pallas Aqk/Akk physical layout."""
+  from jax._src.layout import Format, Layout
+
+  pallas_layout = Layout(
+      major_to_minor=(0, 1, 2, 3, 4),
+      tiling=((8, 128), (2, 1)),
+  )
+  residual_format = Format(layout=pallas_layout, sharding=sharding)
+  return jax.jit(
+      _chunk_kda_fwd_native_segids_impl,
+      static_argnames=_NATIVE_SEGIDS_STATIC_ARGNAMES,
+      out_shardings=(
+          None,
+          None,
+          None,
+          residual_format,
+          residual_format,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+          None,
+      ),
+  )
+
+
+def _get_native_residual_layout_jit(q):
+  sharding = getattr(q, "sharding", None)
+  if sharding is None:
+    # Direct benchmark/eager use has a concrete array. A tracer without a
+    # concrete sharding falls back to the portable JIT variant.
+    return _chunk_kda_fwd_native_segids
+  return _native_residual_layout_jit_for_sharding(sharding)
