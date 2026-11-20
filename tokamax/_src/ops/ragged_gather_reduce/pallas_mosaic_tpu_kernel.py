@@ -45,6 +45,8 @@ ROUTE_INDEX_BITS = 20
 ROUTE_INDEX_MASK = (1 << ROUTE_INDEX_BITS) - 1
 # Most rows of `x` the route metadata can address.
 MAX_SOURCE_ROWS = 1 << ROUTE_INDEX_BITS
+# SparseCore layout passes and pltpu.bitcast require JAX 0.12.0 or newer.
+_USE_LAYOUT_PASSES = jax.__version_info__ >= (0, 12, 0)
 
 
 def default_num_column_partitions(
@@ -277,11 +279,16 @@ def main_kernel(
           pl.BlockSpec((TOKEN_SUBCHUNK,), metadata_block_index),
       ),
       out_specs=(),
+      _explicit_indices=True,
   )
   def token_block_pipeline(
-      route_metadata_ref, route_weights_ref, route_counts_ref, output_sem_ref
+      outer_step,
+      route_metadata_ref,
+      route_weights_ref,
+      route_counts_ref,
+      output_sem_ref,
   ):
-    block_id = pl.program_id(0)
+    block_id = outer_step.index[0]
     global_block_id = row_partition_id * blocks_per_row_partition + block_id
     valid_route_count = route_counts_ref[...][0]
     # The wrapper only reports exactly two routes per token when the routes of
@@ -319,9 +326,10 @@ def main_kernel(
               ),
           ),
           out_specs=(),
+          _explicit_indices=True,
       )
-      def route_pipeline(gather_ref):
-        route_chunk = pl.program_id(0)
+      def route_pipeline(inner_step, gather_ref):
+        route_chunk = inner_step.index[0]
         metadata_start = route_chunk * TOKEN_SUBCHUNK
         metadata_slice = pl.ds(metadata_start, TOKEN_SUBCHUNK)
         route_metadata = route_metadata_ref[metadata_slice]
@@ -342,7 +350,7 @@ def main_kernel(
               jnp.left_shift(value_i32, shift),
               jnp.int32(-65536),  # 0xFFFF0000
           )
-          value_f32 = plsc.bitcast(shifted, jnp.float32)
+          value_f32 = jax.lax.bitcast_convert_type(shifted, jnp.float32)
           return value_f32 * route_weights[route_lane]
 
         def fixed_two_route_column_loop(col_offset):
@@ -421,16 +429,24 @@ def main_kernel(
               accum_row_start=accum_row_start,
           ):
             col_slice = pl.ds(col_offset, TOKEN_SUBCHUNK)
-            for token_lane in range(0, TOKEN_SUBCHUNK, 2):
-              accum_row = accum_row_start + token_lane
-              packed_bf16 = plsc.pack(
-                  accum_vmem_ref[accum_row, col_slice],
-                  accum_vmem_ref[accum_row + 1, col_slice],
-                  format=plsc.PackFormat.INTERLEAVED,
+            if _USE_LAYOUT_PASSES:
+              rows_bf16 = accum_vmem_ref[
+                  pl.ds(accum_row_start, TOKEN_SUBCHUNK), col_slice
+              ].astype(jnp.bfloat16)
+              out_tile_vmem_ref[output_buffer, :, col_slice] = pltpu.bitcast(
+                  rows_bf16, jnp.uint32
               )
-              out_tile_vmem_ref[output_buffer, token_lane // 2, col_slice] = (
-                  plsc.bitcast(packed_bf16, jnp.uint32)
-              )
+            else:
+              for token_lane in range(0, TOKEN_SUBCHUNK, 2):
+                accum_row = accum_row_start + token_lane
+                packed_bf16 = plsc.pack(
+                    accum_vmem_ref[accum_row, col_slice],
+                    accum_vmem_ref[accum_row + 1, col_slice],
+                    format=plsc.PackFormat.INTERLEAVED,
+                )
+                out_tile_vmem_ref[output_buffer, token_lane // 2, col_slice] = (
+                    plsc.bitcast(packed_bf16, jnp.uint32)
+                )
 
           plsc.parallel_loop(0, col_chunk_size, step=TOKEN_SUBCHUNK)(
               cast_column
@@ -684,7 +700,7 @@ def ragged_gather_reduce(
       compiler_params=pltpu.CompilerParams(
           use_tc_tiling_on_sc=True,
           disable_bounds_checks=True,
-          needs_layout_passes=False,
+          needs_layout_passes=_USE_LAYOUT_PASSES,
       ),
       mesh=vector_mesh,
       name="sc_ragged_gather_reduce",
