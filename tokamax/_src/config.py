@@ -17,10 +17,25 @@
 import contextlib
 import dataclasses
 import sys
-from typing import Any
+from typing import Any, Literal
 
 from absl import flags
 import jax
+
+# Fallback behavior when `BoundArguments.default_config` misses the autotuning
+# cache (and neither an explicit `op.config` nor `NullConfig` applies):
+# - "heuristics": Return `op._get_heuristics_config(ba)` (default for the
+#   global `tokamax_autotuning_cache_miss_fallback` flag).
+# - "autotune": Run `ba.autotune()` inline over `ba.autotuning_configs`, cache
+#   the results in memory, and return the fastest config (raises
+#   `ExceptionGroup` if all candidate configs fail).
+# - "error": Raise `ValueError`.
+AutotuningCacheMissFallback = Literal["heuristics", "autotune", "error"]
+AUTOTUNING_CACHE_MISS_FALLBACKS: tuple[AutotuningCacheMissFallback, ...] = (
+    "heuristics",
+    "autotune",
+    "error",
+)
 
 _DEFAULT = object()
 
@@ -83,7 +98,7 @@ autotuning_cache_miss_fallback = _ConfigOption(
     flags.DEFINE_enum(
         "tokamax_autotuning_cache_miss_fallback",
         "heuristics",
-        ("heuristics", "autotune", "error"),
+        AUTOTUNING_CACHE_MISS_FALLBACKS,
         "Fallback when no config is found in the autotuning cache by"
         " `BoundArguments.default_config` ('heuristics' - use heuristics to"
         " create a config; 'autotune' - autotune over the default autotuning"
@@ -114,6 +129,19 @@ ignore_autotuning_cache = _ConfigOption(
     )
 )
 
+autotuning_auto_input_layouts = _ConfigOption(
+    flags.DEFINE_bool(
+        "tokamax_autotuning_auto_input_layouts",
+        True,
+        "If true, autotuning on GPU lets XLA choose the layouts of the"
+        " benchmark inputs, as it does for the parameters of a compiled"
+        " program, and lays out the inputs to match before timing. If false,"
+        " inputs use the default layouts, so an op that reads an input"
+        " transposed (e.g. a kernel reading `rhs.mT`) is timed with a"
+        " transpose that compiled programs avoid.",
+    )
+)
+
 disable_multi_core_mode = _ConfigOption(
     flags.DEFINE_bool(
         "tokamax_disable_multi_core_mode",
@@ -122,5 +150,18 @@ disable_multi_core_mode = _ConfigOption(
         " and fall back to the legacy pl.pallas_call path to unblock jax.vmap."
         " TODO: Revert this flag once Tokamax updates its JAX"
         " version.",
+    )
+)
+
+kda_chain_precision = _ConfigOption(
+    flags.DEFINE_enum(
+        "tokamax_kda_chain_precision",
+        "highest",
+        ("highest", "high", "default"),
+        "Matmul precision for the serial recurrent chain of the KDA Pallas"
+        " Mosaic TPU forward kernel (`w @ h` and `kg^T @ v_new`) and the"
+        " `(S, M)` / `(dS, dM)` context-parallel summary chains. Lower"
+        " precision uses fewer MXU passes, but errors compound across chunks,"
+        " so validate accuracy on TPU.",
     )
 )

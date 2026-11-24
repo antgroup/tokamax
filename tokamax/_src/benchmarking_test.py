@@ -147,6 +147,17 @@ class BenchmarkingTest(parameterized.TestCase):
     out_shape = jax.eval_shape(f, args_abstract)
     chex.assert_trees_all_equal_shapes(out_shape, f(args))
 
+    # Empty vmap_axes can be mixed with concrete arrays (e.g. GroupSizes).
+    x_unbatched = batching.BatchedShapeDtype((4,), jnp.float32, vmap_axes=())
+    y_concrete = (jnp.ones((4,), jnp.float32),) * 2
+    f_unbatched, args_unbatched = benchmarking.standardize_function(
+        f_orig, x_unbatched, y_concrete, seed=seed
+    )
+    chex.assert_trees_all_equal(
+        f_orig(numerics.random_initialize(x_unbatched, seed=seed), y_concrete),
+        f_unbatched(args_unbatched),
+    )
+
   @parameterized.parameters(benchmarking._TIMERS.keys())
   def test_compile_benchmark(self, method):
     if jax.default_backend() != 'gpu' and method == 'cupti':
@@ -169,6 +180,27 @@ class BenchmarkingTest(parameterized.TestCase):
     self.assertGreater(bench.compile_time_ms, 0.0)
     self.assertGreater(bench.lower_time_ms, 0.0)
     self.assertLen(bench.evaluation_times_ms, num_iters)
+
+  def test_compile_benchmark_auto_input_layouts(self):
+    if jax.default_backend() != 'gpu':
+      self.skipTest('Checks the input layout that XLA chooses on GPU.')
+
+    def f(x):
+      return jnp.sin(x.T)
+
+    f, x = benchmarking.standardize_function(f, jnp.ones((256, 512)))
+    with mock.patch.object(jax, 'device_put', wraps=jax.device_put) as put:
+      bench = benchmarking.compile_benchmark(f, x)(x)
+      put.assert_not_called()
+      bench_auto = benchmarking.compile_benchmark(
+          f, x, auto_input_layouts=True
+      )(x)
+    self.assertGreater(bench.median_evaluation_time_ms, 0.0)
+    self.assertGreater(bench_auto.median_evaluation_time_ms, 0.0)
+    put.assert_called_once()
+    (x_format,) = put.call_args.args[1]
+    # XLA stores `x` transposed, so `x.T` needs no transpose.
+    self.assertEqual(x_format.layout.major_to_minor, (1, 0))
 
   def test_benchmark_function_known_time(self):
     time_sleep_s = 0.5

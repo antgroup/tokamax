@@ -190,8 +190,8 @@ def _ragged_contracting_dim_dot_kernel_body(
   group_start = group_sizes_starts_gmem[gi]
   group_end = group_start + group_sizes_gmem[gi]
 
-  lb = jax.lax.div(group_start.astype(jnp.int32), block_k)
-  ub = pl.cdiv(group_end.astype(jnp.int32), block_k)
+  lb = mgpu_lib.udiv(group_start.astype(jnp.int32), block_k)
+  ub = mgpu_lib.ucdiv(group_end.astype(jnp.int32), block_k)
 
   def acc_scope(acc):
     def body(idxs, lhs_smem, rhs_smem):
@@ -254,10 +254,6 @@ def ragged_contracting_dim_dot_kernel(
       config=config,
       activation=activation,
   )
-  if jax.__version_info__ >= (0, 11, 0):
-    lowering_semantics = plgpu.LoweringSemantics.Warpgroup
-  else:
-    lowering_semantics = plgpu.LoweringSemantics.Lane
 
   kernel = plgpu.kernel(
       body,
@@ -266,7 +262,7 @@ def ragged_contracting_dim_dot_kernel(
       grid_names=("m", "n", "g"),
       kernel_name="ragged_contracting_dim_dot_sm90",
       compiler_params=plgpu.CompilerParams(
-          lowering_semantics=lowering_semantics
+          lowering_semantics=plgpu.LoweringSemantics.Warpgroup
       )
   )
 

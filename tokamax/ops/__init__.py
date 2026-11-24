@@ -25,6 +25,7 @@ from tokamax._src.ops.deepseek_rope.api import deepseek_rope as deepseek_rope
 from tokamax._src.ops.dsv4_compressor.api import dsv4_compressor as dsv4_compressor
 from tokamax._src.ops.gated_linear_unit.api import gated_linear_unit as gated_linear_unit
 from tokamax._src.ops.grouped_lowrank_proj.api import grouped_lowrank_proj as grouped_lowrank_proj
+from tokamax._src.ops.kda.api import gated_delta_net as gated_delta_net
 from tokamax._src.ops.kda.api import kimi_delta_attention as kimi_delta_attention
 from tokamax._src.ops.linear_softmax_cross_entropy_loss.api import linear_softmax_cross_entropy_loss as linear_softmax_cross_entropy_loss
 from tokamax._src.ops.masked_dense_mla.api import masked_dense_mla as masked_dense_mla
@@ -39,9 +40,11 @@ from tokamax._src.ops.ragged_gather.api import ragged_gather as ragged_gather
 from tokamax._src.ops.ragged_gather_reduce.api import ragged_gather_reduce as ragged_gather_reduce
 from tokamax._src.ops.router_topk.api import router_topk as router_topk
 from tokamax._src.ops.sparse_mla.api import sparse_mla as sparse_mla
+from tokamax._src.ops.splash_attention.api import splash_attention as splash_attention
 from tokamax._src.ops.topk.api import top_k as top_k
 from tokamax._src.ops.triangle_multiplication.api import triangle_multiplication as triangle_multiplication
 from tokamax.ops import experimental as experimental
+from tokamax.ops import op_fusion as op_fusion
 
 try:
   from tokamax._src.ops.batched_rpa.api import batched_ragged_paged_attention as batched_ragged_paged_attention  # pylint: disable=g-import-not-at-top  # pyrefly: ignore[missing-import]
@@ -60,6 +63,7 @@ __all__ = (
     "dot_product_attention",
     "dsv4_compressor",
     "experimental",
+    "gated_delta_net",
     "gated_linear_unit",
     "gpu",
     "grouped_lowrank_proj",
@@ -71,6 +75,7 @@ __all__ = (
     "mhc_fused_post_pre",
     "mhc_post",
     "mhc_pre",
+    "op_fusion",
     "proj_and_save_state",
     "ragged_dot",
     "ragged_dot_general",
@@ -79,6 +84,7 @@ __all__ = (
     "ragged_paged_attention",
     "router_topk",
     "sparse_mla",
+    "splash_attention",
     "top_k",
     "tpu",
     "triangle_multiplication",

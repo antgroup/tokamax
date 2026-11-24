@@ -49,10 +49,7 @@ class PallasMosaicGpuUtilsTest(parameterized.TestCase):
       layout = plgpu.Layout.WGMMA_UPCAST_4X
       x = plgpu.load(x_ref, layout=layout, optimized=False)
       x = common.int4_as_biased_f8e4m3fn(x, layout)
-      if jax.__version_info__ >= (0, 11, 3):
-        plgpu.store(o_ref, x, optimized=False)
-      else:
-        o_ref[...] = x
+      common.store(o_ref, x, optimized=False)
 
     x = jnp.arange(-8, 8, dtype=jnp.int8)
     x = jnp.tile(x, shape[0] * shape[1] // 16).astype(jnp.int4)
@@ -106,7 +103,7 @@ class PallasMosaicGpuUtilsTest(parameterized.TestCase):
         plgpu.tcgen05_mma(
             acc_tmem,
             a_smem,
-            plgpu.transpose_ref(b_up_smem, (1, 0)),
+            b_up_smem.T,
             accumulate=False,
             barrier=barrier_ref,
         )
@@ -117,10 +114,7 @@ class PallasMosaicGpuUtilsTest(parameterized.TestCase):
         # `S * D - Z * row_sum(A)` where S is scale=512 and Z is bias=8
         acc = 512 * plgpu.async_load_tmem(acc_tmem, layout=plgpu.Layout.TCGEN05)
         acc -= 8 * lax.broadcast_in_dim(a_row_sum, acc.shape, [0])
-        if jax.__version_info__ >= (0, 11, 3):
-          plgpu.store(out_gmem, acc, optimized=False)
-        else:
-          out_gmem[...] = acc
+        common.store(out_gmem, acc, optimized=False)
 
       pipeline(a_gmem, b_gmem)
 
@@ -155,6 +149,60 @@ class PallasMosaicGpuUtilsTest(parameterized.TestCase):
     actual = kernel(x)
     expected = jnp.array([10, 11, 12, 13, 24, 25, 26, 27], dtype=jnp.int32)
     np.testing.assert_array_equal(actual, expected)
+
+  def test_udiv_urem_ucdiv_kernel(self):
+    @functools.partial(
+        plgpu.kernel,
+        out_type=jax.ShapeDtypeStruct((6, 3), jnp.int32),
+        grid=(6,),
+        grid_names=("i",),
+    )
+    def kernel(out_ref):
+      i = lax.axis_index("i")
+      out_ref[i, 0] = common.udiv(i, 3)
+      out_ref[i, 1] = common.urem(i, 3)
+      out_ref[i, 2] = common.ucdiv(i, 3)
+
+    actual = kernel()
+    expected = jnp.array(
+        [[0, 0, 0], [0, 1, 1], [0, 2, 1], [1, 0, 1], [1, 1, 2], [1, 2, 2]],
+        dtype=jnp.int32,
+    )
+    np.testing.assert_array_equal(actual, expected)
+
+
+class UnsignedDivRemTest(parameterized.TestCase):
+
+  def test_python_ints(self):
+    q = common.udiv(17, 5)
+    r = common.urem(17, 5)
+    c1 = common.ucdiv(17, 5)
+    c2 = common.ucdiv(15, 5)
+    c0 = common.ucdiv(0, 5)
+    self.assertIsInstance(q, int)
+    self.assertIsInstance(r, int)
+    self.assertIsInstance(c1, int)
+    self.assertEqual(q, 3)
+    self.assertEqual(r, 2)
+    self.assertEqual(c1, 4)
+    self.assertEqual(c2, 3)
+    self.assertEqual(c0, 0)
+
+  @parameterized.parameters(jnp.int32, jnp.uint32)
+  def test_jax_arrays(self, dtype):
+    a = jnp.array([0, 1, 4, 5, 6, 17], dtype=dtype)
+    b = jnp.full_like(a, 5)
+
+    for divisor in (b, 5):
+      q = common.udiv(a, divisor)
+      r = common.urem(a, divisor)
+      c = common.ucdiv(a, divisor)
+      self.assertEqual(q.dtype, dtype)
+      self.assertEqual(r.dtype, dtype)
+      self.assertEqual(c.dtype, dtype)
+      np.testing.assert_array_equal(q, [0, 0, 0, 1, 1, 3])
+      np.testing.assert_array_equal(r, [0, 1, 4, 0, 1, 2])
+      np.testing.assert_array_equal(c, [0, 1, 1, 1, 2, 4])
 
 
 if __name__ == "__main__":

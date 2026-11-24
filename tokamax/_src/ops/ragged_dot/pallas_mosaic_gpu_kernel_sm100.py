@@ -62,13 +62,8 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
   align_tile = 8
 
   def kernel(
-      x_gmem,
-      w_gmem,
-      group_id_gmem,
-      start_within_block_gmem,
-      actual_size_gmem,
-      block_start_gmem,
-      out_gmem,
+      grid_loop,
+      *,
       x_smem,
       w_smem,
       acc_smem,
@@ -78,15 +73,19 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
       acc_barrier,
       acc_consumed_barrier,
   ):
-    cluster_idx = lax.axis_index("cluster")
+    cluster_idx = lax.axis_index("cluster") if collective else 0
 
-    @plgpu.dynamic_scheduling_loop(
-        ("mn",),
-        thread_axis="wg",
-        cluster_axes=("cluster",) if collective else (),
-        init_carry=0,
-    )
-    def mn_loop(loop_info: plgpu.NDLoopInfo, carry):
+    @grid_loop(init_carry=0)
+    def mn_loop(refs, loop_info: plgpu.NDLoopInfo, carry):
+      (
+          x_gmem,
+          w_gmem,
+          group_id_gmem,
+          start_within_block_gmem,
+          actual_size_gmem,
+          block_start_gmem,
+          out_gmem,
+      ) = refs
       (idx,) = loop_info.index
       tid_m, ni = plgpu.planar_snake(
           idx, (m_iters, n_iters), config.grid_minor_dim, config.grid_tile_width
@@ -115,7 +114,7 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
             def tma_loop(ki):
               ks = pl.ds(ki * block_k, block_k)
               step = carry * k_iters + ki
-              si = lax.rem(step, num_stages)
+              si = mgpu_lib.urem(step, num_stages)
 
               @pl.when(step >= num_stages)
               def _():
@@ -142,7 +141,7 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
 
           @pl.when((warp_id == _MMA_WARP) & (cluster_idx == 0))
           def mma_warp():
-            si_acc = lax.rem(carry, jnp.int32(2))
+            si_acc = mgpu_lib.urem(carry, jnp.int32(2))
             ms_acc = pl.ds(si_acc * cluster_block_m, cluster_block_m)
 
             @pl.when(carry > 1)
@@ -152,7 +151,7 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
 
             @pl.loop(0, k_iters)
             def mma_loop_body(ki):
-              si_tma = lax.rem(carry * k_iters + ki, num_stages)
+              si_tma = mgpu_lib.urem(carry * k_iters + ki, num_stages)
               with jax.named_scope("wait for xw"):
                 plgpu.barrier_wait(xw_barrier.at[si_tma])
               with jax.named_scope("issuing mma"):
@@ -171,7 +170,7 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
 
         @pl.when(wg == _EPILOGUE_WG)
         def epilogue_wg():
-          si = lax.rem(carry, jnp.int32(2))
+          si = mgpu_lib.urem(carry, jnp.int32(2))
           plgpu.barrier_wait(acc_barrier.at[si])
           with jax.named_scope("tmem -> smem"):
             ms_acc = pl.ds(si * cluster_block_m, cluster_block_m)
@@ -226,12 +225,8 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
   )
 
   profile = False
-  if jax.__version_info__ >= (0, 11, 0):
-    lowering_semantics = plgpu.LoweringSemantics.Warpgroup
-  else:
-    lowering_semantics = plgpu.LoweringSemantics.Lane
 
-  f = plgpu.kernel(
+  f = mgpu_lib.dynamic_scheduling_persistent_kernel(
       kernel,
       out_type=jax.ShapeDtypeStruct((m, n), out_dtype),
       scratch_types=scratch_shapes,
@@ -239,15 +234,15 @@ def ragged_dot_gpu_non_quant_blackwell_kernel(
       thread_name="wg",
       grid=(m_iters * n_iters,),
       grid_names=("mn",),
-      cluster=(1 + collective,),
-      cluster_names=("cluster",),
+      cluster=(2,) if collective else (),
+      cluster_names=("cluster",) if collective else (),
       kernel_name="ragged_dot_sm100",
       compiler_params=plgpu.CompilerParams(
           approx_math=True,
           unsafe_no_auto_barriers=True,
           profile_space=30 if profile else 0,
           profile_dir="sponge" if profile else "",
-          lowering_semantics=lowering_semantics,
+          lowering_semantics=plgpu.LoweringSemantics.Warpgroup,
       ),
   )
   group_info = common.GroupInfo.create_aligned(

@@ -28,6 +28,7 @@ from jaxtyping import Array, Float, Int  # pylint: disable=g-multiple-import,g-i
 
 from tokamax._src import jaxtyping
 from tokamax._src.ops.kda.utils import (  # pylint: disable=g-multiple-import,g-importing-member,unused-import
+    _bounded_chunk_boundaries,
     RCP_LN2,
     align_up,
     cdiv,
@@ -40,6 +41,7 @@ from tokamax._src.ops.kda.utils import (  # pylint: disable=g-multiple-import,g-
 )
 
 _TPU_VMEM_USAGE_FRACTION = 0.9
+_HIGH_VMEM_THRESHOLD_BYTES = 64 * 1024 * 1024
 
 
 @dataclasses.dataclass(frozen=True)
@@ -53,7 +55,15 @@ class _TpuLimits:
 
 def get_tpu_limits() -> _TpuLimits:
   """Returns KDA limits for the TPU selected by Mosaic dispatch."""
-  tpu_info = pltpu.get_tpu_info()
+  try:
+    tpu_info = pltpu.get_tpu_info()
+  except (RuntimeError, ValueError):
+    vmem_bytes = 16 * 1024 * 1024 if get_interpret() else 64 * 1024 * 1024
+    return _TpuLimits(
+        vmem_limit_bytes=int(vmem_bytes * _TPU_VMEM_USAGE_FRACTION),
+        block_align_minor=8,
+        block_align_major=128,
+    )
   return _TpuLimits(
       # Preserve headroom for compiler-managed VMEM allocations.
       vmem_limit_bytes=int(
@@ -63,18 +73,56 @@ def get_tpu_limits() -> _TpuLimits:
       block_align_major=int(tpu_info.num_lanes),
   )
 
+
+def get_vmem_limit_bytes() -> int:
+  """Returns the usable VMEM budget in bytes (90% of hardware VMEM capacity)."""
+  return get_tpu_limits().vmem_limit_bytes
+
+
 # =============================================================================
 # Mini-batch sizing and shared forward recurrence
 # =============================================================================
+
+
+def get_max_mini_batch(
+    *,
+    chunk_size: int | None = None,
+    vmem_limit_bytes: int | None = None,
+) -> int:
+  """Returns the upper bound on `mini_batch` for the hardware VMEM budget.
+
+  When `chunk_size` (`BT`) is provided for kernels whose in-kernel `f32`
+  `[MB, BT, BT]` intermediates grow quadratically with `BT`, pins `max_mb=1`
+  for `BT > 64` on 64 MiB VMEM TPUs while allowing `max_mb=16` at `BT <= 128`
+  on high-VMEM TPUs (`> 64 MiB` budget). When `chunk_size` is omitted, returns
+  `32` on high-VMEM TPUs and `16` on 64 MiB VMEM TPUs.
+
+  Args:
+    chunk_size: Optional chunk size (`BT`) for kernels whose in-kernel
+      intermediates scale quadratically with `BT`.
+    vmem_limit_bytes: Optional VMEM budget in bytes; defaults to hardware VMEM.
+  """
+  if vmem_limit_bytes is None:
+    vmem_limit_bytes = get_vmem_limit_bytes()
+  high_vmem = vmem_limit_bytes > _HIGH_VMEM_THRESHOLD_BYTES
+  if chunk_size is None:
+    return 32 if high_vmem else 16
+  if chunk_size <= 64:
+    return 32
+  if chunk_size <= 128 and high_vmem:
+    return 16
+  return 1
 
 
 def estimate_mini_batch(
     per_tile_bytes: int,
     total: int,
     *,
-    max_mb: int = 16,
+    max_mb: int | None = None,
+    chunk_size: int | None = None,
     vmem_budget: int | None = None,
     align_minor: int | None = None,
+    multiple_of: int = 1,
 ) -> int:
   """Estimate the optimal mini-batch size to maximise VMEM utilisation.
 
@@ -85,29 +133,39 @@ def estimate_mini_batch(
   Args:
       per_tile_bytes: Estimated VMEM footprint (bytes) for **one** tile/head.
       total: Number of tiles (or heads) to partition.
-      max_mb: Upper bound on MB (default 16).
+      max_mb: Upper bound on MB. ``None`` (default) derives the cap from
+          hardware VMEM capacity and ``chunk_size`` via ``get_max_mini_batch``.
+      chunk_size: Optional chunk size (``BT``) for kernels whose in-kernel
+          intermediates scale quadratically with ``BT``.
       vmem_budget: VMEM budget in bytes. ``None`` (default) queries
           ``get_tpu_limits().vmem_limit_bytes`` at call time.
       align_minor: TPU block_align_minor constraint. ``None`` (default)
           queries ``get_tpu_limits().block_align_minor``.  When provided,
           the function prefers MB values that satisfy this alignment.
+      multiple_of: Minimum divisor constraint on ``MB`` (e.g. ``gqa_repeats``).
 
   Returns:
       Mini-batch size ``MB`` such that ``total % MB == 0`` (best-effort).
   """
-  if vmem_budget is None or align_minor is None:
+  if vmem_budget is None or align_minor is None or max_mb is None:
     hw = get_tpu_limits()
     if vmem_budget is None:
       vmem_budget = hw.vmem_limit_bytes
     if align_minor is None:
       align_minor = hw.block_align_minor
+    if max_mb is None:
+      max_mb = get_max_mini_batch(
+          chunk_size=chunk_size, vmem_limit_bytes=hw.vmem_limit_bytes
+      )
 
   per_tile_bytes = max(1, per_tile_bytes)
   MB = max(1, vmem_budget // per_tile_bytes)
-  MB = max(1, min(MB, total, max_mb))
+  MB = max(multiple_of, min(MB, total, max(max_mb, multiple_of)))
 
-  # Try to find an MB that divides total evenly.
-  while total % MB != 0 and MB > 1:
+  # Find an MB that divides total evenly and is a multiple of multiple_of.
+  while MB > multiple_of:
+    if total % MB == 0 and MB % multiple_of == 0:
+      break
     MB -= 1
 
   return MB
@@ -161,6 +219,98 @@ def _hillis_steele_scan(
 
   return acc
 
+
+def tri_inv_xor_dnc(
+    L: jax.Array,
+    *,
+    use_fp32: bool = False,
+    two_pass_bf16: bool = False,
+) -> jax.Array:
+  """Inverts unit lower-triangular `I + L` via block-doubling (`xor_dnc`).
+
+  For strictly lower-triangular `L` of shape `[MB, BT, BT]` (`BT` a power of 2
+  in `[16, 512]`), computes `(I + L)^{-1}` in `O(log2(BT))` batched MXU stages:
+    * Stage `s = 1` initializes `2x2` diagonal block inverses `I - B^{(1)}`
+      with zero matmuls.
+    * Stages `s = 2, 4, ..., BT // 4` merge `s x s` diagonal block inverses
+      via `T <- T - (T @ B^{(s)}) @ T` (2 batched `[MB, BT, BT]` matmuls/stage).
+    * Final stage `s = BT // 2` slices only the sublane axis (`s >= 8`, always
+      8-sublane aligned) to merge the bottom-left block in 2 half-height
+      `[MB, BT // 2, BT] @ [MB, BT, BT]` matmuls without slicing minor lanes.
+
+  When `two_pass_bf16=True` and `not use_fp32`, applies one Newton-Schulz BF16
+  residual-refinement step (`E = -strict_lower(T + dot_high(T, L))`,
+  `T <- T + strict_lower(dot_bf16(E, T))`) to reach `O(u_bf16^2) ~ 1e-5`
+  accuracy without slow FP32 emulation.
+
+  Args:
+    L: Strictly lower-triangular `float32` tensor `[MB, BT, BT]`.
+    use_fp32: Whether to execute MXU matmuls at `Precision.HIGHEST` (FP32).
+    two_pass_bf16: Whether to refine the 1-pass BF16 inverse with a second BF16
+      residual pass when `use_fp32=False`.
+
+  Returns:
+    Unit lower-triangular `float32` tensor `(I + L)^{-1}` of shape `[MB, BT, BT]`.
+  """
+  BT = L.shape[-1]
+  assert BT >= 2 and (BT & (BT - 1)) == 0, (
+      f"tri_inv_xor_dnc requires power-of-2 BT >= 2, got {BT}"
+  )
+
+  r = jax.lax.broadcasted_iota(jnp.int32, (BT, BT), dimension=0)
+  c = jax.lax.broadcasted_iota(jnp.int32, (BT, BT), dimension=1)
+  strict = r > c
+  diag = r == c
+  zero = jnp.float32(0.0)
+  one = jnp.float32(1.0)
+
+  stage_prec = (
+      jax.lax.Precision.HIGHEST if use_fp32 else jax.lax.Precision.DEFAULT
+  )
+  dims = (((2,), (1,)), ((0,), (0,)))
+
+  def _dot(a: jax.Array, b: jax.Array, prec=stage_prec) -> jax.Array:
+    return jax.lax.dot_general(
+        a, b, dims, precision=prec, preferred_element_type=jnp.float32
+    )
+
+  L_strict = jnp.where(strict[None], L.astype(jnp.float32), zero)
+
+  # Stage s = 1: exact 2x2 diagonal block inverses with 0 matmuls.
+  mask_1 = (r == c + 1) & ((c & 1) == 0)
+  T = jnp.where(
+      diag[None],
+      one,
+      jnp.where(mask_1[None], -L_strict, zero),
+  )
+
+  # Intermediate block-doubling stages: s = 2, 4, ..., BT // 4.
+  s = 2
+  half_bt = BT // 2
+  while s < half_bt:
+    mask_s = ((r // (2 * s)) == (c // (2 * s))) & ((r & s) != 0) & ((c & s) == 0)
+    B_s = jnp.where(mask_s[None], L_strict, zero)
+    T = T - _dot(_dot(T, B_s), T)
+    s *= 2
+
+  # Final stage s = BT // 2: slice only sublane axis 1 (never minor lane axis 2).
+  if BT >= 4:
+    mask_last = (r >= half_bt) & (c < half_bt)
+    B_last = jnp.where(mask_last[None], L_strict, zero)
+    tb_bot = _dot(T[:, half_bt:, :], B_last)
+    upd_bot = _dot(tb_bot, T)
+    T = jnp.concatenate([T[:, :half_bt, :], T[:, half_bt:, :] - upd_bot], axis=1)
+
+  T = jnp.where(strict[None], T, jnp.where(diag[None], one, zero))
+
+  if two_pass_bf16 and not use_fp32:
+    al = _dot(T, L_strict, jax.lax.Precision.HIGH)
+    err = jnp.where(strict[None], -(T + al), zero)
+    corr = _dot(err, T, jax.lax.Precision.DEFAULT)
+    T = T + jnp.where(strict[None], corr, zero)
+
+  return T
+
 # =============================================================================
 # Delta-rule hidden-state kernels
 # =============================================================================
@@ -213,12 +363,16 @@ def _chunk_gated_delta_rule_fwd_varlen_kernel(
   i_c = pl.program_id(2)
   seq_idx = chunk_to_seq_ref[i_b, i_c]
 
-  bos = seqlens_ref[i_b, seq_idx]
-  eos = seqlens_ref[i_b, seq_idx + 1]
+  if seqlens_ref.ndim == 1:
+    offset = 2 * (i_b * chunk_to_seq_ref.shape[1] + i_c)
+    bos = seqlens_ref[offset]
+    eos = seqlens_ref[offset + 1]
+  else:
+    bos = seqlens_ref[i_b, seq_idx]
+    eos = seqlens_ref[i_b, seq_idx + 1]
 
-  BT = k_ref.shape[2]
+  _, _, BT, _ = k_ref.shape
   t0 = i_c * BT
-  K, V = k_ref.shape[-1], v_ref.shape[-1]
 
   @pl.when(t0 == bos)
   def _():
@@ -375,11 +529,7 @@ def _chunk_gated_delta_rule_fwd_varlen(
   # --- Mini-batch auto-compute ---
   if mini_batch is None:
     per_head = K_PADSIZE * V_ALIGNED * 4  # scratch state bytes per head
-    vmem_budget = 8 * 1024 * 1024  # 8 MB
-    MB = max(1, vmem_budget // per_head)
-    MB = min(MB, H, 16)
-    while H % MB != 0 and MB > 1:
-      MB -= 1
+    MB = estimate_mini_batch(per_head, H)
   else:
     MB = mini_batch
     assert H % MB == 0, f"H={H} must be divisible by mini_batch={MB}"
@@ -477,7 +627,10 @@ def _chunk_gated_delta_rule_fwd_varlen(
     ),
     out_shape=[h_spec, v_new_spec, ht_spec],
     interpret=interpret,
-  )(seqlens, chunk_to_seq, k_t, v_t, w_t, g_t, gk_t, h0)
+  )(
+      _bounded_chunk_boundaries(seqlens, chunk_to_seq), chunk_to_seq,
+      k_t, v_t, w_t, g_t, gk_t, h0,
+  )
 
   h_out = h_out[:, :, :, :K, :V]
   v_new_out = (
@@ -509,20 +662,20 @@ def _chunk_gated_delta_rule_fwd_varlen(
 
 
 def _chunk_gated_delta_rule_fwd_kernel(
-  k_ref,  # [1, 1, BT, K_PADSIZE]
-  v_ref,  # [1, 1, BT, V_ALIGNED]
-  w_ref,  # [1, 1, BT, K_PADSIZE]
-  g_ref,  # [1, 1, BT, G_PAD]
-  gk_ref,  # [1, 1, BT, K_PADSIZE]
-  h0_ref,  # [1, 1, K_PADSIZE, V_ALIGNED]
-  # outputs
-  h_ref,  # [1, NT, 1, K_PADSIZE, V_ALIGNED]
-  v_new_ref,  # [1, 1, BT, V_ALIGNED]
-  ht_ref,  # [1, 1, K_PADSIZE, V_ALIGNED]
-  scratch_ref,  # [K_PADSIZE, V_ALIGNED]
-  *,
-  NT,
-  USE_EXP2,
+    k_ref,  # [1, 1, BT, K_PADSIZE]
+    v_ref,  # [1, 1, BT, V_ALIGNED]
+    w_ref,  # [1, 1, BT, K_PADSIZE]
+    g_ref,  # [1, 1, BT, G_PAD]
+    gk_ref,  # [1, 1, BT, K_PADSIZE]
+    h0_ref,  # [1, 1, K_PADSIZE, V_ALIGNED]
+    # outputs
+    h_ref,  # [1, 1, 1, K_PADSIZE, V_ALIGNED] -- this chunk's slice only
+    v_new_ref,  # [1, 1, BT, V_ALIGNED]
+    ht_ref,  # [1, 1, K_PADSIZE, V_ALIGNED]
+    scratch_ref,  # [K_PADSIZE, V_ALIGNED]
+    *,
+    NT,
+    USE_EXP2,
 ):
   """Pallas kernel for one chunk of the gated delta-rule inter-chunk forward pass.
 
@@ -544,8 +697,8 @@ def _chunk_gated_delta_rule_fwd_kernel(
 
   idx_nt = pl.program_id(2)
 
-  BT = k_ref.shape[2]
-  K, V = k_ref.shape[-1], v_ref.shape[-1]
+  _, _, BT, K = k_ref.shape
+  V = v_ref.shape[-1]
   b_k = k_ref[0, 0]
 
   @pl.when(idx_nt == 0)
@@ -554,7 +707,7 @@ def _chunk_gated_delta_rule_fwd_kernel(
     if h0_ref is not None:
       scratch_ref[...] = h0_ref[0, 0].astype(jnp.float32)
 
-  h_ref[0, 0, idx_nt] = scratch_ref[...].astype(h_ref.dtype)
+  h_ref[0, 0, 0] = scratch_ref[...].astype(h_ref.dtype)
 
   b_w = w_ref[0, 0]
   b_v = jnp.dot(
@@ -701,7 +854,7 @@ def _chunk_gated_delta_rule_fwd(
 
   # -- Output shapes ---
   # h stored as [B, NT, H, K_PADSIZE, V_ALIGNED] with V before K (varlen convention).
-  h_spec = jax.ShapeDtypeStruct([H, B, NT, K_PADSIZE, V_ALIGNED], k.dtype)
+  h_spec = jax.ShapeDtypeStruct([H, B, NT, K_PADSIZE, V_ALIGNED], u.dtype)
   v_new_spec = (
     jax.ShapeDtypeStruct([H, B, T, V_ALIGNED], jnp.float32) if save_new_value else None
   )
@@ -741,8 +894,9 @@ def _chunk_gated_delta_rule_fwd(
     else None
   )
 
+  # Slice one chunk per grid step to avoid allocating the full [NT, K, V] output in VMEM.
   h_blockspec_out = pl.BlockSpec(
-    [1, 1, NT, K_PADSIZE, V_ALIGNED], lambda b, h, nt: (h, b, 0, 0, 0)
+      [1, 1, 1, K_PADSIZE, V_ALIGNED], lambda b, h, nt: (h, b, nt, 0, 0)
   )
   v_new_blockspec_out = (
     pl.BlockSpec([1, 1, BT, V_ALIGNED], lambda b, h, nt: (h, b, nt, 0))
@@ -818,22 +972,21 @@ def _chunk_gated_delta_rule_fwd(
 
 @jaxtyping.jaxtyped
 def chunk_gated_delta_rule_fwd_h(
-  k: Float[Array, "H B T K"],
-  w: Float[Array, "H B T K"],
-  u: Float[Array, "H B T V"],
-  g: Float[Array, "H B T"] | None = None,
-  gk: Float[Array, "H B T K"] | None = None,
-  initial_state: (
-      Float[Array, "N_STATE H K V"]
-      | Float[Array, "B N_STATE H K V"]
-      | None
-  ) = None,
-  output_final_state: bool = False,
-  chunk_size: int = 64,
-  save_new_value: bool = True,
-  use_exp2: bool = True,
-  cu_seqlens: Int[Array, "N_CU"] | Int[Array, "B N_CU"] | None = None,
-  chunk_indices: Int[Array, "NT 2"] | Int[Array, "B NT 2"] | None = None,
+    k: Float[Array, "H B T K"],
+    w: Float[Array, "H B T K"],
+    u: Float[Array, "H B T V"],
+    g: Float[Array, "H B T"] | None = None,
+    # GW, not K: a scalar gate arrives at width 1 and broadcasts from there.
+    gk: Float[Array, "H B T GW"] | None = None,
+    initial_state: (
+        Float[Array, "N_STATE H K V"] | Float[Array, "B N_STATE H K V"] | None
+    ) = None,
+    output_final_state: bool = False,
+    chunk_size: int = 64,
+    save_new_value: bool = True,
+    use_exp2: bool = True,
+    cu_seqlens: Int[Array, "N_CU"] | Int[Array, "B N_CU"] | None = None,
+    chunk_indices: Int[Array, "NT 2"] | Int[Array, "B NT 2"] | None = None,
 ) -> tuple[
     Float[Array, "H B NT K V"],
     Float[Array, "H B T V"] | None,

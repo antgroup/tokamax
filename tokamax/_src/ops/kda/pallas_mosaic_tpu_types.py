@@ -20,7 +20,6 @@ from typing import TypeAlias
 import jax
 from jaxtyping import Array, Float, Int  # pylint: disable=g-multiple-import,g-importing-member
 
-
 CpMetadata: TypeAlias = (
     tuple[
         jax.Array | bool | None,
@@ -41,15 +40,15 @@ class KdaResiduals:
   k: Float[Array, "H B T_ALIGNED K"]
   v: Float[Array, "H B T_ALIGNED V"]
   beta: Float[Array, "H B T_ALIGNED"]
-  g_cumsum: Float[Array, "H B T_ALIGNED K"] | None
+  g_cumsum: Float[Array, "H B T_ALIGNED GW"] | None
   aqk: Float[Array, "H B T_ALIGNED BT"]
-  akk: Float[Array, "H B T_ALIGNED BT"]
+  akk: Float[Array, "H B T_ALIGNED BT"] | None
   initial_state: (
       Float[Array, "B H K V"] | Float[Array, "B N H K V"] | None
   )
-  g_org: Float[Array, "H B T_ALIGNED K"] | None
+  g_org: Float[Array, "H B T_ALIGNED GW"] | None
   a_log: Float[Array, "H"] | None
-  delta_time_bias: Float[Array, "H*K"] | None
+  delta_time_bias: Float[Array, "H*GW"] | None
   h: Float[Array, "H B NT K V"] | None
   g_dtype_marker: Float[Array, ""]
   q_rstd: Float[Array, "H B T_ALIGNED"] | None
@@ -58,5 +57,61 @@ class KdaResiduals:
   aligned_cu_seqlens: Int[Array, "B N_CU"] | Int[Array, "N_CU"] | None
   chunk_indices: Int[Array, "B NT 2"] | Int[Array, "NT 2"] | None
   aligned_segment_ids: Int[Array, "B T_ALIGNED"] | None
-  segment_ids: Int[Array, "B T_ORIG"] | None
+  segment_ids: Int[Array, "B T_SEG"] | None
   cp_metadata: CpMetadata
+  v_new: Float[Array, "H B T_ALIGNED V"] | None = None
+  q_raw: Float[Array, "H B T_RAW K"] | None = None
+  k_raw: Float[Array, "H B T_RAW K"] | None = None
+  v_raw: Float[Array, "H B T_RAW V"] | None = None
+  conv_weight_q: Float[Array, "H_Q W K"] | None = None
+  conv_weight_k: Float[Array, "H_K W K"] | None = None
+  conv_weight_v: Float[Array, "H W V"] | None = None
+  conv_bias_q: Float[Array, "H_Q K"] | None = None
+  conv_bias_k: Float[Array, "H_K K"] | None = None
+  conv_bias_v: Float[Array, "H V"] | None = None
+  cp_seg_halo: tuple[Int[Array, "B"], Int[Array, "B T_HALO"] | None] | None = (
+      None
+  )
+  chunk_size: int = dataclasses.field(default=64, metadata=dict(static=True))
+  two_pass_bf16: bool = dataclasses.field(
+      default=False, metadata=dict(static=True)
+  )
+
+
+  token_order: Int[Array, "B T_ORIG"] | None = None
+  token_unpermute: Int[Array, "B T_ORIG"] | None = None
+
+  padding_guard: bool = dataclasses.field(default=False, metadata={"static": True})
+
+@jax.tree_util.register_dataclass
+@dataclasses.dataclass(frozen=True, slots=True)
+class GdnResiduals:
+  """Prepared forward values consumed by the GDN custom backward."""
+
+  qkv_conv: Float[Array, "B T C_QKV"] | None
+  q: Float[Array, "B T H_QK K"] | None
+  k: Float[Array, "B T H_QK K"] | None
+  v: Float[Array, "B T H_V V"] | None
+  beta: Float[Array, "H_V B T"]
+  g_cumsum: Float[Array, "H_V B T 1"] | None
+  akk: Float[Array, "H_V B T BT"] | None
+  h: Float[Array, "H_V B NT K V"] | None
+  initial_state: Float[Array, "B H_V K V"] | None
+  g_org: Float[Array, "H_V B T 1"] | None
+  a_log: Float[Array, "H_V"] | None
+  delta_time_bias: Float[Array, "H_V"] | None
+  qkv_raw: Float[Array, "B T_RAW C_QKV"] | None
+  conv_weight: Float[Array, "W C_QKV"] | None
+  conv_bias: Float[Array, "C_QKV"] | None
+  segment_ids: Int[Array, "B T"] | None
+  g_dtype_marker: Float[Array, ""]
+  cp_seg_halo: tuple[Int[Array, "B"], Int[Array, "B T_HALO"] | None] | None = (
+      None
+  )
+  chunk_size: int = dataclasses.field(default=64, metadata=dict(static=True))
+  beta_dtype: str = dataclasses.field(
+      default="float32", metadata=dict(static=True)
+  )
+  two_pass_bf16: bool = dataclasses.field(
+      default=False, metadata=dict(static=True)
+  )

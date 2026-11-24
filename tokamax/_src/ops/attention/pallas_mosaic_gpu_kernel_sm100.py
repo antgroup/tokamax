@@ -248,7 +248,7 @@ def get_heuristics_config(
   ):
     split_k = num_clusters // grid_size
     split_k = min(kv_seq_len // block_kv, split_k)
-    while kv_seq_len % split_k != 0:
+    while (kv_seq_len // block_kv) % split_k != 0:
       split_k -= 1
 
   q, k, v, bias, mask = eval_in_shapes(split_k=split_k)
@@ -374,11 +374,14 @@ def flash_attention_kernel(
   head_dim = q.shape[-1]
   head_dim_out = v.shape[-1]
 
+  if bias is not None and bias.shape[-2] != 1:
+    bias = shape_lib.pad_to_next_multiple_of(bias, 8, -2)
+
   if mask is not None:
     if mask.shape[-2] == 1 or mask.shape[-1] == 1:
       mask = mask.astype(jnp.int8)
     else:
-      mask = common.pack_mask(mask)
+      mask = common.pack_mask(mask, config.block_kv)
 
   block_q = config.block_q
   block_kv = config.block_kv
@@ -455,7 +458,7 @@ def flash_attention_kernel(
       ub = kv_seq_len // block_kv
 
       if is_causal:
-        ub = lax.min(ub, pl.cdiv(q_base_cluster + block_q, block_kv))
+        ub = lax.min(ub, mgpu_lib.ucdiv(q_base_cluster + block_q, block_kv))
 
       def load_k_bound(k_range_ref):
         idx = (
@@ -468,13 +471,13 @@ def flash_attention_kernel(
         k_start_max = None
       else:
         k_start_min, k_start_max = map(load_k_bound, k_start_minmax_gmems)
-        lb = lax.max(lb, lax.div(k_start_min, block_kv))
+        lb = lax.max(lb, mgpu_lib.udiv(lax.max(k_start_min, 0), block_kv))
 
       if k_end_minmax_gmems is None:
         k_end_min = None
       else:
         k_end_min, k_end_max = map(load_k_bound, k_end_minmax_gmems)
-        ub = lax.min(ub, pl.cdiv(k_end_max, block_kv))
+        ub = lax.min(ub, mgpu_lib.ucdiv(lax.max(k_end_max, 0), block_kv))
 
       @pl.when(wg == _MMA_TMA_WG)
       def mma_tma_wg():
@@ -486,7 +489,7 @@ def flash_attention_kernel(
         )
 
         def tma_load_kv_warp(gmem, smem, produced, consumed, partition_axis):
-          kv_head = lax.div(hi, q_heads_per_kv_head)
+          kv_head = mgpu_lib.udiv(hi, q_heads_per_kv_head)
           block_d = gmem.shape[-1] // num_tma_splits
           if collective:
             leader_tracked = plgpu.CopyPartition.PARTITIONED(partition_axis)
@@ -501,7 +504,7 @@ def flash_attention_kernel(
 
           @pl.loop(lb, ub)
           def kv_loop(ki):
-            si = lax.rem(prev_iters + ki - lb, num_stages)
+            si = mgpu_lib.urem(prev_iters + ki - lb, num_stages)
             ks = pl.ds(ki * block_kv, block_kv)
 
             for i in range(num_tma_splits):
@@ -517,7 +520,7 @@ def flash_attention_kernel(
 
         def qk_mma(ki):
           block_d = head_dim // num_tma_splits
-          si = lax.rem(prev_iters + ki - lb, num_stages)
+          si = mgpu_lib.urem(prev_iters + ki - lb, num_stages)
 
           with jax.named_scope("wait_k"):
             plgpu.barrier_wait(s_consumed)
@@ -540,8 +543,8 @@ def flash_attention_kernel(
 
         def pv_mma(ki):
           block_d = head_dim_out // num_tma_splits
-          v_si = lax.rem(prev_iters + ki - lb, num_stages)
-          p_si = lax.rem(prev_iters + ki - lb, 2)
+          v_si = mgpu_lib.urem(prev_iters + ki - lb, num_stages)
+          p_si = mgpu_lib.urem(prev_iters + ki - lb, 2)
 
           with jax.named_scope("wait_v"):
             plgpu.barrier_wait(v_produced.at[v_si])
@@ -577,6 +580,24 @@ def flash_attention_kernel(
                   leader_tracked=q_leader_tracked,
                   predicate=jnp.asarray(ub > lb),
               )
+            else:
+              # Issue the Q load for this tile as soon as the previous tile's
+              # last Q@K.T completes. Issuing it from the MMA warp would delay
+              # it until that warp has also issued the previous tile's last
+              # P@V.
+              assert q_consumed is not None
+              plgpu.barrier_arrive(q_consumed, predicate=is_first_grid_iter)
+
+              @pl.when(ub > lb)
+              def load_q():
+                plgpu.barrier_wait(q_consumed)
+                plgpu.copy_gmem_to_smem(
+                    q_gmem.at[qs_cluster, hi],
+                    q_smem,
+                    barrier=q_produced,
+                    collective_axes=collective_axis,
+                    leader_tracked=q_leader_tracked,
+                )
 
             tma_load_kv_warp(k_gmem, k_smem, k_produced, k_consumed, 0)
 
@@ -602,62 +623,27 @@ def flash_attention_kernel(
                 if mask_smem is not None:
                   assert mask_produced is not None and mask_consumed is not None
                   hi_ = 0 if mask_gmem.shape[-3] == 1 else hi
-                  ks = pl.ds(ki * mask_block_kv, mask_block_size)
+                  ks = pl.ds(ki * mask_block_size, mask_block_size)
                   plgpu.barrier_wait(mask_consumed)
                   mgpu_lib.fence_async_shared_cta()
                   plgpu.copy_gmem_to_smem(
                       mask_gmem.at[hi_, qs, ks], mask_smem, mask_produced
                   )
 
-          if config.persistent:
+          @pl.when((warp_id == _MMA_WARP) & (cluster_idx == 0) & (ub > lb))
+          def mma_warp():
+            plgpu.barrier_wait(q_produced)
+            qk_mma(lb)
 
-            @pl.when(warp_id == _MMA_WARP)
-            def tma_load_q_mma_warp():
+            @pl.loop(lb, ub - 1)
+            def kv_loop(ki):
+              qk_mma(ki + 1)
+              pv_mma(ki)
+
+            if config.persistent:
               assert q_consumed is not None
-              plgpu.barrier_arrive(q_consumed, predicate=is_first_grid_iter)
-              plgpu.async_prefetch(
-                  q_gmem.at[qs_cluster, hi],
-                  collective_axes=collective_axis,
-                  leader_tracked=q_leader_tracked,
-              )
-
-              @pl.when(ub > lb)
-              def do_block():
-                plgpu.barrier_wait(q_consumed)
-                plgpu.copy_gmem_to_smem(
-                    q_gmem.at[qs_cluster, hi],
-                    q_smem,
-                    barrier=q_produced,
-                    collective_axes=collective_axis,
-                    leader_tracked=q_leader_tracked,
-                )
-
-                @pl.when(cluster_idx == 0)
-                def do_mma():
-                  plgpu.barrier_wait(q_produced)
-                  qk_mma(lb)
-
-                  @pl.loop(lb, ub - 1)
-                  def kv_loop(ki):
-                    qk_mma(ki + 1)
-                    pv_mma(ki)
-
-                  plgpu.tcgen05_commit_arrive(q_consumed, collective_axis)
-                  pv_mma(ub - 1)
-
-          else:
-
-            @pl.when((warp_id == _MMA_WARP) & (cluster_idx == 0) & (ub > lb))
-            def mma_warp():
-              plgpu.barrier_wait(q_produced)
-              qk_mma(lb)
-
-              @pl.loop(lb, ub - 1)
-              def kv_loop(ki):
-                qk_mma(ki + 1)
-                pv_mma(ki)
-
-              pv_mma(ub - 1)
+              plgpu.tcgen05_commit_arrive(q_consumed, collective_axis)
+            pv_mma(ub - 1)
 
       @pl.when(wg == _SOFTMAX_WG)
       def softmax_wg():
@@ -729,7 +715,7 @@ def flash_attention_kernel(
 
           def kv_loop(ki, carry, *, do_causal=False):
             m_scale, m_i, l_i = carry
-            si = lax.rem(prev_iters + ki - lb, 2)
+            si = mgpu_lib.urem(prev_iters + ki - lb, 2)
             with jax.named_scope("Q@K"):
               plgpu.barrier_wait(s_produced)
             with jax.named_scope("load_qk"):
@@ -769,7 +755,12 @@ def flash_attention_kernel(
                   lambda: s,
               )
               scale *= math.log2(math.e)
-              m_i = jnp.maximum(m_i, s.max(axis=1) * scale)
+              if jax.__version_info__ >= (0, 12, 0):
+                max_ilp = (tile_q // 64) * (4 if bias_gmem is None else 2)
+                s_max = plgpu.max(s, axis=1, accumulator_ilp=max_ilp)
+              else:
+                s_max = s.max(axis=1)
+              m_i = jnp.maximum(m_i, s_max * scale)
               cannot_be_inf = mask_gmem is None and not has_k_range
               m_valid = cannot_be_inf | (m_i != -jnp.inf)
               alpha = jnp.where(m_valid, jnp.exp2(m_scale - m_i), 1.0)
@@ -787,7 +778,14 @@ def flash_attention_kernel(
               m_scale = jnp.where(needs_rescale, m_i, m_scale)
               bcast = lambda x: lax.broadcast_in_dim(x, s.shape, [0])
               p = jnp.exp2(s * scale - bcast(jnp.where(m_valid, m_scale, 0.0)))
-              l_i = jnp.where(needs_rescale, l_i * alpha, l_i) + p.sum(axis=1)
+              l_i = jnp.where(needs_rescale, l_i * alpha, l_i)
+              if jax.__version_info__ >= (0, 12, 0):
+                sum_ilp = (tile_q // 64) * 4
+                if bias_gmem is None and block_kv > 64:
+                  sum_ilp *= 2
+                l_i += plgpu.sum(p, axis=1, accumulator_ilp=sum_ilp)
+              else:
+                l_i += p.sum(axis=1)
 
               with jax.named_scope("write qk_tmem"):
                 plgpu.async_store_tmem(p_tmem.at[si], p.astype(p_tmem.dtype))
@@ -801,13 +799,16 @@ def flash_attention_kernel(
           # in 2CTA we have non square blocks hence we may need to process
           # M//N steps with a mask, for M=256, N=128 this means 2 steps
           causal_blocks = int(is_causal) * (block_q // block_kv)
-          carry = lax.fori_loop(
-              lb, ub - causal_blocks, kv_loop, (m_i, m_i, l_i)
-          )
+          # Never start the causal loop before `lb`: with fewer than
+          # `causal_blocks` KV blocks (e.g. 2CTA with a single KV block), we
+          # would otherwise run more iterations than the MMA warp, and wait on
+          # `s_produced` forever.
+          ub_no_causal = lax.max(lb, ub - causal_blocks)
+          carry = lax.fori_loop(lb, ub_no_causal, kv_loop, (m_i, m_i, l_i))
 
           if is_causal:
             causal_kv_loop = functools.partial(kv_loop, do_causal=True)
-            carry = lax.fori_loop(ub - causal_blocks, ub, causal_kv_loop, carry)
+            carry = lax.fori_loop(ub_no_causal, ub, causal_kv_loop, carry)
 
           m_scale, m_i, l_i = carry
 
@@ -825,14 +826,11 @@ def flash_attention_kernel(
               l_i *= alpha
             m_i *= 1 / math.log2(math.e)
             for residual, gmem_ref in zip((m_i, l_i), residual_gmems):
-              if jax.__version_info__ >= (0, 11, 3):
-                plgpu.store(
-                    gmem_ref.at[hi, qs],
-                    residual.astype(gmem_ref.dtype),
-                    optimized=False,
-                )
-              else:
-                gmem_ref.at[hi, qs].set(residual.astype(gmem_ref.dtype))
+              mgpu_lib.store(
+                  gmem_ref.at[hi, qs],
+                  residual.astype(gmem_ref.dtype),
+                  optimized=False,
+              )
 
       @pl.when(wg == _SCALE_WG)
       def scale_wg():
@@ -853,7 +851,7 @@ def flash_attention_kernel(
 
         @pl.loop(lb + 1, ub)
         def kv_loop(ki):
-          si = lax.rem(prev_iters + ki - lb, alpha_smem.shape[0])
+          si = mgpu_lib.urem(prev_iters + ki - lb, alpha_smem.shape[0])
           plgpu.barrier_wait(pv_mma_produced)
           tile_d = 32
 
@@ -936,7 +934,7 @@ def flash_attention_kernel(
 
             def load_acc_tiles():
               for di in range(num_d_tiles):
-                si = lax.rem(epi_slot_offset + di, num_epi_slots)
+                si = mgpu_lib.urem(epi_slot_offset + di, num_epi_slots)
                 ds = slice(di * epi_tile_d, (di + 1) * epi_tile_d)
                 acc = plgpu.async_load_tmem(acc_tmem.at[:, ds], layout=_TCGEN05)
                 yield ds, si, acc
@@ -954,7 +952,7 @@ def flash_attention_kernel(
               m_gmem[hi, qs] = jnp.full_like(m_gmem.at[hi, qs], -jnp.inf)
               l_gmem[hi, qs] = jnp.zeros_like(l_gmem.at[hi, qs])
 
-            si = lax.rem(epi_slot_offset, num_epi_slots)
+            si = mgpu_lib.urem(epi_slot_offset, num_epi_slots)
             plgpu.wait_smem_to_gmem(num_epi_slots - 1, wait_read_only=True)
             o_smem[si] = jnp.zeros_like(o_smem.at[si])
             plgpu.commit_smem()

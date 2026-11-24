@@ -19,6 +19,7 @@ from typing import Any, ClassVar, override
 
 import jax
 from jaxtyping import Array, Float, Int, UInt8  # pylint: disable=g-multiple-import,g-importing-member
+import numpy as np
 from tokamax._src import jaxtyping
 from tokamax._src.ops import op
 from tokamax._src.ops.lightning_indexer import reference
@@ -43,10 +44,10 @@ class LightningIndexer[C](
       q: Float[Array | AbstractArray, "T H D"],
       indexer_weights: Float[Array | AbstractArray, "T H"],
       cache_kv: UInt8[Array | AbstractArray, "P _ 4 _"],
-      seq_lens: Int[Array | AbstractArray, "B"],
-      page_indices: Int[Array | AbstractArray, "_"],
-      cu_q_lens: Int[Array | AbstractArray, "_"],
-      distribution: Int[Array | AbstractArray, "3"],
+      seq_lens: Int[Array | np.ndarray | AbstractArray, "B"],
+      page_indices: Int[Array | np.ndarray | AbstractArray, "_"],
+      cu_q_lens: Int[Array | np.ndarray | AbstractArray, "_"],
+      distribution: Int[Array | np.ndarray | AbstractArray, "3"],
       *,
       k: int,
       compression_ratio: int = 1,
@@ -55,6 +56,7 @@ class LightningIndexer[C](
       cp_rank: Int[Array | AbstractArray, ""] | int = 0,
       interleave_size: int = 1,
       return_scores: bool = False,
+      uniform_q_len: int | None = None,
       return_residuals: bool = False,
   ) -> op.BoundArguments:
     """Validates input shapes and binds arguments for Lightning Indexer."""
@@ -99,6 +101,7 @@ class LightningIndexer[C](
         cp_rank=cp_rank,
         interleave_size=interleave_size,
         return_scores=return_scores,
+        uniform_q_len=uniform_q_len,
         return_residuals=return_residuals,
     )
 
@@ -121,6 +124,7 @@ class LightningIndexer[C](
       cp_rank: Int[Array, ""] | int = 0,
       interleave_size: int = 1,
       return_scores: bool = False,
+      uniform_q_len: int | None = None,
       return_residuals: bool = False,
       config: C,
   ) -> tuple[jax.Array | tuple[jax.Array, jax.Array], None]:
@@ -140,5 +144,6 @@ class LightningIndexer[C](
         cp_rank=cp_rank,
         interleave_size=interleave_size,
         return_scores=return_scores,
+        uniform_q_len=uniform_q_len,
     )
     return out, None

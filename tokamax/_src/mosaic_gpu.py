@@ -18,9 +18,10 @@ from collections.abc import Callable
 import dataclasses
 import functools
 import math
-from typing import Any, cast
+from typing import Any, cast, overload
 
 import jax
+from jax import lax
 from jax.experimental import pallas as pl
 from jax.experimental.mosaic import gpu as mgpu
 from jax.experimental.pallas import mosaic_gpu as plgpu
@@ -35,6 +36,59 @@ import numpy as np
 def num_bits(dtype: jax.typing.DTypeLike) -> int:
   fn = jnp.finfo if jnp.issubdtype(dtype, jnp.floating) else jnp.iinfo
   return fn(dtype).bits
+
+
+@overload
+def udiv(a: int, b: int) -> int:
+  ...
+
+
+@overload
+def udiv(a: int | jax.Array, b: int | jax.Array) -> jax.Array:
+  ...
+
+
+def udiv(a: int | jax.Array, b: int | jax.Array) -> int | jax.Array:
+  """Unsigned integer division for non-negative int32/uint32 operands."""
+  if isinstance(a, int) and isinstance(b, int):
+    return a // b
+  dtype = jnp.result_type(a, b)
+  u_dtype = jnp.uint32 if dtype == jnp.int32 else dtype
+  return lax.div(jnp.asarray(a, u_dtype), jnp.asarray(b, u_dtype)).astype(dtype)
+
+
+@overload
+def urem(a: int, b: int) -> int:
+  ...
+
+
+@overload
+def urem(a: int | jax.Array, b: int | jax.Array) -> jax.Array:
+  ...
+
+
+def urem(a: int | jax.Array, b: int | jax.Array) -> int | jax.Array:
+  """Unsigned integer remainder for non-negative int32/uint32 operands."""
+  if isinstance(a, int) and isinstance(b, int):
+    return a % b
+  dtype = jnp.result_type(a, b)
+  u_dtype = jnp.uint32 if dtype == jnp.int32 else dtype
+  return lax.rem(jnp.asarray(a, u_dtype), jnp.asarray(b, u_dtype)).astype(dtype)
+
+
+@overload
+def ucdiv(a: int, b: int) -> int:
+  ...
+
+
+@overload
+def ucdiv(a: int | jax.Array, b: int | jax.Array) -> jax.Array:
+  ...
+
+
+def ucdiv(a: int | jax.Array, b: int | jax.Array) -> int | jax.Array:
+  """Unsigned ceiling division for non-negative int32/uint32 operands."""
+  return udiv(a + (b - 1), b)
 
 
 def tile_swizzle_transforms(
@@ -495,3 +549,16 @@ def not_persistent_grid_loop_kernel(
     return body(grid_loop, **kwargs)
 
   return plgpu.kernel(wrapped_body, grid_names=grid_names, **kwargs)
+
+
+def store(ref, value, *, optimized: bool = True) -> None:
+  """Stores `value` to `ref`, like `plgpu.store`.
+
+  Only the OSS export calls this; internal code calls `plgpu.store` directly.
+  JAX 0.11.2 has no `plgpu.store`, and there assigning through the ref already
+  does an unoptimized store.
+  """
+  if jax.__version_info__ >= (0, 12, 0):
+    plgpu.store(ref, value, optimized=optimized)
+  else:
+    ref[...] = value

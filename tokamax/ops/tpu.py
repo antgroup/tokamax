@@ -29,7 +29,9 @@ from tokamax._src.ops.dsv4_compressor.pallas_mosaic_tpu import Config as Dsv4Com
 from tokamax._src.ops.dsv4_compressor.pallas_mosaic_tpu import PallasTpuDsv4Compressor as Dsv4Compressor
 from tokamax._src.ops.grouped_lowrank_proj.pallas_mosaic_tpu import Config as GroupedLowrankProjConfig
 from tokamax._src.ops.grouped_lowrank_proj.pallas_mosaic_tpu import PallasTpuGroupedLowrankProj as GroupedLowrankProj
+from tokamax._src.ops.kda.pallas_mosaic_tpu import Config as GatedDeltaNetConfig
 from tokamax._src.ops.kda.pallas_mosaic_tpu import Config as KimiDeltaAttentionConfig
+from tokamax._src.ops.kda.pallas_mosaic_tpu import PallasMosaicTpuGatedDeltaNet as GatedDeltaNet
 from tokamax._src.ops.kda.pallas_mosaic_tpu import PallasMosaicTpuKimiDeltaAttention as KimiDeltaAttention
 from tokamax._src.ops.lightning_indexer.pallas_mosaic_tpu import Config as LightningIndexerConfig
 from tokamax._src.ops.lightning_indexer.pallas_mosaic_tpu import PallasTpuLightningIndexer as LightningIndexer
@@ -54,8 +56,12 @@ from tokamax._src.ops.router_topk.pallas_mosaic_tpu import Config as RouterTopKC
 from tokamax._src.ops.router_topk.pallas_mosaic_tpu import PallasTpuRouterTopK as RouterTopK
 from tokamax._src.ops.sparse_mla.pallas_mosaic_tpu import Config as SparseMlaConfig
 from tokamax._src.ops.sparse_mla.pallas_mosaic_tpu import PallasTpuSparseMla as SparseMla
+from tokamax._src.ops.splash_attention.pallas_mosaic_tpu import Config as SplashAttentionConfig
+from tokamax._src.ops.splash_attention.pallas_mosaic_tpu import PallasMosaicTpuSplashAttention as SplashAttention
 from tokamax._src.ops.topk.pallas_mosaic_tpu import Config as TopKConfig
 from tokamax._src.ops.topk.pallas_mosaic_tpu import PallasTpuTopK as TopK
+from tokamax._src.ops.triangle_multiplication.pallas_mosaic_tpu import Config as TriangleMultiplicationConfig
+from tokamax._src.ops.triangle_multiplication.pallas_mosaic_tpu import PallasMosaicTpuTriangleMultiplication as TriangleMultiplication
 
 # pylint: enable=g-importing-member,useless-import-alias
 
@@ -72,6 +78,8 @@ __all__ = (
     "Dsv4CompressorConfig",
     "FlashAttention",
     "FlashAttentionConfig",
+    "GatedDeltaNet",
+    "GatedDeltaNetConfig",
     "GroupedLowrankProj",
     "GroupedLowrankProjConfig",
     "KimiDeltaAttention",
@@ -97,8 +105,12 @@ __all__ = (
     "RouterTopKConfig",
     "SparseMla",
     "SparseMlaConfig",
+    "SplashAttention",
+    "SplashAttentionConfig",
     "TopK",
     "TopKConfig",
+    "TriangleMultiplication",
+    "TriangleMultiplicationConfig",
     "V2RaggedDot",
     "V2RaggedDotConfig",
 )

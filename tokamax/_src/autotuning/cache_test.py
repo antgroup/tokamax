@@ -26,7 +26,15 @@ from tokamax._src import config as config_lib
 from tokamax._src.autotuning import cache
 from tokamax._src.ops import op as op_lib
 from tokamax._src.ops.attention import base as attention_base
+from tokamax._src.ops.causal_conv1d_gated_delta_rule import pallas_mosaic_tpu as gdn_pallas_mosaic_tpu
 from tokamax._src.ops.normalization import base as normalization_base
+
+try:
+  from tokamax._src.ops.attention import triton as attention_triton  # pylint: disable=g-import-not-at-top  # pyrefly: ignore[missing-module-attribute]
+  from tokamax._src.ops.attention import triton_vjp as attention_triton_vjp  # pylint: disable=g-import-not-at-top  # pyrefly: ignore[missing-module-attribute]
+except ImportError:
+  attention_triton = None  # pyrefly: ignore[assignment]
+  attention_triton_vjp = None  # pyrefly: ignore[assignment]
 
 try:
   from tokamax._src.ops.normalization import triton  # pylint: disable=g-import-not-at-top  # pyrefly: ignore[missing-module-attribute]
@@ -51,12 +59,36 @@ class CacheTest(parameterized.TestCase):
 
   @parameterized.parameters(
       ("TPU7x", attention_base.DotProductAttention),
+      # Binds every stored GDN key against the current `_fwd` signature, so a
+      # renamed or newly added kwarg cannot silently break cache loading.
+      (
+          "TPU7x",
+          gdn_pallas_mosaic_tpu.PallasMosaicTpuCausalConv1dGatedDeltaRule,
+      ),
       *(
           ()
           if triton is None
           else (
               ("NVIDIA H100 80GB HBM3", triton.TritonNormalization),
               ("not_a_real_device", triton.TritonNormalization),
+          )
+      ),
+      *(
+          ()
+          if attention_triton is None
+          else (
+              ("NVIDIA A100-SXM4-40GB", attention_triton.TritonFlashAttention),
+              ("NVIDIA H100 80GB HBM3", attention_triton.TritonFlashAttention),
+          )
+      ),
+      *(
+          ()
+          if attention_triton_vjp is None
+          else (
+              (
+                  "NVIDIA H100 80GB HBM3",
+                  attention_triton_vjp.TritonFlashAttentionVjp,
+              ),
           )
       ),
   )
